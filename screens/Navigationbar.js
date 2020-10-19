@@ -50,6 +50,11 @@ const ViewEdit = () =>{
   props.navigation.navigate('Moreinfo')
 }
 
+const ViewBlockUser = () =>{
+  toggleOverlay()
+  props.navigation.navigate('BlockUser')
+}
+
 const LogOut = () => {
   setspinner(true)
   AsyncStorage.getItem('Token', (err, result) => {
@@ -91,7 +96,7 @@ return (
           <View style={styles.overlaystyling}>
               <Button title="View/Edit Profile" buttonStyle={styles.buttonHeight} titleStyle={styles.titleStyles} onPress={ViewEdit } />
               <Button title="Account Settings" buttonStyle={styles.buttonHeight} titleStyle={styles.titleStyles} />
-              <Button title="Blocked Users" buttonStyle={styles.buttonHeight} titleStyle={styles.titleStyles} />
+              <Button title="Blocked Users" buttonStyle={styles.buttonHeight} titleStyle={styles.titleStyles} onPress={ViewBlockUser}/>
               <Text style={styles.titleStyles} onPress={LogOut}>Log Out</Text>
           </View>
       </Overlay>

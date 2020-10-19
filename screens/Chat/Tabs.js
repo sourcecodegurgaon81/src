@@ -41,9 +41,9 @@ function SettingsScreen() {
   );
 }
 
-function Favorates() {
+function Favorates (props) {
   return (
-    <Favorate />
+    <Favorate navigation={props.propName.prop}/>
   )
 }
 
@@ -77,7 +77,7 @@ function MyTabs(props) {
         inactiveTintColor: 'gray',
       }}>
       <Tab.Screen name="Chat" component={SettingsScreen} />
-      <Tab.Screen name="Favorate" component={Favorates} />
+      <Tab.Screen name="Favorate" children={()=><Favorates propName={props}/>}/>
     <Tab.Screen name="Search"  children={()=><SearcUserTab propName={props}/>}/>
     </Tab.Navigator>
    

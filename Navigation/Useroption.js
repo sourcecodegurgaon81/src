@@ -26,8 +26,6 @@ const Useroption = () => {
                     <Image style={styles.Image} source={require('../../assets/Images/cross.png')} />
                 </TouchableOpacity>
                 <ScrollView>
-
-                   
                 </ScrollView>
             </SafeAreaView>
 

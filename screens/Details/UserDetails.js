@@ -14,7 +14,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 const UserDetails = props => {
     const { navigation } = props;
     const [name, setuserName] = useState("")
-    const [Picture, setuserPicture] = useState();
+    const [Picture, setuserPicture] = useState(); 
     const [consider, setconsider] = useState()
     const [meet, setMeet] = useState()
     const [meetValue, setmeetValue] = useState()

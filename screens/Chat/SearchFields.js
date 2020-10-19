@@ -46,16 +46,29 @@ const navigation = useNavigation();
 // Dummy Data for the MutiSelect
 const items = [
   // name key is must. It is to show the text in front
-  {id: 1, name: 'angellist'},
-  {id: 2, name: 'codepen'},
-  {id: 3, name: 'envelope'},
-  {id: 4, name: 'etsy'},
-  {id: 5, name: 'facebook'},
-  {id: 6, name: 'foursquare'},
-  {id: 7, name: 'github-alt'},
-  {id: 8, name: 'github'},
-  {id: 9, name: 'gitlab'},
-  {id: 10, name: 'instagram'},
+  {id: 'yoga', name: 'yoga'},
+  {id: 'playdates (parents and children)', name: 'playdates (parents and children)'},
+  {id: 'happy hour/cocktails/beers', name: 'happy hour/cocktails/beers'},
+  {id: 'sightseeing', name: 'sightseeing'},
+  {id: 'artsy stuff (making or looking at)', name: 'artsy stuff (making or looking at)'},
+  {id: 'cooking', name: 'cooking'},
+  {id: 'dancing', name: 'dancing'},
+  {id: 'people watching', name: 'people watching'},
+  {id: 'traveling/vacations', name: 'traveling/vacations'},
+  {id: 'history buff', name: 'history buff'},
+  {id: 'board games', name: 'board games'},
+  {id: 'sports (playing)', name: 'sports (playing)'},
+  {id: "mom's/dad's night out w/o kids", name: "mom's/dad's night out w/o kids"},
+  {id: 'outdoor activities', name: 'outdoor activities'},
+  {id: 'dining out', name: 'dining out'},
+  {id: 'concerts/shows', name: 'concerts/shows'},
+  {id: 'sports (watching)', name: 'sports (watching)'},
+  {id: 'shopping', name: 'shopping'},
+  {id: 'video games', name: 'video games'},
+  {id: 'photography', name: 'photography'},
+  {id: 'animal lover/pet owner', name: 'animal lover/pet owner'},
+  {id: 'crime/mystery reader', name: 'crime/mystery reader'},
+  {id: 'chess', name: 'chess'},
 ];
 
   const searchResult = async () => {
@@ -82,6 +95,8 @@ const items = [
   }
  
   return (
+    <SafeAreaView>
+   <ScrollView>
     <View style={styles.mainContainerField}>
  
       {/*Search Fields area start */}
@@ -173,16 +188,22 @@ const items = [
 
 
 
-{/* 
-<MultiSelect
+{/* <SafeAreaView>
+<View >
+                <Text style={styles.labelText}>Activities</Text>  
+                <View >
+
+         <MultiSelect
           hideTags
           items={items}
           uniqueKey="id"
+          //ref={(component) => { this.multiSelect = component }}
           onSelectedItemsChange={onSelectedItemsChange}
           selectedItems={selectedItems}
-          selectText="Pick Items"
+          selectText="   Pick Activities"
           searchInputPlaceholderText="Search Items..."
-          onChangeInput={(text) => console.log(text)}
+          onChangeInput={ (text)=> console.log(text)}
+          //altFontFamily="ProximaNova-Light"
           tagRemoveIconColor="#CCC"
           tagBorderColor="#CCC"
           tagTextColor="#CCC"
@@ -190,13 +211,20 @@ const items = [
           selectedItemIconColor="#CCC"
           itemTextColor="#000"
           displayKey="name"
-          searchInputStyle={{color: '#CCC'}}
-          submitButtonColor="#48d22b"
+          fontFamily= 'Montserrat-ExtraLight'
+          itemFontFamily	= 'Montserrat-ExtraLight'
+          selectedItemFontFamily= 'Montserrat-ExtraLight'
+          selectedItemIconColor= "black"
+          selectedItemTextColor= "black"
+          submitButtonColor="#CCC"
           submitButtonText="Submit"
-        /> */}
-
-
-
+          styleInputGroup={styles.MultiDropDown}
+          styleDropdownMenu={styles.MultiMainDropDown}
+          styleDropdownMenuSubsection={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}
+        />
+</View>
+</View>
+</SafeAreaView> */}
 
 
 
@@ -219,28 +247,7 @@ const items = [
             </View>
 
        
-            {/* <View style={styles.mainContainerPicker}>
-                        <Text style={styles.labelText}>Activities</Text>
-                        <View style={styles.iAmContainer}>
-                            <Picker
-                                selectedValue={activityValue}
-                                style={{ height: 35, width: "100%" }}
-                                value={activityValue}
-                                onValueChange={itemValue => setactivityValue(itemValue)}
-                                label="I live in">
-                                <Picker.Item label="No Prefrence" value="No Prefrence" />
-                                <Picker.Item label="playdates (parents and children)" value="playdates (parents and children)" />
-                                <Picker.Item label="happy hour/cocktails/beers" value="happy hour/cocktails/beers" />
-                                <Picker.Item label="sightseeing" value="sightseeing" />
-                                <Picker.Item label="artsy stuff (making or looking at)" value="artsy stuff (making or looking at)" />
-                                <Picker.Item label="cooking" value="cooking" />
-                                <Picker.Item label="dancing" value="dancing" />
-                                <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="yoga" value="yoga" />
-                  
-                            </Picker>
-                        </View>
-                    </View> */}
+
           </View>
           <View>
           </View>
@@ -269,7 +276,8 @@ const items = [
 
 
     </View>
-
+    </ScrollView>
+    </SafeAreaView>
 
 
 
@@ -366,6 +374,16 @@ const styles = StyleSheet.create({
       position: "relative",
       zIndex: 30,
       backgroundColor: '#fff',
+      marginBottom:10
+    },
+ 
+    MultiMainDropDown:{
+      borderWidth: 1,
+      marginHorizontal: 10,
+      borderRadius: 5,
+      backgroundColor: '#fff',
+    
+  
     },
     DropDown: {
       borderWidth: 1,
@@ -373,6 +391,16 @@ const styles = StyleSheet.create({
       borderRadius: 5,
       backgroundColor: '#fff',
       height: 40
+    },
+    MultiDropDown:{
+      borderWidth: 1,
+      marginHorizontal: 10,
+      borderRadius: 5,
+      backgroundColor: '#fff',
+      position: "relative",
+      zIndex: 30, 
+      height:40
+   
     },
     dropDownActive: {
       fontFamily: 'Montserrat-ExtraLight'
