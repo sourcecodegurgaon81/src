@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const NavImage = props =>{
 
-console.log(props.navigation.navigation.state.routeName)
+
 const [backArrow,setBackArrow] = useState(true)
   const [Login,setLogin] = useState(false)
 

@@ -15,7 +15,9 @@ const SearchResult = props => {
     const country = navigation.getParam('selectedValue')
     const [visible, setVisible] = useState(false);
 
-    console.log(post + country)
+
+
+
     const toggleOverlay = () => {
       setVisible(!visible);
     };
@@ -35,6 +37,7 @@ const SearchResult = props => {
               });
         getKind();
     }, []);
+    
     return (
     
         <View style={{flex:1,backgroundColor:"white"}}>
