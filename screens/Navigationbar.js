@@ -9,6 +9,7 @@ import { Text, StyleSheet, Image, View, TouchableHighlight, TouchableOpacity, Sa
 import { Button, Overlay } from 'react-native-elements';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { Ionicons } from '@expo/vector-icons';
 const Navigationbar = (props) => {
 
 const  rightImage = () =>{
@@ -115,7 +116,7 @@ return (
         <Header
         containerStyle={{backgroundColor:"white", height:100,borderBottomWidth:1,zIndex:2}}
         placement="left"
-        leftComponent={<NavImage />}
+        leftComponent={<NavImage  navigation={props}/>}
         rightComponent={rightImage}
       />
       </View>

@@ -11,6 +11,7 @@ import { startAsync } from "expo/build/AR";
 import * as font from 'expo-font';
 import { Linking } from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker';
+
 const Searchpostcode = props => {
 
  
@@ -26,6 +27,7 @@ const Searchpostcode = props => {
               });
           },[])
 
+ 
 
     // Geetting SearchResult
     const [searchPostcode, setserachPostocde] = useState([])

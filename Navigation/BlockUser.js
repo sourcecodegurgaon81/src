@@ -27,9 +27,6 @@ const BlockUser = (props) => {
                             const ParseFavorate = JSON.parse(listFavorate);
                             const uniqueFavorite = ParseFavorate
                             setSearch(uniqueFavorite)
-
-                        
-
                     }
                 })
             }
