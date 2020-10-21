@@ -33,8 +33,8 @@ const SearchResult = props => {
             const postcode = post.substring(0, post.length - matchLevel)
             const responseUser = await Http.get('post-json', {
                 params: {
-                    postal_code: 110033,
-                    country: "in"
+                    postal_code: post,
+                    country: country
                 }
 
             }); const tempCurrPage = Object.keys(responseUser.data).map((i) => responseUser.data[i]);
@@ -43,7 +43,7 @@ const SearchResult = props => {
                 setVisible(true)
                 setspinner(false)
             }
-           if (tempCurrPage.length > 10) {
+         else  if (tempCurrPage.length > 10) {
                 const response = await Http.get('post-json', {
                     params: {
                         postal_code: post,
