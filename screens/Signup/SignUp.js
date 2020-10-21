@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, StyleSheet, View, Dimensions, Picker, SafeAreaView, ScrollView, Image, Platform } from "react-native";
+import { Text, StyleSheet, View, Dimensions, Picker, SafeAreaView, ScrollView, Image, Platform, TextInput  } from "react-native";
 
 import { Button } from 'react-native-elements';
 import { Tooltip, Input } from 'react-native-elements';
@@ -9,8 +9,12 @@ import * as font from 'expo-font';
 import { AppLoading } from 'expo';
 import { startAsync } from "expo/build/AR";
 import DatePicker from 'react-native-date-picker'
-
-
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { AsyncStorage } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import DropDownPicker from 'react-native-dropdown-picker';
+import Textarea from 'react-native-textarea';
+import Http from '../../Api/Http'
 
 
 const FirstRoute = () => {
@@ -18,33 +22,40 @@ const FirstRoute = () => {
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
 
+    //Fields 
+    const [userName, setuserName] = useState();
+
+
+
+
+
     useEffect(() => {
 
         font.loadAsync({
             'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
             'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
         });
-    
 
-}, [])
+
+    }, [])
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
-      };
-    
-      const showMode = (currentMode) => {
+    };
+
+    const showMode = (currentMode) => {
         setShow(true);
         setMode(currentMode);
-      };
-    
-      const showDatepicker = () => {
+    };
+
+    const showDatepicker = () => {
         showMode('date');
-      };
-    
-      const showTimepicker = () => {
+    };
+
+    const showTimepicker = () => {
         showMode('time');
-      };
+    };
 
     return (
 
@@ -52,13 +63,25 @@ const FirstRoute = () => {
             <View style={{ marginVertical: 20, borderWidth: 1, borderRadius: 20, marginHorizontal: 10 }}>
                 <Progress.Bar progress={0.3} unfilledColor="white" color="#027BFF" animationType="spring" width={300} borderColor="white" height={20} borderRadius={10} />
             </View>
-            <Text style={styles.labelText}>What should we call you here?</Text>
-            <Input
-                placeholder='Username'
-                style={{ borderWidth: 1, paddingHorizontal: 8, marginTop: 4 }}
-                labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
-            />
-            <Text style={styles.lowerTextfield}>(This is your username)</Text>
+
+
+
+              {/*Field Name Container*/}
+              <View style={styles.FieldContainer}>
+              <Text style={styles.labelText}>What should we call you here?</Text>
+                        <TextInput
+                            style={styles.TextInput}
+                            onChangeText={text => setuserName(text)}
+                            value={userName}
+                            labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                            placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                            placeholder="Username"
+                        />
+                    </View>
+                    <Text style={styles.lowerTextfield}>(This is your username)</Text>
+
+           
+    
 
 
             <Text style={styles.labelText}>What is your First name</Text>
@@ -67,7 +90,7 @@ const FirstRoute = () => {
 
                 style={{ borderWidth: 1, paddingHorizontal: 8, marginTop: 4 }}
             />
-           <Text style={styles.lowerTextfield}>(Not for display publicly, for account management only)</Text>
+            <Text style={styles.lowerTextfield}>(Not for display publicly, for account management only)</Text>
 
             <Text style={styles.labelText}>What is your Last name</Text>
             <Input
@@ -75,8 +98,8 @@ const FirstRoute = () => {
 
                 style={{ borderWidth: 1, paddingHorizontal: 8, marginTop: 4 }}
             />
-           <Text style={styles.lowerTextfield}>(Not for display publicly, for account management only)</Text>
- 
+            <Text style={styles.lowerTextfield}>(Not for display publicly, for account management only)</Text>
+
 
             <Button containerStyle={{ marginHorizontal: 20 }}
                 onPress={() => SecondRoute}
@@ -601,45 +624,36 @@ const FifthRoute = props => {
 
 //Export Upper Content
 
+const Tab = createMaterialTopTabNavigator();
+
 const SignUp = props => {
     useEffect(() => {
         font.loadAsync({
             'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
             'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
         });
-    
+
 
     }, [])
     const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-        { key: 'first', },
-        { key: 'second', },
 
-        { key: 'Four' },
-        { key: 'Fifth' }
-    ]);
 
-    const renderScene = SceneMap({
-        first: FirstRoute,
-        second: SecondRoute,
-        Four: FourthRoute,
-        Fifth: FifthRoute
-    });
+
 
     return (
         <View style={{ flex: 1 }}>
-     
-            <TabView
 
-                style={{ backgroundColor: "white" }}
-                navigationState={{ index, routes }}
-                renderScene={renderScene}
-                onIndexChange={setIndex}
-                indicatorStyle={{ backgroundColor: 'transparent', height: 5.5 }}
+            <NavigationContainer>
+                <Tab.Navigator tabBarOptions={{ activeTintColor: 'transparent', inactiveTintColor: '#D3D3D3', indicatorStyle: { backgroundColor: 'transparent' } }} tabBarPosition='bottom'>
+                    <Tab.Screen name="First" component={FirstRoute} options={{ tabBarLabel: '' }} />
+                    <Tab.Screen name="Second" component={SecondRoute} options={{ tabBarLabel: '' }} />
+                    <Tab.Screen name="Third" component={ThirdRoute} options={{ tabBarLabel: '' }} />
+                    <Tab.Screen name="Fourth" component={FourthRoute} options={{ tabBarLabel: '' }} />
+                </Tab.Navigator>
 
 
+            </NavigationContainer>
 
-            />
         </View>
     );
 
@@ -678,13 +692,159 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-ExtraLight'
     },
     lowerTextfield: {
-        marginTop: -23,
-        fontSize: 18,
+
+        fontSize: 14,
         marginLeft: 10,
         marginBottom: 10,
         fontFamily: 'Montserrat-ExtraLight'
 
+    },
+    iAmContainer: {
+        borderWidth: 1,
+        marginHorizontal: 10,
+        fontFamily: 'Montserrat-ExtraLight'
+    },
+    labelText: {
+        marginHorizontal: 10,
+        marginVertical: 5,
+        fontFamily: 'Montserrat-ExtraLight',
+        fontSize: 16
+    },
+    labelTextTextarea: {
+        marginVertical: 5,
+        fontFamily: 'Montserrat-ExtraLight',
+        fontSize: 16
+    },
+    mainContainerPicker:
+    {
+        marginVertical: 8
+    },
+    overflowContainer:
+    {
+        justifyContent: "center",
+        marginHorizontal: 10,
+        borderWidth: 1,
+        borderRadius: 5,
+        maxHeight: 80,
+        overflow: "hidden"
+
+    },
+    overflowContainerText:
+    {
+        marginHorizontal: 5,
+        textAlign: "justify",
+        marginVertical: 10,
+        fontFamily: 'Montserrat-ExtraLight'
+    },
+  
+    textArea:
+    {
+        borderWidth: 1,
+        height: 100,
+        marginHorizontal: 10,
+
+    },
+    inputText: {
+        borderWidth: 1, paddingHorizontal: 8, marginTop: 4
+    },
+    TextInputStyleClass: {
+        height: 50,
+        borderWidth: 1,
+        backgroundColor: "#FFFFFF",
+        height: 150, marginHorizontal: 10,
+
+    },
+    TextInput: {
+        borderWidth: 1,
+        height: 40,
+        marginHorizontal: 10,
+        paddingHorizontal: 10,
+        fontFamily: 'Montserrat-ExtraLight',
+        borderRadius: 5,
+        
+    },
+    FieldContainer: {
+        marginVertical: 10,
+
+    },
+    DropDown: {
+        borderWidth: 1,
+        marginHorizontal: 10,
+        borderRadius: 5,
+        zIndex: 10,
+        backgroundColor: '#fff'
+
+
+    },
+    dropDownActive: {
+        fontFamily: 'Montserrat-ExtraLight'
+    },
+    textareaContainer: {
+        height: 140,
+        padding: 5,
+        backgroundColor: 'white',
+        borderWidth: 1,
+        borderRadius: 5,
+        fontFamily: 'Montserrat-ExtraLight'
+    },
+    textarea: {
+        textAlignVertical: 'top',  // hack android
+        height: 140,
+        fontSize: 14,
+        color: '#333',
+        fontFamily: 'Montserrat-ExtraLight'
+    },
+    TextAreaContainer: {
+        marginHorizontal: 10
+    },
+    dropDownStyle: {
+        position: 'relative',
+        zIndex: 40,
+        backgroundColor: '#fff',
+        marginVertical:5
+    },
+    seconddropDownStyle:{
+        position:"relative",
+        zIndex: 30,
+        backgroundColor: '#fff',
+    },
+    thirddropDownStyle:{
+        position:"relative",
+        zIndex: 20,
+        backgroundColor: '#fff',
+        marginVertical:10
+    },
+    fourthdropDownStyle:{
+        position:"relative",
+        zIndex: 10,
+        backgroundColor: '#fff',
+        marginVertical:10
+    },
+    fifthdropDownStyle:{
+        position:"relative",
+        zIndex: 9,
+        backgroundColor: '#fff',
+        marginVertical:10
+    },
+    sixdropDownStyle:{
+        position:"relative",
+        zIndex: 8,
+        backgroundColor: '#fff',
+        marginVertical:10
+    },
+    sevendropDownStyle:{
+        position:"relative",
+        zIndex: 7,
+        backgroundColor: '#fff',
+        marginVertical:10
+    },
+    eightdropDownStyle:{
+        position:"relative",
+        zIndex: 6,
+        backgroundColor: '#fff',
+        marginVertical:10
     }
+
 
 });
 

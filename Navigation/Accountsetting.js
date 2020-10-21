@@ -37,7 +37,7 @@ const AccountSetting = props => {
                         />
                         <CheckBox
                             title='Switch to Annual'
-                        />
+                        />x
                         <CheckBox
                             title='Freeze Subscription'
                         />
