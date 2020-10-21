@@ -34,6 +34,7 @@ const UserResult = props => {
                 data={props.searchPostcode}
                 keyExtractor={item => item.uid}
                 renderItem={({ item }) => {
+                    
                     var active = item.Activity.join(', ')
                     return (
                         <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} >
@@ -50,6 +51,8 @@ const UserResult = props => {
                                             />
                                         </View>
                                         <View style={styles.textContainer}>
+                                        <Text style={{ fontFamily: 'Montserrat-ExtraLight' }}>{item.Postal}</Text>
+                                        
                                             <Text style={{ fontFamily: 'Montserrat-ExtraLight' }}>{item.name}</Text>
                                             <Text style={styles.activityText} numberOfLines = {2}><Text style={{ fontFamily: 'Cairo-Bold' }}>Activity :</Text> {active} </Text>
                                         </View>

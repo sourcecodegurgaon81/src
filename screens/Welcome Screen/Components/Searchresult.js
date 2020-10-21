@@ -33,37 +33,54 @@ const SearchResult = props => {
             const postcode = post.substring(0, post.length - matchLevel)
             const responseUser = await Http.get('post-json', {
                 params: {
-                    postal_code: post,
-                    country: country
+                    postal_code: post.substring(0, post.length - matchLevel),
+                    country: country,
                 }
 
             }); const tempCurrPage = Object.keys(responseUser.data).map((i) => responseUser.data[i]);
-            console.log(tempCurrPage.length)
-            if (tempCurrPage.length == 0) {
-                setVisible(true)
-                setspinner(false)
-            }
-         else  if (tempCurrPage.length > 10) {
+
+           
+    for (let i = 0; i < tempCurrPage.length; i++) {   
+        if (tempCurrPage[i].Postal.substring(0,postcode.length - matchLevel) == postcode.substring(0, postcode.length - matchLevel))  
+{
+          if (tempCurrPage.length > 0) {
                 const response = await Http.get('post-json', {
                     params: {
                         postal_code: post,
                         country: country
                     }
-                }); setserachPostocde(response.data)
+                }); 
+                setserachPostocde(response.data.concat(tempCurrPage))
+                setserachPostocde(response.data.filter(
+                    (thing, index, self) =>
+                      index === self.findIndex((t) => t.name === thing.name)
+                  ))
                 setspinner(false)
             }
-            else {
+         if(tempCurrPage.length < 10) {
                 const conatctPostcode = post.substring(0, 3)
                 const response = await Http.get('post-json', {
                     params: {
-                        postal_code: conatctPostcode,
+                        postal_code: conatctPostcode ,
                         country: country
                     }
-                }); setserachPostocde(response.data)
-                setspinner(false)
+                });setserachPostocde(response.data)
+                   setspinner(false)
+
+              
+            }  
+            if(tempCurrPage.length < 10){
+                matchLevel++
+                console.length(matchLevel++)
+               }
+          
+            else{
+                setVisible(true)
+               setspinner(false)
             }
-
-
+    
+        }
+    }
 
 
         }
@@ -86,8 +103,10 @@ const SearchResult = props => {
           textStyle={styles.spinnerTextStyle}
         />
 
-            <UserResult searchPostcode={searchPostcode} tittle="Members near you" />
-
+            <UserResult searchPostcode={searchPostcode} tittle="Members near you"  postcode={post}/>
+            <View style={{marginVertical:10}}>
+            <Button title="Load More" />
+            </View>
 
 
             <Overlay isVisible={visible} onBackdropPress={toggleOverlay} >
