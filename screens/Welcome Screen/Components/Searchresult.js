@@ -103,7 +103,7 @@ const SearchResult = props => {
           textStyle={styles.spinnerTextStyle}
         />
 
-            <UserResult searchPostcode={searchPostcode} tittle="Members near you"  postcode={post}/>
+            <UserResult searchPostcode={searchPostcode} tittle="Members near you"  navigation={navigation}/>
             <View style={{marginVertical:10}}>
             <Button title="Load More" />
             </View>

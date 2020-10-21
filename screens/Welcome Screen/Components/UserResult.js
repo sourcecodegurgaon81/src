@@ -9,6 +9,8 @@ import { useNavigation } from '@react-navigation/native';
 
 const UserResult = props => { 
     const [isSelected, setSelection] = useState(true);
+
+
     useEffect(() => {
         font.loadAsync({
             'Cairo-Bold': require('../../../../assets/fonts/Cairo-Bold.ttf'),
@@ -17,14 +19,22 @@ const UserResult = props => {
 
 
 
-        
-
 
     }, []);
     const [visible, setVisible] = useState(false);
     const toggleOverlay = () => {
         setVisible(!visible);
     };
+
+    const navSigin = () =>{
+        toggleOverlay()
+        props.navigation.navigate('SignIn')
+    }
+    const navSignup = () =>{
+        toggleOverlay()
+        props.navigation.navigate('SignUp')
+    }
+
     return (
 
 
@@ -80,29 +90,31 @@ const UserResult = props => {
                     <View style={styles.checkboxContainer}>
                         <Image style={styles.ImageCheck} source={require('../../../../assets/Images/check.png')} />
 
-                        <Text style={styles.label}>Our youngest member is 18,our oldest member is 85</Text>
+                        <Text style={styles.label}>Our youngest member is 18, our oldest member is 85</Text>
 
                     </View>
                     <View style={styles.checkboxContainer}>
                         <Image style={styles.ImageCheck} source={require('../../../../assets/Images/check.png')} />
 
-                        <Text style={styles.label}>64% in a Realtionship,36% Not in a Realtionship</Text>
+                        <Text style={styles.label}>64% in a Realtionship, 36% Not in a Realtionship</Text>
 
                     </View>
                     <Button
-
-                        containerStyle={{ marginHorizontal: 15, marginVertical: 15, height: 50, borderRadius: 10 }}
-                        buttonStyle={{ height: 50 }}
-                        title="Sounds Cool! Who can I meet"
-                        titleStyle={{ fontSize: 20 }}
-                    />
-                    <Button
-                        onPress={() => props.navigation.navigate('SignUp')}
+                        onPress={navSignup}
                         buttonStyle={{ backgroundColor: "green", textAlign: "center", height: 50, borderRadius: 10 }}
                         containerStyle={{ marginHorizontal: 15, marginVertical: 15 }}
                         titleStyle={{ fontSize: 20 }}
                         title="Awesome! Sign me up!"
                     />
+                    <Button
+
+                        containerStyle={{ marginHorizontal: 15, marginVertical: 15, height: 50, borderRadius: 10 }}
+                        buttonStyle={{ height: 50 }}
+                        title="I am already a member"
+                        titleStyle={{ fontSize: 20 }}
+                        onPress={navSigin}
+                    />
+                   
                 </View>
 
             </Overlay>
