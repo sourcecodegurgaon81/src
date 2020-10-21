@@ -101,17 +101,17 @@ const UserResult = props => {
                     </View>
                     <Button
                         onPress={navSignup}
-                        buttonStyle={{ backgroundColor: "green", textAlign: "center", height: 50, borderRadius: 10 }}
+                        buttonStyle={{ backgroundColor: "green", textAlign: "center",  borderRadius: 10 }}
                         containerStyle={{ marginHorizontal: 15, marginVertical: 15 }}
-                        titleStyle={{ fontSize: 20 }}
+                        titleStyle={{ fontSize: 20 ,fontFamily:"Cairo-Bold"}}
                         title="Awesome! Sign me up!"
                     />
                     <Button
 
-                        containerStyle={{ marginHorizontal: 15, marginVertical: 15, height: 50, borderRadius: 10 }}
-                        buttonStyle={{ height: 50 }}
+                        containerStyle={{ marginHorizontal: 15, marginVertical: 15,  borderRadius: 10 }}
+                        buttonStyle={{ }}
                         title="I am already a member"
-                        titleStyle={{ fontSize: 20 }}
+                        titleStyle={{ fontSize: 20 ,fontFamily:"Cairo-Bold"}}
                         onPress={navSigin}
                     />
                    

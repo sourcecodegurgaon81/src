@@ -14,9 +14,15 @@ const SearchResult = props => {
     const [searchPostcode, setserachPostocde] = useState([])
     const country = navigation.getParam('selectedValue')
     const [visible, setVisible] = useState(false);
-
+    const currPage = [];
+    var matchLevel = 0
+    var pageIndex = 0
     //Spinner
     const [spinner ,setspinner] = useState(false)
+
+
+    const [currPages,setcurrPage] = useState()
+
 
 
     const toggleOverlay = () => {
@@ -25,64 +31,9 @@ const SearchResult = props => {
     };
 
     useEffect(() => {
-        async function getKind() {
-            setspinner(true)
-
-            //Member Near you   
-            const matchLevel = 0
-            const postcode = post.substring(0, post.length - matchLevel)
-            const responseUser = await Http.get('post-json', {
-                params: {
-                    postal_code: post.substring(0, post.length - matchLevel),
-                    country: country,
-                }
-
-            }); const tempCurrPage = Object.keys(responseUser.data).map((i) => responseUser.data[i]);
-
-           
-    for (let i = 0; i < tempCurrPage.length; i++) {   
-        if (tempCurrPage[i].Postal.substring(0,postcode.length - matchLevel) == postcode.substring(0, postcode.length - matchLevel))  
-{
-          if (tempCurrPage.length > 0) {
-                const response = await Http.get('post-json', {
-                    params: {
-                        postal_code: post,
-                        country: country
-                    }
-                }); 
-                setserachPostocde(response.data.concat(tempCurrPage))
-                setserachPostocde(response.data.filter(
-                    (thing, index, self) =>
-                      index === self.findIndex((t) => t.name === thing.name)
-                  ))
-                setspinner(false)
-            }
-         if(tempCurrPage.length < 10) {
-                const conatctPostcode = post.substring(0, 3)
-                const response = await Http.get('post-json', {
-                    params: {
-                        postal_code: conatctPostcode ,
-                        country: country
-                    }
-                });setserachPostocde(response.data)
-                   setspinner(false)
-
-              
-            }  
-            if(tempCurrPage.length < 10){
-                matchLevel++
-                console.length(matchLevel++)
-               }
-          
-            else{
-                setVisible(true)
-               setspinner(false)
-            }
-    
-        }
-    }
-
-
+       function getKind() {
+       
+        getSearchData()
         }
         font.loadAsync({
             'Cairo-Bold': require('../../../../assets/fonts/Cairo-Bold.ttf'),
@@ -90,6 +41,64 @@ const SearchResult = props => {
         });
         getKind();
     }, []);
+
+    const  getSearchData  =  async () =>{
+        setspinner(true)
+   
+        const postcode = post.substring(0, post.length - matchLevel)
+
+        // Axios Api Calling
+        const responseUser = await Http.get('post-json', {
+            params: {
+                postal_code: postcode,
+                country: country,
+                page:pageIndex
+            }
+    
+        }); 
+        //Set Output in tempCurrPage
+        const tempCurrPage = Object.keys(responseUser.data).map((i) => responseUser.data[i]);
+
+        //Check tempCurrPage Length
+       if(tempCurrPage.length == 0){
+        setVisible(true)
+        setspinner(false) 
+}          
+
+        //Check tempCurrPage Length is more than 0
+            if (tempCurrPage.length > 0) {
+        //add data to variable & contacta that data
+
+                setserachPostocde(responseUser.data.concat(tempCurrPage))
+                setserachPostocde(responseUser.data.filter(
+                    (thing, index, self) =>
+                      index === self.findIndex((t) => t.name === thing.name)
+                  ))
+                setspinner(false)
+            }
+          
+ 
+            // Check pageLegth  make Matchlevel ++  and page Inde -1
+            if (tempCurrPage.length < 10) {
+              matchLevel++;
+              pageIndex = -1;
+
+              console.log(pageIndex)
+              setspinner(false)
+                //checky output result length  & page Index ++
+            if (searchPostcode.length == 0) {
+                pageIndex++;
+                getSearchData()
+                 return;
+            }
+          } 
+   
+          setspinner(false)
+        pageIndex++;
+
+
+}
+
 
 
 
@@ -105,7 +114,7 @@ const SearchResult = props => {
 
             <UserResult searchPostcode={searchPostcode} tittle="Members near you"  navigation={navigation}/>
             <View style={{marginVertical:10}}>
-            <Button title="Load More" />
+            <Button title="Show More"  onPress={getSearchData}/>
             </View>
 
 
