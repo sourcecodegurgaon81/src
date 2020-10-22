@@ -13,6 +13,9 @@ import Textarea from 'react-native-textarea';
 import Http from '../../Api/Http'
 export const NetworkContext = React.createContext();
 import Spinner from 'react-native-loading-spinner-overlay';
+import * as ImagePicker from 'expo-image-picker';
+import { Entypo } from '@expo/vector-icons';
+import MultiSelect from 'react-native-multiple-select';
 
 const FirstRoute = ({ navigation: { navigate } }) => {
 
@@ -29,6 +32,7 @@ const FirstRoute = ({ navigation: { navigate } }) => {
     const [PetValue, setPetValue] = useState("")
     const [daysvalue, setdays] = useState("")
     const [spaekvalue, setspeak] = useState("")
+
 
 
 
@@ -96,7 +100,39 @@ const FirstRoute = ({ navigation: { navigate } }) => {
 
     }, [])
 
+  // Dummy Data for the MutiSelect
+  const items = [
+    // name key is must. It is to show the text in front
+    { id: 'yoga', name: 'yoga' },
+    { id: 'playdates (parents and children)', name: 'playdates (parents and children)' },
+    { id: 'happy hour/cocktails/beers', name: 'happy hour/cocktails/beers' },
+    { id: 'sightseeing', name: 'sightseeing' },
+    { id: 'artsy stuff (making or looking at)', name: 'artsy stuff (making or looking at)' },
+    { id: 'cooking', name: 'cooking' },
+    { id: 'dancing', name: 'dancing' },
+    { id: 'people watching', name: 'people watching' },
+    { id: 'traveling/vacations', name: 'traveling/vacations' },
+    { id: 'history buff', name: 'history buff' },
+    { id: 'board games', name: 'board games' },
+    { id: 'sports (playing)', name: 'sports (playing)' },
+    { id: "mom's/dad's night out w/o kids", name: "mom's/dad's night out w/o kids" },
+    { id: 'outdoor activities', name: 'outdoor activities' },
+    { id: 'dining out', name: 'dining out' },
+    { id: 'concerts/shows', name: 'concerts/shows' },
+    { id: 'sports (watching)', name: 'sports (watching)' },
+    { id: 'shopping', name: 'shopping' },
+    { id: 'video games', name: 'video games' },
+    { id: 'photography', name: 'photography' },
+    { id: 'animal lover/pet owner', name: 'animal lover/pet owner' },
+    { id: 'crime/mystery reader', name: 'crime/mystery reader' },
+    { id: 'chess', name: 'chess' },
+];
 
+
+const onSelectedItemsChange = (activityValue) => {
+    // Set Selected Items
+    setactivityValue(activityValue);
+};
 
     return (
         <SafeAreaView style={{ backgroundColor: "white" }}>
@@ -111,23 +147,34 @@ const FirstRoute = ({ navigation: { navigate } }) => {
 
                     <View style={styles.dropDownStyle}>
                         <Text style={styles.labelText}>What do you like to do for fun?</Text>
-                        <DropDownPicker
-                            items={[
-                                { label: 'playdates (parents and children)', value: 'playdates (parents and children)' },
-                                { label: 'happy hour/cocktails/beers', value: 'happy hour/cocktails/beers' },
-                                { label: 'sightseeing', value: 'sightseeing' },
-                                { label: 'artsy stuff (making or looking at)', value: 'artsy stuff (making or looking at)' },
-                                { label: 'cooking', value: 'cooking' },
-                                { label: 'dancing', value: 'dancing' },
-                                { label: 'people watching', value: 'people watching' },
-                                { label: 'yoga', value: 'yoga' },
-                            ]}
-                            defaultIndex={0}
-                            containerStyle={styles.DropDown}
-                            labelStyle={styles.dropDownActive}
-                            dropDownStyle={{ zIndex: 400 }}
-                            onChangeItem={items => setactivityValue(items.value)}
-                            value={activityValue} />
+                        <View style={styles.iAmContainer} >
+
+<MultiSelect
+    hideTags
+    items={items}
+    uniqueKey="id"
+    onSelectedItemsChange={onSelectedItemsChange}
+    selectedItems={activityValue}
+    selectText="   Pick Activities"
+    searchInputPlaceholderText="Search Items..."
+    tagRemoveIconColor="#CCC"
+    tagBorderColor="#CCC"
+    tagTextColor="#CCC"
+    selectedItemTextColor="#CCC"
+    selectedItemIconColor="#CCC"
+    itemTextColor="#000"
+    displayKey="name"
+    fontFamily='Montserrat-ExtraLight'
+    itemFontFamily='Montserrat-ExtraLight'
+    selectedItemFontFamily='Montserrat-ExtraLight'
+    selectedItemIconColor="black"
+    selectedItemTextColor="black"
+    submitButtonColor="#CCC"
+    submitButtonText="Submit"
+    styleSelectorContainer={{ backgroundColor: "red" }}
+    styleDropdownMenuSubsection={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+/>
+</View>
 
                     </View>
 
@@ -160,7 +207,7 @@ const FirstRoute = ({ navigation: { navigate } }) => {
 
                     <View style={styles.thirddropDownStyle}>
                         <Text style={styles.labelText}>My friends and I usually talk about</Text>
-                        <DropDownPicker
+                      <DropDownPicker
                             items={[
                                 { label: 'Work', value: 'Work' },
                                 { label: 'Family', value: 'Family' },
@@ -179,7 +226,7 @@ const FirstRoute = ({ navigation: { navigate } }) => {
                             value={talkValue}
                             defaultValue={talkValue}
 
-                        />
+                        /> 
 
                     </View>
 
@@ -216,12 +263,12 @@ const FirstRoute = ({ navigation: { navigate } }) => {
                         <Text style={styles.labelText}>When someone cancels plans we made</Text>
                         <DropDownPicker
                             items={[
-                                { label: 'My reaction depends on the reason why.', value: 'My reaction depends on the reason why.' },
-                                { label: 'I think no big deal', value: 'I think no big deal' },
-                                { label: 'It really bothers me and I am wary of the friendship.', value: 'It really bothers me and I am wary of the friendship.' },
-                                { label: 'I’m generally understanding, but I can only be blown off so many times before I will start to question the friendship.', value: 'I’m generally understanding, but I can only be blown off so many times before I will start to question the friendship.' },
+                                { label:'It really bothers me and I am wary of the friendship.', value: 'It really bothers me and I am wary of the friendship.' },
+                                 { label: 'My reaction depends on the reason why.', value: 'My reaction depends on the reason why.' },
+                                 { label: 'I’m generally understanding, but I can only be blown off so many times before I will start to question the friendship.',  value: 'I’m generally understanding, but I can only be blown off so many times before I will start to question the friendship.' },
+                                 { label: "Things happen – no big deal.", value: "Things happen – no big deal." },
                             ]}
-                            defaultIndex={0}
+                           
                             containerStyle={styles.DropDown}
                             labelStyle={styles.dropDownActive}
                             activeItemStyle={styles.dropDownActive}
@@ -231,7 +278,7 @@ const FirstRoute = ({ navigation: { navigate } }) => {
                             defaultValue={CancelValue}
                         />
 
-                    </View>
+                    </View> 
 
 
                     <View style={styles.mainContainerPicker}>
@@ -266,7 +313,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
     const [talkValue, settalkValue] = useState("");
     const [FriendValue, setFriendValue] = useState("");
     const [CancelValue, setCancelValue] = useState("")
-    const [StatusValue, setStatusValue] = useState("")
+    const [StatusValue, setStatusValue] = useState()
     const [KidsValue, setKidsValue] = useState("")
     const [PetValue, setPetValue] = useState("")
     const [daysvalue, setdays] = useState("")
@@ -311,7 +358,35 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                         }
 
                         if (response.data.field_relationship_status.length == undefined) {
-                            setStatusValue(response.data.field_relationship_status.und[0].value)
+                           if( response.data.field_relationship_status.und[0].value == "Married")
+                           {
+                            setStatusValue("Yes")
+
+                           }
+                           else if(response.data.field_relationship_status.und[0].value == "Co-habitating")
+                           {
+                            setStatusValue("Yes")
+                           }
+                           else if(response.data.field_relationship_status.und[0].value == "Significant Other But Not Living Together")
+                           {
+                            setStatusValue("No")
+                           }
+                           else if(response.data.field_relationship_status.und[0].value == "Divorced")
+                           {
+                            setStatusValue("No")
+                           }
+                           else if(response.data.field_relationship_status.und[0].value == "Widowed")
+                           {
+                            setStatusValue("No")
+                           }
+                           else if(response.data.field_relationship_status.und[0].value == "Engaged")
+                           {
+                            setStatusValue("Yes")
+                           }
+                           else if(response.data.field_relationship_status.und[0].value == "Single")
+                           {
+                            setStatusValue("No")
+                           }
                         }
 
                         if (response.data.field_kids.length == undefined) {
@@ -355,15 +430,14 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                         <Text style={styles.labelText}>Are you in a realtionship?</Text>
                         <DropDownPicker
                             items={[
-                                { label: 'Yes', value: 'Yes' },
-                                { label: 'No', value: 'No' },
+                                { label:'Yes', value: 'Yes'},
+                                { label:'No',  value: 'No'}
                             ]}
-                            defaultIndex={0}
                             containerStyle={styles.DropDown}
                             labelStyle={styles.dropDownActive}
                             activeItemStyle={styles.dropDownActive}
-                            dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
-                            onChangeItem={items => setStatusValue(items.value)}
+                            dropDownStyle={{backgroundColor: '#fafafa', zIndex: 200 }}
+                            onChangeItem={items => setStatusValue(items)}
                             value={StatusValue}
                             defaultValue={StatusValue}
                         />
@@ -703,6 +777,23 @@ function FourthRoute({ navigation, route }) {
     const [anyThingvalue, setanyThing] = useState("");
     const [spinner, setspinner] = useState(false)
     const [images, setImages] = useState()
+    const [image, setImage] = useState(null);
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: false,
+            aspect: [4, 3],
+            quality: 1,
+        });
+    
+
+        if (!result.cancelled) {
+          setImage(result.uri);
+          
+   
+        }
+    }
 
     var items = [];
     useEffect(() => {
@@ -831,7 +922,7 @@ function FourthRoute({ navigation, route }) {
 
                             return (
                                
-                                        <View  style={{flexDirection: 'row',flex:2}}>
+                                        <View  style={{flexDirection: 'row',flex:2,marginHorizontal:20}}>
                                         <Image style={{ height:50,width:50}} source={{uri:pictureUrl}}/>
                                         </View>
                          
@@ -840,7 +931,10 @@ function FourthRoute({ navigation, route }) {
                         }}
                     />
 
-
+<View style={styles.imageUploadButton}>
+                    <Entypo name="camera" size={24} color="black" />
+                    <Text style={styles.imageUploadButtonText} onPress={pickImage} >Upload From Gallery</Text>
+                </View>
 
 
 
@@ -1096,9 +1190,37 @@ const styles = StyleSheet.create({
         flex: 1, flexDirection: 'row',
      
     },
-   
+    imageUploadButtonText: {
+        fontSize: 20,
+        fontFamily: 'Montserrat-ExtraLight',
+        backgroundColor: "#DFF4F5",
+        marginLeft: 10,
+        alignItems: "center",
+        justifyContent: "center"
 
 
+    },
+    imageUploadButton: {
+        fontSize: 20,
+        fontFamily: 'Montserrat-ExtraLight',
+        backgroundColor: "#DFF4F5",
+        paddingHorizontal: 30,
+        paddingVertical: 15,
+        borderRadius: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        marginHorizontal:60,
+        marginVertical:20
+    },
+
+    iAmContainer: {
+        borderWidth: 1,
+        marginHorizontal: 10,
+        fontFamily: 'Montserrat-ExtraLight',
+        borderRadius:5,
+        paddingTop:3
+    },
 
 
 });

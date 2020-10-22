@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, StyleSheet, View, Dimensions, Picker, SafeAreaView, ScrollView, Image, Platform, TextInput  } from "react-native";
+import { Text, StyleSheet, View, Dimensions, Picker, SafeAreaView, ScrollView, Image, Platform, TextInput } from "react-native";
 
 import { Button } from 'react-native-elements';
 import { Tooltip, Input } from 'react-native-elements';
@@ -8,7 +8,7 @@ import * as Progress from 'react-native-progress';
 import * as font from 'expo-font';
 import { AppLoading } from 'expo';
 import { startAsync } from "expo/build/AR";
-import DatePicker from 'react-native-date-picker'
+
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { AsyncStorage } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -16,17 +16,68 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import Textarea from 'react-native-textarea';
 import Http from '../../Api/Http'
 
+import DatePicker from 'react-native-datepicker';
+import { CheckBox } from "native-base"
+import { Overlay } from 'react-native-elements';
+import * as ImagePicker from 'expo-image-picker';
+import { Entypo } from '@expo/vector-icons';
+import MultiSelect from 'react-native-multiple-select';
 
-const FirstRoute = () => {
-    const [date, setDate] = useState(new Date(1598051730000));
-    const [mode, setMode] = useState('date');
-    const [show, setShow] = useState(false);
+const FirstRoute = ({ navigation: { navigate } }) => {
+
 
     //Fields 
     const [userName, setuserName] = useState();
+    const [userFirstName, setuserFirstName] = useState();
+    const [userLastName, setuserLastName] = useState();
+    const [date, setDate] = useState();
+    const [checkBoxes, setCheckBox] = useState(0)
+    const [message, setMessage] = useState()
+
+    const [errorOverLay, seterrorOverLay] = useState(false);
+    const toggleOverlay = () => {
+        seterrorOverLay(!errorOverLay);
+    };
+
+    const checkUserDetail = () => {
+        if (userName == null) {
+            toggleOverlay()
+            setMessage("Please Enter Username")
+        }
+        else if (userFirstName == null) {
+            toggleOverlay()
+            setMessage("Please Enter First Name")
+        }
+        else if (userLastName == null) {
+            toggleOverlay()
+            setMessage("Please Enter Last Name")
+        }
+        else if (date == null) {
+            toggleOverlay()
+            setMessage("Please Select Date")
+        }
+        else if (
+            Math.floor(Math.abs(Date.now() - new Date(date).getTime()) /
+                (1000 * 3600 * 24) /
+                365.25
+            ) < 18
+        ) {
+            toggleOverlay()
+            setMessage("age must be 18+")
+        }
+        else if (checkBoxes == 0) {
+            toggleOverlay()
+            setMessage("Please Select Checkbox")
+        }
+        else {
+            navigate('Second', {
+                userName: userName, userFirstName: userFirstName, userLastName: userLastName,
+                userLastName: userLastName, date: date
+            })
+        }
 
 
-
+    }
 
 
     useEffect(() => {
@@ -38,154 +89,232 @@ const FirstRoute = () => {
 
 
     }, [])
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShow(Platform.OS === 'ios');
-        setDate(currentDate);
-    };
-
-    const showMode = (currentMode) => {
-        setShow(true);
-        setMode(currentMode);
-    };
-
-    const showDatepicker = () => {
-        showMode('date');
-    };
-
-    const showTimepicker = () => {
-        showMode('time');
-    };
 
     return (
 
-        <View >
+        <View style={{ backgroundColor: "white", flex: 1 }}>
             <View style={{ marginVertical: 20, borderWidth: 1, borderRadius: 20, marginHorizontal: 10 }}>
                 <Progress.Bar progress={0.3} unfilledColor="white" color="#027BFF" animationType="spring" width={300} borderColor="white" height={20} borderRadius={10} />
             </View>
 
 
 
-              {/*Field Name Container*/}
-              <View style={styles.FieldContainer}>
-              <Text style={styles.labelText}>What should we call you here?</Text>
-                        <TextInput
-                            style={styles.TextInput}
-                            onChangeText={text => setuserName(text)}
-                            value={userName}
-                            labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
-                            placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
-                            placeholder="Username"
-                        />
-                    </View>
-                    <Text style={styles.lowerTextfield}>(This is your username)</Text>
-
-           
-    
+            {/*Field Name Container*/}
+            <View style={styles.FieldContainer}>
+                <Text style={styles.labelText}>What should we call you here?</Text>
+                <TextInput
+                    style={styles.TextInput}
+                    onChangeText={text => setuserName(text)}
+                    value={userName}
+                    labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                    placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                    placeholder="Username"
+                />
+            </View>
+            <Text style={styles.lowerTextfield}>(This is your username)</Text>
 
 
-            <Text style={styles.labelText}>What is your First name</Text>
-            <Input
-                placeholder='Firstname'
-
-                style={{ borderWidth: 1, paddingHorizontal: 8, marginTop: 4 }}
-            />
+            {/*Field First Name Container*/}
+            <View style={styles.FieldContainer}>
+                <Text style={styles.labelText}>What is your First name</Text>
+                <TextInput
+                    style={styles.TextInput}
+                    onChangeText={text => setuserFirstName(text)}
+                    value={userFirstName}
+                />
+            </View>
             <Text style={styles.lowerTextfield}>(Not for display publicly, for account management only)</Text>
 
-            <Text style={styles.labelText}>What is your Last name</Text>
-            <Input
-                placeholder='Lastname'
 
-                style={{ borderWidth: 1, paddingHorizontal: 8, marginTop: 4 }}
-            />
+
+            {/*Field Last Name Container*/}
+            <View style={styles.FieldContainer}>
+                <Text style={styles.labelText}>What is your Last name</Text>
+                <TextInput
+                    style={styles.TextInput}
+                    onChangeText={text => setuserLastName(text)}
+                    value={userLastName}
+                />
+            </View>
             <Text style={styles.lowerTextfield}>(Not for display publicly, for account management only)</Text>
 
+
+            <View style={styles.FieldContainer}>
+                <Text style={styles.labelText}>When is your birthday*?</Text>
+                <DatePicker
+                    style={styles.datePickerStyle}
+                    date={date} // Initial date from state
+                    mode="date" // The enum of date, datetime and time
+                    placeholder="Date of Birth"
+                    format="DD-MM-YYYY"
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    customStyles={{
+                        dateIcon: {
+                            //display: 'none',
+                            position: 'absolute',
+                            right: 0,
+                            top: 4,
+                            marginLeft: 0,
+                        },
+
+                    }}
+                    onDateChange={(date) => {
+                        setDate(date);
+                    }}
+                />
+            </View>
+            <Text style={styles.lowerTextfield}>(Only age is displayed publicly)</Text>
+
+
+
+
+            <Text style={styles.notifyText}>*Must be over 18 years old to be a member and use the app By continuing below</Text>
+
+            <View style={styles.CheckboxContainer}>
+                <CheckBox color="#fc5185" color="#fc5185" onPress={() => setCheckBox(1)} checked={checkBoxes == 1} style={{ marginRight: 10 }} />
+                <Text style={styles.lowerTextfield}>I confirm I am over 18.</Text>
+
+
+            </View>
 
             <Button containerStyle={{ marginHorizontal: 20 }}
-                onPress={() => SecondRoute}
+                onPress={checkUserDetail}
                 title="Continue"
-                buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, height: 50, fontFamily: 'Cairo-Bold' }}
+                buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo-Bold' }}
                 titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
 
             />
+
+
+            <Overlay isVisible={errorOverLay} onBackdropPress={toggleOverlay}>
+                <Text style={styles.errorText}>{message}</Text>
+                <View style={{paddingHorizontal:10}}>
+                <Button title="Ok" containerStyle={styles.buttoncontainerStyle} buttonStyle={styles.successButton} titleStyle={styles.tittleText} onPress={toggleOverlay} />
+                </View>
+            </Overlay>
 
         </View>
 
     )
 };
 
-const SecondRoute = () => {
-    const [selectedValue, setSelectedValue] = useState("");
-    const [contractValue, setcontractValue] = useState("");
-    const [considerValue, setconsiderValue] = useState("");
-    const [meetValue, setmeetValue] = useState("");
-    const [date, setDate] = useState(new Date())
+const SecondRoute = ({ navigation: { navigate }, route }) => {
 
+
+    const firstRoute = route.params
+
+    const [IamName, setuserIamtName] = useState();
+    const [contracted, setContracted] = useState()
+    const [consider, setconsider] = useState()
+    const [meet, setMeet] = useState()
+    const [errorOverLay, seterrorOverLay] = useState(false);
+    const [message, setMessage] = useState()
+    const toggleOverlay = () => {
+        seterrorOverLay(!errorOverLay);
+    };
+
+
+    const checkFields = () => {
+        if (IamName == null) {
+            toggleOverlay()
+            setMessage("Please Select Items from I am")
+        }
+        else if (contracted == null) {
+            toggleOverlay()
+            setMessage("Please Select Items from Wanting to be contracted by")
+        }
+        else if (consider == null) {
+            toggleOverlay()
+            setMessage("Please Select Items from I Consider Myself")
+        }
+        else if (meet == null) {
+            toggleOverlay()
+            setMessage("Please Select Items from I want to meet")
+        }
+        else {
+            navigate('Third', { Gender: IamName, Contract: contracted, meet: meet, consider: consider, firstRoute: firstRoute })
+        }
+    }
 
     return (
-        <SafeAreaView >
+        <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
             <ScrollView>
                 <View>
                     <View style={{ marginVertical: 20, borderWidth: 1, borderRadius: 20, marginHorizontal: 10 }}>
                         <Progress.Bar progress={0.5} unfilledColor="white" color="#027BFF" animationType="spring" width={300} borderColor="white" height={20} borderRadius={10} />
                     </View>
-                    <View style={styles.mainContainerPicker}>
-                        <Text style={styles.labelText}>I am</Text>
-                        <View style={styles.iAmContainer}>
-                            <Picker
-                                selectedValue={selectedValue}
-                                style={{ height: 35, width: "100%" }}
-                                value={selectedValue}
-                                onValueChange={itemValue => setSelectedValue(itemValue)}
-                                label="I am"
-                            >
-                                <Picker.Item label="Male" value="Male" />
-                                <Picker.Item label="Female" value="Female" />
-                                <Picker.Item label="Gender Diverse" value="Gender Diverse" />
-                            </Picker>
+                    {/*Field I am Container*/}
+                    <View style={styles.dropDownStyle}>
+                        <View style={styles.dropDownStyle} >
+                            <Text style={styles.labelText}>I am</Text>
+                            <DropDownPicker
+                                items={[
+                                    { label: 'Male', value: 'Male' },
+                                    { label: 'Female', value: 'Female' },
+                                    { label: 'Gender Diverse', value: 'Gender Diverse' },
+                                ]}
+                                defaultValue={IamName}
+                                value={IamName}
+                                defaultIndex={0}
+                                containerStyle={styles.DropDown}
+                                onChangeItem={item => setuserIamtName(item.value)}
+                                activeItemStyle={styles.dropDownActive}
+                                dropDownStyle={{}}
+                                labelStyle={styles.dropDownActive}
+
+                            />
                         </View>
                     </View>
-                    <View style={styles.mainContainerPicker}>
-                        <Text style={styles.labelText}>Wanting to be contacted by</Text>
-                        <View style={styles.iAmContainer}>
-                            <Picker
-                                selectedValue={contractValue}
-                                style={{ height: 35, width: "100%" }}
-                                value={contractValue}
-                                onValueChange={itemValue => setcontractValue(itemValue)}
-                                label="I am">
-                                <Picker.Item label="men only" value="0" />
-                                <Picker.Item label="women only" value="1" />
-                                <Picker.Item label="gender diverse only" value="2" />
-                                <Picker.Item label="everyone" value="3" />
-                            </Picker>
+                    {/*Field Wanting to be contacted by Container*/}
+                    <View style={styles.seconddropDownStyle}>
+                        <View style={styles.FieldContainer}>
+                            <Text style={styles.labelText}>Wanting to be contacted by</Text>
+
+                            <DropDownPicker
+                                items={[
+                                    { label: 'men only', value: '0' },
+                                    { label: 'women only', value: '1' },
+                                    { label: 'gender diverse only', value: '2' },
+                                    { label: 'everyone', value: '3' },
+                                ]}
+                                defaultValue={contracted}
+                                defaultIndex={0}
+                                containerStyle={styles.DropDown}
+                                onChangeItem={contr => setContracted(contr.value)}
+                                activeItemStyle={styles.dropDownActive}
+                                dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
+                                labelStyle={styles.dropDownActive}
+                            />
                         </View>
                     </View>
                     <View style={styles.mainContainerPicker}>
                         <Button
-                            containerStyle={{ marginHorizontal: 10, height: 50 }}
-                            buttonStyle={{ height: 50, borderRadius: 10 }}
+                            containerStyle={{ marginHorizontal: 10, }}
+                            buttonStyle={{ borderRadius: 10 }}
                             title="Why do we ask this if its
   not for dating or sex?"
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 18 }}
 
                         />
                     </View>
-
-                    <View style={styles.mainContainerPicker}>
+                    {/*I consider myself Container*/}
+                    <View style={styles.thirddropDownStyle}>
                         <Text style={styles.labelText}>I consider myself</Text>
-                        <View style={styles.iAmContainer}>
-                            <Picker
-                                selectedValue={considerValue}
-                                style={{ height: 35, width: "100%" }}
-                                value={considerValue}
-                                onValueChange={itemValue => setconsiderValue(itemValue)}
-                                label="I am">
-                                <Picker.Item label="Outgoing" value="Outgoing" />
-                                <Picker.Item label="On the Quieter Side" value="On the Quieter Side" />
-                                <Picker.Item label="A Mix of Both" value="A Mix of Both" />
-                            </Picker>
-                        </View>
+                        <DropDownPicker
+                            items={[
+                                { label: 'Outgoing', value: 'Outgoing' },
+                                { label: 'On the Quieter Side', value: 'On the Quieter Side' },
+                                { label: 'A Mix of Both', value: 'A Mix of Both' },
+                            ]}
+                            defaultValue={consider}
+                            defaultIndex={0}
+                            containerStyle={styles.DropDown}
+                            onChangeItem={cont => setconsider(cont.value)}
+                            activeItemStyle={styles.dropDownActive}
+                            dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
+                            labelStyle={styles.dropDownActive}
+                        />
                     </View>
 
 
@@ -193,44 +322,55 @@ const SecondRoute = () => {
                         <Text style={styles.labelText}>And</Text>
                     </View>
 
-                    <View style={styles.mainContainerPicker}>
+                    {/*Field I want to meet by Container*/}
+                    <View style={styles.fourthdropDownStyle}>
                         <Text style={styles.labelText}>I want to meet</Text>
-                        <View style={styles.iAmContainer}>
-                            <Picker
-                                selectedValue={meetValue}
-                                style={{ height: 35, width: "100%" }}
-                                value={meetValue}
-                                onValueChange={itemValue => setmeetValue(itemValue)}
-                                label="I am">
-                                <Picker.Item label="a few goods friends" value="1" />
-                                <Picker.Item label="a lot of accquaintances" value="2" />
-                                <Picker.Item label="no preference" value="3" />
-                            </Picker>
-                        </View>
+                        <DropDownPicker
+                            items={[
+                                { label: 'a few goods friends', value: '1' },
+                                { label: 'a lot of accquaintances', value: '2' },
+                                { label: 'no preference', value: '3' },
+                            ]}
+                            defaultValue={meet}
+                            defaultIndex={0}
+                            containerStyle={styles.DropDown}
+                            onChangeItem={item => setMeet(item.value)}
+                            activeItemStyle={styles.dropDownActive}
+                            dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
+                            labelStyle={styles.dropDownActive}
+                        />
                     </View>
-
 
                     <View style={styles.mainContainerPicker}>
                         <Button
                             containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
-                            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, height: 50 }}
+                            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10}}
                             title="Continue"
                             titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            onPress={checkFields}
 
                         />
                     </View>
 
                     <View style={styles.mainContainerPicker}>
                         <Button
-                            containerStyle={{ marginHorizontal: 10, backgroundColor: " #F64225", marginVertical: 8, paddingBottom: 10 }}
-                            buttonStyle={{ backgroundColor: "#F64225", borderRadius: 10, height: 50 }}
+                            containerStyle={{ marginHorizontal: 10, backgroundColor: " #E62E2D", marginVertical: 8, paddingBottom: 10 }}
+                            buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 }}
                             title="Previous"
                             titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            onPress={() => navigate('First')}
 
                         />
                     </View>
 
                 </View>
+
+                <Overlay isVisible={errorOverLay} onBackdropPress={toggleOverlay}>
+                    <Text style={styles.errorText}>{message}</Text>
+                    <View style={{paddingHorizontal:10}}>
+                    <Button title="Ok" containerStyle={styles.buttoncontainerStyle} buttonStyle={styles.successButton} titleStyle={styles.tittleText} onPress={toggleOverlay} />
+                    </View>
+                </Overlay>
             </ScrollView>
         </SafeAreaView>
 
@@ -239,109 +379,314 @@ const SecondRoute = () => {
 
 
 
-const ThirdRoute = () => {
+const ThirdRoute = ({ navigation: { navigate }, route }) => {
+    const [image, setImage] = useState(null);
+    const  secondRoute = route.params
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        console.log(result);
+
+        if (!result.cancelled) {
+          setImage(result.uri);
+        }
+
+
+
+        
+
+        // this.FilePath.resolveNativePath(fileuri).then((filePath) => {
+        //     fetch(imagePath).then((res) => {
+        //         res.blob().then((blob) => {
+
+
+        //             let newInstance = getFileReader();
+        //             newInstance.onload = function () {
+        //                // Is it JPG or PNG
+        //                 let base64data = newInstance.result.toString();
+        //                 if (base64data.includes("data:image/jpeg;base64,")) {
+                            
+        //                    // File Name
+        //                     let timestamp = Math.floor(Date.now() / 1000);
+        //                     const fileName =
+        //                         this.name + "_profile_image_" + timestamp + ".jpg";
+        //                    // Base 64 string
+        //                     let removeString = "data:image/jpeg;base64,";
+        //                     this.base64textString = base64data.replace(removeString, "");
+        //                     console.log(this.base64textString);
+        //                 } else if (base64data.includes("data:image/png;base64,")) {
+        //                     let timestamp = Math.floor(Date.now() / 1000);
+        //                     this.fileName =
+        //                         this.name + "_profile_image_" + timestamp + ".png";
+
+        //                    // Base 64 string
+        //                     let removeString = "data:image/png;base64,";
+        //                     this.base64textString = base64data.replace(removeString, "");
+        //                     console.log(this.base64textString);
+        //                 }
+
+        //                 this.picture = this.fileName;
+        //                 this.changeDetector.detectChanges();
+        //                 this.onUpload(this.picture);
+        //             }.bind(this);
+
+        //             newInstance.readAsDataURL(blob);
+        //         });
+        //     });
+        // });
+
+
+
+    };
+
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Hello</Text>
+
+        <View style={{ flex: 1, backgroundColor: "white" }}>
+            <View style={{ marginVertical: 20, borderWidth: 1, borderRadius: 20, marginHorizontal: 10 }}>
+                <Progress.Bar progress={0.7} unfilledColor="white" color="#027BFF" animationType="spring" width={300} borderColor="white" height={20} borderRadius={10} />
+            </View>
+
+            <View style={{ flex: 2, backgroundColor: "white", alignItems: "center" }}>
+
+                <View style={styles.ImageTopHeading}>
+                    <Text style={styles.ImageTopHeadingText}>Choose Your Profile Photo</Text>
+                </View>
+                <View style={styles.imageUploadButton}>
+                    <Entypo name="camera" size={24} color="black" />
+                    <Text style={styles.imageUploadButtonText} onPress={pickImage} >Take a selfie</Text>
+                </View>
+
+                <View style={styles.ImageTopHeading}>
+                    <Text style={styles.ImageTopHeadingText}>
+                        OR
+           </Text>
+                </View>
+                <View style={styles.imageUploadButton}>
+                    <Entypo name="camera" size={24} color="black" />
+                    
+                    <Text style={styles.imageUploadButtonText} onPress={pickImage} >Upload from library</Text>
+
+                </View>
+                {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+            </View>
+
+            <View style={styles.mainContainerPicker}>
+                <Button
+                    containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
+                    buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
+                    title="Continue"
+                    titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                    onPress={() => navigate('Fourth',{secondRoute:secondRoute ,result:image})}
+
+                />
+            </View>
+
+            <View style={styles.mainContainerPicker}>
+                <Button
+                    containerStyle={{ marginHorizontal: 10, backgroundColor: " #E62E2D", marginVertical: 8, paddingBottom: 10 }}
+                    buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 }}
+                    title="Previous"
+                    titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                    onPress={() => navigate('Second')}
+                />
+            </View>
+
         </View>
     )
 }
-const FourthRoute = props => {
+const FourthRoute = ({ navigation: { navigate }, route }) => {
 
+    const thirdRoute = route.params
 
     const [liveValue, setliveValue] = useState("");
     const [activityValue, setactivityValue] = useState("");
 
+    const [CountryValue, setCountry] = useState("");
+    const [Postalcode, setPostal] = useState("")
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [errorOverLay, seterrorOverLay] = useState(false);
+    const [message, setMessage] = useState()
+    const toggleOverlay = () => {
+        seterrorOverLay(!errorOverLay);
+    };
+
+  
+    const checkUserDetails = () =>{
+
+        if(CountryValue == null)
+        {
+            toggleOverlay()
+            setMessage("Please Select Items from Country")
+        }
+       else if(Postalcode == null)
+        {
+            toggleOverlay()
+            setMessage("Please enter Postcode")
+        }
+        else if(selectedItems == null)
+        {
+            toggleOverlay()
+            setMessage("Please enter Activity")
+        }
+        else
+        {
+            navigate('Fifth', { thirdRoute:thirdRoute, CountryValue : CountryValue , Postalcode: Postalcode, Activity: selectedItems})
+
+            
+        }
+
+        
+    }
+
+
+
+
+    // Dummy Data for the MutiSelect
+    const items = [
+        // name key is must. It is to show the text in front
+        { id: 'yoga', name: 'yoga' },
+        { id: 'playdates (parents and children)', name: 'playdates (parents and children)' },
+        { id: 'happy hour/cocktails/beers', name: 'happy hour/cocktails/beers' },
+        { id: 'sightseeing', name: 'sightseeing' },
+        { id: 'artsy stuff (making or looking at)', name: 'artsy stuff (making or looking at)' },
+        { id: 'cooking', name: 'cooking' },
+        { id: 'dancing', name: 'dancing' },
+        { id: 'people watching', name: 'people watching' },
+        { id: 'traveling/vacations', name: 'traveling/vacations' },
+        { id: 'history buff', name: 'history buff' },
+        { id: 'board games', name: 'board games' },
+        { id: 'sports (playing)', name: 'sports (playing)' },
+        { id: "mom's/dad's night out w/o kids", name: "mom's/dad's night out w/o kids" },
+        { id: 'outdoor activities', name: 'outdoor activities' },
+        { id: 'dining out', name: 'dining out' },
+        { id: 'concerts/shows', name: 'concerts/shows' },
+        { id: 'sports (watching)', name: 'sports (watching)' },
+        { id: 'shopping', name: 'shopping' },
+        { id: 'video games', name: 'video games' },
+        { id: 'photography', name: 'photography' },
+        { id: 'animal lover/pet owner', name: 'animal lover/pet owner' },
+        { id: 'crime/mystery reader', name: 'crime/mystery reader' },
+        { id: 'chess', name: 'chess' },
+    ];
+
+    const onSelectedItemsChange = (selectedItems) => {
+        // Set Selected Items
+        setSelectedItems(selectedItems);
+    };
+
+
 
     return (
-        <ScrollView>
+        <ScrollView style={{backgroundColor:"white"}}>
             <SafeAreaView>
                 <View >
                     <View style={{ marginVertical: 20, borderWidth: 1, borderRadius: 20, marginHorizontal: 10 }}>
                         <Progress.Bar progress={0.9} unfilledColor="white" color="#027BFF" animationType="spring" width={300} borderColor="white" height={20} borderRadius={10} />
                     </View>
-                    <View style={styles.mainContainerPicker}>
-                        <Text style={styles.labelText}>I live in</Text>
-                        <View style={styles.iAmContainer}>
-                            <Picker
-                                selectedValue={liveValue}
-                                style={{ height: 35, width: "100%" }}
-                                value={liveValue}
-                                onValueChange={itemValue => setliveValue(itemValue)}
-                                label="I live in">
-                                <Picker.Item label="Australia" value="au" />
-                                <Picker.Item label="Canada" value="ca" />
-                                <Picker.Item label="India" value="in" />
-                                <Picker.Item label="New Zealand" value="nz" />
-                                <Picker.Item label="Singapore" value="sg" />
-                                <Picker.Item label="United Kingdom" value="uk" />
-                                <Picker.Item label="United States" value="us" />
-                            </Picker>
-                        </View>
+                    <View style={styles.dropDownStyle}>
+                        <Text style={styles.labelText}>I live in </Text>
+
+                        <DropDownPicker
+                            items={[
+                                { label: 'Australia', value: 'au' },
+                                { label: 'Canada', value: 'ca' },
+                                { label: 'India', value: 'in' },
+                                { label: 'New Zealand', value: 'nz' },
+                                { label: 'Singapore', value: 'sg' },
+                                { label: 'United Kingdom', value: 'uk' },
+                                { label: 'United States', value: 'us' },
+                            ]}
+                            containerStyle={styles.DropDown}
+                            labelStyle={styles.dropDownActive}
+                            activeItemStyle={styles.dropDownActive}
+
+                            onChangeItem={items => setCountry(items.value)}
+                            value={CountryValue}
+                            defaultValue={CountryValue}
+                            defaultIndex={0}
+
+                        />
+
                     </View>
+
 
 
                     <View style={styles.mainContainerPicker}>
                         <Button
                             containerStyle={{ marginHorizontal: 10 }}
                             title="Why isn't my country here?"
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
-                            containerStyle={{ marginHorizontal: 10, height: 50 }}
-                            buttonStyle={{ height: 50, borderRadius: 10 }}
+                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 18 }}
+                            containerStyle={{ marginHorizontal: 10 }}
+                            buttonStyle={{ borderRadius: 10 }}
                         />
                     </View>
-                    <View >
-                        <Text style={styles.labelText}>at this postal/Zip code</Text>
-                        <View >
-                            <Input placeholder='potcode/Zip code' style={{ borderWidth: 1, paddingHorizontal: 8, marginTop: 4 }} />
-                        </View>
-                        <Text style={styles.lowerTextfield}>(Not for display publicly, for account management only)</Text>
 
+                    {/*t this postal/Zip code Container*/}
+                    <View style={styles.FieldContainer}>
+                        <Text style={styles.labelText}>at this postal/Zip code</Text>
+                        <TextInput
+                            style={styles.TextInput}
+                            onChangeText={text => setPostal(text)}
+                            value={Postalcode}
+                            labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                            placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                        />
                     </View>
+
+
+
 
                     <View style={styles.mainContainerPicker}>
                         <Button
                             title="Why can i only meet people who live near me?"
-                            containerStyle={{ marginHorizontal: 10, height: 50 }}
-                            buttonStyle={{ height: 50, borderRadius: 10 }}
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            containerStyle={{ marginHorizontal: 10 }}
+                            buttonStyle={{ borderRadius: 10 }}
+                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 18 }}
 
                         />
                     </View>
-                    <View style={styles.mainContainerPicker}>
-                        <Text style={styles.labelText}>Actvities/Interest</Text>
-                        <View style={styles.iAmContainer}>
-                            <Picker
-                                selectedValue={activityValue}
-                                style={{ height: 35, width: "100%" }}
-                                value={activityValue}
-                                onValueChange={itemValue => setactivityValue(itemValue)}
-                                label="I live in">
-                                <Picker.Item label="playdates (parents and children)" value="playdates (parents and children)" />
-                                <Picker.Item label="happy hour/cocktails/beers" value="happy hour/cocktails/beers" />
-                                <Picker.Item label="sightseeing" value="sightseeing" />
-                                <Picker.Item label="artsy stuff (making or looking at)" value="artsy stuff (making or looking at)" />
-                                <Picker.Item label="cooking" value="cooking" />
-                                <Picker.Item label="dancing" value="dancing" />
-                                <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="yoga" value="yoga" />
 
-                                {/* <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="people watching" value="people watching" />
-                                <Picker.Item label="people watching" value="people watching" /> */}
-                            </Picker>
+
+
+                    <SafeAreaView>
+                        <View >
+                            <Text style={styles.labelText}>Actvities/Interest</Text>
+                            <View style={{borderWidth:1,backgroundColor:"white",marginHorizontal:10,borderRadius:5,marginTop:5}} >
+
+                                <MultiSelect
+                                    hideTags
+                                    items={items}
+                                    uniqueKey="id"
+                                    onSelectedItemsChange={onSelectedItemsChange}
+                                    selectedItems={selectedItems}
+                                    selectText="   Pick Activities"
+                                    searchInputPlaceholderText="Search Items..."
+                                    tagRemoveIconColor="#CCC"
+                                    tagBorderColor="#CCC"
+                                    tagTextColor="#CCC"
+                                    selectedItemTextColor="#CCC"
+                                    selectedItemIconColor="#CCC"
+                                    itemTextColor="#000"
+                                    displayKey="name"
+                                    fontFamily='Montserrat-ExtraLight'
+                                    itemFontFamily='Montserrat-ExtraLight'
+                                    selectedItemFontFamily='Montserrat-ExtraLight'
+                                    selectedItemIconColor="black"
+                                    selectedItemTextColor="black"
+                                    submitButtonColor="#CCC"
+                                    submitButtonText="Submit"
+                                    styleSelectorContainer={{backgroundColor:"red"}}
+                                    styleDropdownMenuSubsection={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                                />
+                            </View>
                         </View>
-                    </View>
+                    </SafeAreaView>
+
 
                     <Text style={styles.labelText}>Terms and Conditions</Text>
 
@@ -543,28 +888,37 @@ const FourthRoute = props => {
                             it receives from the other party electronically satisfies any legal requirement that such communications
                             be in writing.
 
-         </Text>
+                    </Text>
 
 
                     </View>
                     <View style={styles.mainContainerPicker}>
                         <Button
                             containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
-                            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, height: 50 }}
+                            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10}}
                             title="Continue"
                             titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            onPress={checkUserDetails}
                         />
                     </View>
 
                     <View style={styles.mainContainerPicker}>
                         <Button
-                            containerStyle={{ marginHorizontal: 10, backgroundColor: " #F64225", marginVertical: 8, paddingBottom: 10 }}
-                            buttonStyle={{ backgroundColor: "#F64225", borderRadius: 10, height: 50 }}
+                            containerStyle={{ marginHorizontal: 10, backgroundColor: " #E62E2D", marginVertical: 8, paddingBottom: 10 }}
+                            buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10}}
                             title="Previous"
                             titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            onPress={()=> navigate('Third')}
 
                         />
                     </View>
+
+                    <Overlay isVisible={errorOverLay} onBackdropPress={toggleOverlay}>
+                    <Text style={styles.errorText}>{message}</Text>
+                    <View style={{paddingHorizontal:10}}>
+                    <Button title="Ok" containerStyle={styles.buttoncontainerStyle} buttonStyle={styles.successButton} titleStyle={styles.tittleText} onPress={toggleOverlay} />
+                    </View>
+                </Overlay>
 
                 </View>
 
@@ -578,34 +932,181 @@ const FourthRoute = props => {
 
 
 
-const FifthRoute = props => {
+const FifthRoute = ({ navigation: { navigate }, route }) => {
+    //console.log(route.params)
+    const routerOutput = route.params
+
+    const [enterEmail,setEnterEmail] = useState()
+    const [ ConfirmEmail ,setConfirmEmail] = useState()
+    const [errorOverLay, seterrorOverLay] = useState(false);
+    const [message, setMessage] = useState()
+    const toggleOverlay = () => {
+        seterrorOverLay(!errorOverLay);
+    };
+
+    const submitDetails = () =>{
+        let ts = Math.round(new Date().getTime() / 1000);
+        setspinner(true)
+         Http.post("user/register",{
+            name: routerOutput.thirdRoute.secondRoute.firstRoute.userName,
+            mail: enterEmail,
+            conf_mail: ConfirmEmail,
+            timezone: ts,
+            login: ts,
+            access: ts,
+      
+            field_consider_myself_:{
+              und:routerOutput.thirdRoute.secondRoute.consider
+            },
+            field_first_name: {
+              und: [
+                {
+                  value: routerOutput.thirdRoute.secondRoute.firstRoute.userFirstName,
+                },
+              ],
+            },
+            field_last_name: {
+              und: [
+                {
+                  value: routerOutput.thirdRoute.secondRoute.firstRoute.userLastName
+                },
+              ],
+            },
+            field_zip_code: {
+              und: [
+                {
+                  postal_code: routerOutput.Postalcode,
+                  country: routerOutput.CountryValue,
+                },
+              ],
+            },
+            field_birth_date: {
+              und: routerOutput.thirdRoute.secondRoute.firstRoute.date      
+            },
+      
+            field_gender: {
+              und: routerOutput.thirdRoute.secondRoute.Gender,
+            },
+      
+            field_activities_interests: {
+              und:routerOutput.Activity,
+            },
+            field_look_meet: {
+              und: routerOutput.thirdRoute.secondRoute.meet,
+            },
+            picture_upload: routerOutput.thirdRoute.image,
+      
+            picture: routerOutput.thirdRoute.image,
+      
+            field_user_avatar: {
+              und: [routerOutput.thirdRoute.image],
+            },
+      
+            field_want_contarct: {
+              und: routerOutput.thirdRoute.secondRoute.Contract,
+            },
+          }).then((response) => {
+              if(response.status == 200)
+              {
+                toggleOverlay()
+                setMessage("Account Created Successfully Please verify your mail")
+              }
+            
+            setspinner(false)
+        }).catch((error)=>{
+        
+            if(error.response.status == 406)
+            {
+              toggleOverlay()
+              setMessage("Username is already taken/Email is already taken")
+              setspinner(false)
+            }
+       
+
+        })
+
+
+
+
+
+    }
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return (
         <View >
 
             <View style={{ marginVertical: 20, borderWidth: 1, borderRadius: 20, marginHorizontal: 10 }}>
                 <Progress.Bar progress={1} unfilledColor="white" color="#027BFF" animationType="spring" width={350} borderColor="white" height={20} borderRadius={10} />
             </View>
-            <Input placeholder='Enter email address' style={{ borderWidth: 1, paddingHorizontal: 8, marginTop: 4 }} />
-            <Input placeholder='Confirm email address ' style={{ borderWidth: 1, paddingHorizontal: 8, marginTop: 4 }} />
 
 
+
+            <View style={styles.FieldContainer}>
+     
+                <TextInput
+                    style={styles.TextInput}
+                    onChangeText={text => setEnterEmail(text)}
+                    value={enterEmail}
+                    labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                    placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                    placeholder="Enter email address"
+                />
+            </View>
+            <View style={styles.FieldContainer}>
+     
+     <TextInput
+         style={styles.TextInput}
+         onChangeText={text => setConfirmEmail(text)}
+         value={ConfirmEmail}
+         labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+         placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+         placeholder="Confirm email address"
+     />
+      </View>
+        
+
+                <Overlay isVisible={errorOverLay} onBackdropPress={toggleOverlay}>
+                    <Text style={styles.errorText}>{message}</Text>
+                    <View style={{paddingHorizontal:10}}>
+                    <View style={{paddingHorizontal:10}}>
+                    <Button title="Ok" containerStyle={styles.buttoncontainerStyle} buttonStyle={styles.successButton} titleStyle={styles.tittleText} onPress={toggleOverlay} />
+                    </View>
+                    </View>
+                </Overlay>
 
             <View style={styles.mainContainerPicker}>
                 <Button
                     containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
-                    buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, height: 50 }}
+                    buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                     title="Continue"
                     titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                    onPress={submitDetails}
                 />
             </View>
 
             <View style={styles.mainContainerPicker}>
                 <Button
                     containerStyle={{ marginHorizontal: 15, marginVertical: 15, height: 100, fontFamily: "roboto-bold" }}
-                    buttonStyle={{ height: 50, fontFamily: "roboto-bold" }}
-                    buttonStyle={{ backgroundColor: "#F64225", borderRadius: 10, height: 50 }}
+                    buttonStyle={{ fontFamily: "roboto-bold" }}
+                    buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 }}
                     title="Previous"
                     titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                    onPress={()=>navigate('Fourth')}
                 />
             </View>
 
@@ -649,6 +1150,8 @@ const SignUp = props => {
                     <Tab.Screen name="Second" component={SecondRoute} options={{ tabBarLabel: '' }} />
                     <Tab.Screen name="Third" component={ThirdRoute} options={{ tabBarLabel: '' }} />
                     <Tab.Screen name="Fourth" component={FourthRoute} options={{ tabBarLabel: '' }} />
+                    <Tab.Screen name="Fifth" component={FifthRoute} options={{ tabBarLabel: '' }} />
+
                 </Tab.Navigator>
 
 
@@ -736,7 +1239,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         fontFamily: 'Montserrat-ExtraLight'
     },
-  
+
     textArea:
     {
         borderWidth: 1,
@@ -761,7 +1264,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         fontFamily: 'Montserrat-ExtraLight',
         borderRadius: 5,
-        
+
     },
     FieldContainer: {
         marginVertical: 10,
@@ -801,50 +1304,123 @@ const styles = StyleSheet.create({
         position: 'relative',
         zIndex: 40,
         backgroundColor: '#fff',
-        marginVertical:5
+        marginVertical: 5
     },
-    seconddropDownStyle:{
-        position:"relative",
+    seconddropDownStyle: {
+        position: "relative",
         zIndex: 30,
         backgroundColor: '#fff',
     },
-    thirddropDownStyle:{
-        position:"relative",
+    thirddropDownStyle: {
+        position: "relative",
         zIndex: 20,
         backgroundColor: '#fff',
-        marginVertical:10
+        marginVertical: 10
     },
-    fourthdropDownStyle:{
-        position:"relative",
+    fourthdropDownStyle: {
+        position: "relative",
         zIndex: 10,
         backgroundColor: '#fff',
-        marginVertical:10
+        marginVertical: 10
     },
-    fifthdropDownStyle:{
-        position:"relative",
+    fifthdropDownStyle: {
+        position: "relative",
         zIndex: 9,
         backgroundColor: '#fff',
-        marginVertical:10
+        marginVertical: 10
     },
-    sixdropDownStyle:{
-        position:"relative",
+    sixdropDownStyle: {
+        position: "relative",
         zIndex: 8,
         backgroundColor: '#fff',
-        marginVertical:10
+        marginVertical: 10
     },
-    sevendropDownStyle:{
-        position:"relative",
+    sevendropDownStyle: {
+        position: "relative",
         zIndex: 7,
         backgroundColor: '#fff',
-        marginVertical:10
+        marginVertical: 10
     },
-    eightdropDownStyle:{
-        position:"relative",
+    eightdropDownStyle: {
+        position: "relative",
         zIndex: 6,
         backgroundColor: '#fff',
-        marginVertical:10
-    }
+        marginVertical: 10
+    },
+    datePickerStyle: {
 
+        marginLeft: 10,
+        width: "95%",
+        borderWidth: 1,
+        borderRadius: 5
+
+
+    },
+    notifyText: {
+        fontFamily: "Cairo-Bold",
+        fontSize: 14,
+        color: "grey",
+        marginHorizontal: 10
+    },
+    CheckboxContainer: {
+        flexDirection: "row",
+        marginVertical: 10
+    },
+    ImageTopHeadingText: {
+        fontSize: 20,
+        fontFamily: 'Montserrat-ExtraLight',
+        marginVertical: 10,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    imageUploadButtonText: {
+        fontSize: 20,
+        fontFamily: 'Montserrat-ExtraLight',
+        backgroundColor: "#DFF4F5",
+        marginLeft: 10,
+        alignItems: "center",
+        justifyContent: "center"
+
+
+    },
+    imageUploadButton: {
+        fontSize: 20,
+        fontFamily: 'Montserrat-ExtraLight',
+        backgroundColor: "#DFF4F5",
+        paddingHorizontal: 30,
+        paddingVertical: 15,
+        borderRadius: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    DropDown: {
+        borderWidth: 1,
+        marginHorizontal: 10,
+        borderRadius: 5,
+        backgroundColor: '#fff',
+        height: 40
+      },
+      MultiDropDown:{
+        borderWidth: 1,
+        marginHorizontal: 10,
+        borderRadius: 5,
+        backgroundColor: '#fff',
+        position: "relative",
+        zIndex: 30, 
+        height:40
+     
+      },
+      dropDownActive: {
+        fontFamily: 'Montserrat-ExtraLight'
+      },
+      errorText: {
+        fontFamily: "Cairo-Bold",
+        paddingHorizontal: 20,
+        paddingVertical: 20,
+        fontSize: 16,
+        textAlign: "center"
+    }
 
 });
 

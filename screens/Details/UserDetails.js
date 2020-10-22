@@ -120,6 +120,7 @@ const UserDetails = props => {
                     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
                         age--;
                     }
+                    
                     setAge(age)
 
                     if (response.data.field_consider_myself_.length == undefined) {
@@ -233,6 +234,8 @@ const UserDetails = props => {
                     if (response.data.field_verfied.length == undefined) {
                         setverifed(true)
                     }
+
+
                     setconvert(response.data.login)
                     const unixTime = convert;
                     const dates = new Date(unixTime * 1000);
@@ -604,7 +607,7 @@ function ReportAdmin() {
                             <View style={styles.UserStatusVerified}>
                                 {verfied ? (
                                     <Text style={styles.StatusText}>Verified</Text>
-                                ) : null}
+                                ) : null} 
                             </View>
                             <View style={styles.UserStatusLogin}>
                                 <Text style={styles.StatusText}>LastLogin</Text>
@@ -617,8 +620,14 @@ function ReportAdmin() {
 
 
                             <View style={styles.fourthIconContainer}>
+
+                                <TouchableOpacity onPress={() => navigation.navigate('NewChat',{
+                                    Name:name
+                                })}>
                                 <Ionicons name="ios-chatbubbles" style={{ fontSize: 30 }} />
                                 <Text>Chat</Text>
+                                </TouchableOpacity>
+
                                 <TouchableOpacity onPress={FavorateOverlay}>
                                     <Ionicons name="ios-star" style={{ fontSize: 30 }} />
                                     <Text>Favorite</Text>

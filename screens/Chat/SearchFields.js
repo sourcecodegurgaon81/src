@@ -15,6 +15,9 @@ import Chats from  './Chats'
 import { useNavigation } from '@react-navigation/native';
 import { AsyncStorage } from 'react-native';
 import MultiSelect from 'react-native-multiple-select';
+import Spinner from 'react-native-loading-spinner-overlay';
+
+
 
 const SearchFields = (props) => { 
 
@@ -34,7 +37,8 @@ const navigation = useNavigation();
   // Result Show Hide Variables
   const [output, setoutput] = useState(false)
   const [search, setSearchField] = useState(true)
-
+ //Spinner
+ const [spinner ,setspinner] = useState(false)
   useEffect(() => {
     font.loadAsync({
       'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
@@ -46,6 +50,7 @@ const navigation = useNavigation();
 // Dummy Data for the MutiSelect
 const items = [
   // name key is must. It is to show the text in front
+  {id: '0', name: 'No Prefrence'},
   {id: 'yoga', name: 'yoga'},
   {id: 'playdates (parents and children)', name: 'playdates (parents and children)'},
   {id: 'happy hour/cocktails/beers', name: 'happy hour/cocktails/beers'},
@@ -73,6 +78,7 @@ const items = [
 
   const searchResult = async () => {
 
+        setspinner(true)
     const response = await Http.get('search-view', {
       params: {
         postal: Postcode,
@@ -80,7 +86,7 @@ const items = [
     }
 
     ); setSearch(response.data)
-
+    setspinner(false)
     setoutput(true)
    setSearchField(false)
   }
@@ -97,6 +103,11 @@ const items = [
   return (
     <SafeAreaView>
    <ScrollView>
+   <Spinner
+          visible={spinner}
+          textContent={'Loading Results...'}
+          textStyle={styles.spinnerTextStyle}
+        />
     <View style={styles.mainContainerField}>
  
       {/*Search Fields area start */}
@@ -188,22 +199,19 @@ const items = [
 
 
 
-{/* <SafeAreaView>
+
 <View >
                 <Text style={styles.labelText}>Activities</Text>  
-                <View >
+                <View style={styles.iAmContainer}>
 
          <MultiSelect
           hideTags
           items={items}
           uniqueKey="id"
-          //ref={(component) => { this.multiSelect = component }}
           onSelectedItemsChange={onSelectedItemsChange}
           selectedItems={selectedItems}
-          selectText="   Pick Activities"
+          selectText="   No Prefrence"
           searchInputPlaceholderText="Search Items..."
-          onChangeInput={ (text)=> console.log(text)}
-          //altFontFamily="ProximaNova-Light"
           tagRemoveIconColor="#CCC"
           tagBorderColor="#CCC"
           tagTextColor="#CCC"
@@ -218,13 +226,11 @@ const items = [
           selectedItemTextColor= "black"
           submitButtonColor="#CCC"
           submitButtonText="Submit"
-          styleInputGroup={styles.MultiDropDown}
-          styleDropdownMenu={styles.MultiMainDropDown}
-          styleDropdownMenuSubsection={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}
-        />
+         
+          styleDropdownMenuSubsection={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}        />
 </View>
 </View>
-</SafeAreaView> */}
+
 
 
 
@@ -476,7 +482,14 @@ const styles = StyleSheet.create({
       marginHorizontal: 10
   },
   elipsText:
-  { fontFamily: 'Montserrat-ExtraLight', color: 'black', fontSize: 15 ,marginRight:110}
+  { fontFamily: 'Montserrat-ExtraLight', color: 'black', fontSize: 15 ,marginRight:110},
+  iAmContainer: {
+    borderWidth: 1,
+    marginHorizontal: 10,
+    fontFamily: 'Montserrat-ExtraLight',
+    borderRadius:5,
+    paddingTop:3
+},
   
   
   

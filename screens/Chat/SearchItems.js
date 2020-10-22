@@ -29,7 +29,7 @@ const SearchItems = props => {
                 renderItem={({ item }) => {
 
                     if(item.avatar == 0) {
-                    console.log(item)
+
                     return (
                       
                

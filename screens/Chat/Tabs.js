@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useLayoutEffect} from 'react';
 import { Text, StyleSheet, View, Dimensions, Picker, SafeAreaView, ScrollView, Image, TextInput,TouchableOpacity } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -12,10 +12,12 @@ import { FlatList } from 'react-native-gesture-handler';
 import Http from '../../Api/Http'
 import Favorate from './Favorate'
 import SearchFields from './SearchFields'
+import Chats from './Chats'
+import { AsyncStorage } from 'react-native';
+import { any } from 'prop-types';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-
-
-
+ 
 //Search User Tab
 function SearcUserTab(props) {
   return(
@@ -33,10 +35,78 @@ function SearcUserTab(props) {
 
 
 
-function SettingsScreen() {
-  return (
+function SettingsScreen (props) {
+  const [chatmessage,chatMessages] = useState()
+  const [counterPartcipants,setcounterparticinats] = useState()
+      //Spinner
+      const [spinner ,setspinner] = useState(false)
+   var Chatting = any
 
-    <Text>Hello</Text>
+
+   const ParseFavorate =[];
+    useEffect(() => {
+        font.loadAsync({
+            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
+            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
+        });
+
+
+        setspinner(true)
+        AsyncStorage.getItem('Token', (err, result) => {
+            const UserDetail = JSON.parse(result)
+            Http.get('privatemsg' , { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Cookie': UserDetail.data.sessid + "=" + UserDetail.data.session_name, 'X-CSRF-Token': UserDetail.data.token } }).then((responses) => {
+          var meassages =  responses.data
+  
+          
+        {
+              for (var i = 0; i < meassages.length; i++) {
+                    for(var participants in meassages[i].participants){
+                        if (meassages[i].participants[participants].uid != UserDetail.data.user.uid ) {
+
+ 
+                     // Add subject and time in participant object
+                     meassages[i].participants[participants].subject = meassages[i].subject;
+                     meassages[i].participants[participants].time=meassages[i].last_updated;
+                     meassages[i].participants[participants].thread_id = meassages[i].thread_id;
+                    ParseFavorate.push(meassages[i].participants[participants]);          
+                    chatMessages(ParseFavorate)
+                    setspinner(false)
+                  
+                    }  
+                        
+                  }       
+ 
+                    
+                    } 
+ 
+                }
+
+            
+                  })
+              
+        })  
+    }, []);
+   const removeDuplicatesBy = (keyFn, array)=>{
+      var mySet = new Set();
+      return array.filter(function (x) {
+        var key = keyFn(x),
+          isNew = !mySet.has(key);
+        if (isNew) mySet.add(key);
+        return isNew;
+      });
+    }
+  
+  
+ 
+  return (
+    <View style={{flex:1}}>
+    <Spinner
+          visible={spinner}
+          textContent={'Loading Chats...'}
+          textStyle={styles.spinnerTextStyle}
+        />
+    <Chats chatmessage={chatmessage} navigation={props.propName.prop}/>
+    </View>
 
   );
 }
@@ -76,7 +146,7 @@ function MyTabs(props) {
         activeTintColor: 'tomato',
         inactiveTintColor: 'gray',
       }}>
-      <Tab.Screen name="Chat" component={SettingsScreen} />
+      <Tab.Screen name="Chat"  children={()=><SettingsScreen propName={props}/>}/>
       <Tab.Screen name="Favorate" children={()=><Favorates propName={props}/>}/>
     <Tab.Screen name="Search"  children={()=><SearcUserTab propName={props}/>}/>
     </Tab.Navigator>

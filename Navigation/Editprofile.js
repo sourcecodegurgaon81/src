@@ -11,6 +11,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Textarea from 'react-native-textarea';
 import Http from '../Api/Http'
+import MultiSelect from 'react-native-multiple-select';
 export const NetworkContext = React.createContext();
 
 const FirstRoute = ({ navigation: { navigate } }) => {
@@ -272,8 +273,30 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                         }
 
                         if (response.data.field_relationship_status.length == undefined) {
-                            setStatusValue(response.data.field_relationship_status.und[0].value)
+                            if (response.data.field_relationship_status.und[0].value == "Married") {
+                                setStatusValue("Yes")
+
+                            }
+                            else if (response.data.field_relationship_status.und[0].value == "Co-habitating") {
+                                setStatusValue("Yes")
+                            }
+                            else if (response.data.field_relationship_status.und[0].value == "Significant Other But Not Living Together") {
+                                setStatusValue("No")
+                            }
+                            else if (response.data.field_relationship_status.und[0].value == "Divorced") {
+                                setStatusValue("No")
+                            }
+                            else if (response.data.field_relationship_status.und[0].value == "Widowed") {
+                                setStatusValue("No")
+                            }
+                            else if (response.data.field_relationship_status.und[0].value == "Engaged") {
+                                setStatusValue("Yes")
+                            }
+                            else if (response.data.field_relationship_status.und[0].value == "Single") {
+                                setStatusValue("No")
+                            }
                         }
+
 
                         if (response.data.field_kids.length == undefined) {
                             setKidsValue(response.data.field_kids.und[0].value)
@@ -301,7 +324,36 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
         })
 
     }, [])
-
+    const items = [
+        // name key is must. It is to show the text in front
+        { id: 'yoga', name: 'yoga' },
+        { id: 'playdates (parents and children)', name: 'playdates (parents and children)' },
+        { id: 'happy hour/cocktails/beers', name: 'happy hour/cocktails/beers' },
+        { id: 'sightseeing', name: 'sightseeing' },
+        { id: 'artsy stuff (making or looking at)', name: 'artsy stuff (making or looking at)' },
+        { id: 'cooking', name: 'cooking' },
+        { id: 'dancing', name: 'dancing' },
+        { id: 'people watching', name: 'people watching' },
+        { id: 'traveling/vacations', name: 'traveling/vacations' },
+        { id: 'history buff', name: 'history buff' },
+        { id: 'board games', name: 'board games' },
+        { id: 'sports (playing)', name: 'sports (playing)' },
+        { id: "mom's/dad's night out w/o kids", name: "mom's/dad's night out w/o kids" },
+        { id: 'outdoor activities', name: 'outdoor activities' },
+        { id: 'dining out', name: 'dining out' },
+        { id: 'concerts/shows', name: 'concerts/shows' },
+        { id: 'sports (watching)', name: 'sports (watching)' },
+        { id: 'shopping', name: 'shopping' },
+        { id: 'video games', name: 'video games' },
+        { id: 'photography', name: 'photography' },
+        { id: 'animal lover/pet owner', name: 'animal lover/pet owner' },
+        { id: 'crime/mystery reader', name: 'crime/mystery reader' },
+        { id: 'chess', name: 'chess' },
+    ];
+    const onSelectedItemsChange = (activityValue) => {
+        // Set Selected Items
+        setactivityValue(activityValue);
+    };
 
 
     return (
@@ -329,7 +381,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             containerStyle={styles.DropDown}
                             labelStyle={styles.dropDownActive}
                             activeItemStyle={styles.dropDownActive}
-                          
+
                             onChangeItem={items => setCountry(items.value)}
                             value={CountryValue}
                             defaultValue={CountryValue}
@@ -356,23 +408,35 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
                     <View style={styles.dropDownStyle}>
                         <Text style={styles.labelText}>What do you like to do for fun?</Text>
-                        <DropDownPicker
-                            items={[
-                                { label: 'playdates (parents and children)', value: 'playdates (parents and children)' },
-                                { label: 'happy hour/cocktails/beers', value: 'happy hour/cocktails/beers' },
-                                { label: 'sightseeing', value: 'sightseeing' },
-                                { label: 'artsy stuff (making or looking at)', value: 'artsy stuff (making or looking at)' },
-                                { label: 'cooking', value: 'cooking' },
-                                { label: 'dancing', value: 'dancing' },
-                                { label: 'people watching', value: 'people watching' },
-                                { label: 'yoga', value: 'yoga' },
-                            ]}
-                            defaultIndex={0}
-                            containerStyle={styles.DropDown}
-                            labelStyle={styles.dropDownActive}
-                            dropDownStyle={{ zIndex: 400 }}
-                            onChangeItem={items => setactivityValue(items.value)}
-                            value={activityValue} />
+                        <View style={styles.iAmContainer} >
+
+                            <MultiSelect
+                                hideTags
+                                items={items}
+                                uniqueKey="id"
+                                onSelectedItemsChange={onSelectedItemsChange}
+                                selectedItems={activityValue}
+                                selectText="   Pick Activities"
+                                searchInputPlaceholderText="Search Items..."
+                                tagRemoveIconColor="#CCC"
+                                tagBorderColor="#CCC"
+                                tagTextColor="#CCC"
+                                selectedItemTextColor="#CCC"
+                                selectedItemIconColor="#CCC"
+                                itemTextColor="#000"
+                                displayKey="name"
+                                fontFamily='Montserrat-ExtraLight'
+                                itemFontFamily='Montserrat-ExtraLight'
+                                selectedItemFontFamily='Montserrat-ExtraLight'
+                                selectedItemIconColor="black"
+                                selectedItemTextColor="black"
+                                submitButtonColor="#CCC"
+                                submitButtonText="Submit"
+                                styleSelectorContainer={{ backgroundColor: "red" }}
+                                styleDropdownMenuSubsection={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                            />
+                        </View>
+
 
                     </View>
 
@@ -390,7 +454,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             containerStyle={styles.DropDown}
                             labelStyle={styles.dropDownActive}
                             activeItemStyle={styles.dropDownActive}
-                  
+
                             onChangeItem={items => setliveValue(items.value)}
                             defaultValue={liveValue}
                             defaultIndex={0}
@@ -461,10 +525,10 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                         <Text style={styles.labelText}>When someone cancels plans we made</Text>
                         <DropDownPicker
                             items={[
-                                { label: 'My reaction depends on the reason why.', value: 'My reaction depends on the reason why.' },
-                                { label: 'I think no big deal', value: 'I think no big deal' },
                                 { label: 'It really bothers me and I am wary of the friendship.', value: 'It really bothers me and I am wary of the friendship.' },
+                                { label: 'My reaction depends on the reason why.', value: 'My reaction depends on the reason why.' },
                                 { label: 'I’m generally understanding, but I can only be blown off so many times before I will start to question the friendship.', value: 'I’m generally understanding, but I can only be blown off so many times before I will start to question the friendship.' },
+                                { label: "Things happen – no big deal.", value: "Things happen – no big deal." },
                             ]}
                             defaultIndex={0}
                             containerStyle={styles.DropDown}
@@ -857,9 +921,9 @@ const FourthRoute = ({ navigation, route }) => {
 
     }, [])
 
-   const  GoPressed =(navigate)=>{
+    const GoPressed = (navigate) => {
         navigate("UserDetail");
-      }
+    }
     //User Details Update
     const UserDetails = props => {
         AsyncStorage.getItem('Token', (err, result) => {
@@ -1189,49 +1253,56 @@ const styles = StyleSheet.create({
         position: 'relative',
         zIndex: 40,
         backgroundColor: '#fff',
-        marginVertical:5
+        marginVertical: 5
     },
-    seconddropDownStyle:{
-        position:"relative",
+    seconddropDownStyle: {
+        position: "relative",
         zIndex: 30,
         backgroundColor: '#fff',
     },
-    thirddropDownStyle:{
-        position:"relative",
+    thirddropDownStyle: {
+        position: "relative",
         zIndex: 20,
         backgroundColor: '#fff',
-        marginVertical:10
+        marginVertical: 10
     },
-    fourthdropDownStyle:{
-        position:"relative",
+    fourthdropDownStyle: {
+        position: "relative",
         zIndex: 10,
         backgroundColor: '#fff',
-        marginVertical:10
+        marginVertical: 10
     },
-    fifthdropDownStyle:{
-        position:"relative",
+    fifthdropDownStyle: {
+        position: "relative",
         zIndex: 9,
         backgroundColor: '#fff',
-        marginVertical:10
+        marginVertical: 10
     },
-    sixdropDownStyle:{
-        position:"relative",
+    sixdropDownStyle: {
+        position: "relative",
         zIndex: 8,
         backgroundColor: '#fff',
-        marginVertical:10
+        marginVertical: 10
     },
-    sevendropDownStyle:{
-        position:"relative",
+    sevendropDownStyle: {
+        position: "relative",
         zIndex: 7,
         backgroundColor: '#fff',
-        marginVertical:10
+        marginVertical: 10
     },
-    eightdropDownStyle:{
-        position:"relative",
+    eightdropDownStyle: {
+        position: "relative",
         zIndex: 6,
         backgroundColor: '#fff',
-        marginVertical:10
-    }
+        marginVertical: 10
+    },
+    iAmContainer: {
+        borderWidth: 1,
+        marginHorizontal: 10,
+        fontFamily: 'Montserrat-ExtraLight',
+        borderRadius: 5,
+        paddingTop: 3
+    },
 
 
 

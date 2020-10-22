@@ -67,8 +67,9 @@ const LogOut = () => {
   }).then((response) => {
       onRefresh()
       AsyncStorage.clear();
-       setspinner(false)  
+      
        props.navigation.navigate('Home')
+       setspinner(false) 
   }).catch(function (error) {
       setspinner(false)
       console.log(error.response.data);
@@ -84,7 +85,7 @@ return (
   <View style={styles.mainContainer}  >
        <Spinner
     visible={spinner}
-    textContent={'Signing...'}
+    textContent={'LogingOut...'}
     textStyle={styles.spinnerTextStyle}
   />
       {Login ? (

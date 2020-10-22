@@ -1,27 +1,45 @@
 import React ,{useEffect ,useState} from "react";
-import { Text, StyleSheet, View ,SafeAreaView, ScrollView } from "react-native";
+import { Text, StyleSheet, View ,SafeAreaView, ScrollView} from "react-native";
 
 import { Button } from 'react-native-elements';
 import * as font from 'expo-font';
 import { AsyncStorage } from 'react-native';
+import Http from '../../Api/Http'
 
 
 
 const HomeScreen = props => {
 
-  useEffect(() => {
-    font.loadAsync({
-      'Cairo-Bold':{uri: require('../../../assets/fonts/Cairo-Bold.ttf')},
-        });
-        AsyncStorage.getItem('Token', (err, result) => {
-          const LogoutToken = JSON.parse(result)
-          if(LogoutToken != null)
-          {
-            props.navigation.navigate('FindFriends')
-          }
-        })
-      }, [])
 
+
+  useEffect(() => {
+    async function loadFont() {
+      return await Font.loadAsync({
+        'Cairo-Bold':{uri: require('../../../assets/fonts/Cairo-Bold.ttf')},
+        'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
+
+      });
+    }
+  
+        AsyncStorage.getItem('Token', (err, result) => {
+          const UserDetail= JSON.parse(result)
+          if(UserDetail != null)
+          {
+            Http.get('user/' + UserDetail.data.user.uid, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Cookie': UserDetail.data.sessid + "=" + UserDetail.data.session_name, 'X-CSRF-Token': UserDetail.data.token } }).then((response) => {
+
+              if(response.data.field_already_declared.und == undefined){
+              props.navigation.navigate('Tophobbies')
+              }
+              else   
+              { 
+                props.navigation.navigate('FindFriends')
+              }  
+          })
+          }     
+        }) 
+       
+      }, []) 
+ 
     
   return (
 
@@ -44,21 +62,22 @@ kindly save your energy and use another app.</Text>
 
         <Button 
         onPress ={() => props.navigation.navigate('Postcode')}
-          containerStyle={{ marginHorizontal: 15, marginVertical: 15, height:50 ,borderRadius:10 }}
-          buttonStyle = {{height:50}}
+          containerStyle={{ marginHorizontal: 15, marginVertical: 15, borderRadius:10 ,    fontFamily:"Cairo-Bold"}}
+          buttonStyle = {{    fontFamily:"Cairo-Bold"}}
           title="Sounds Cool! Who can I meet"
-          titleStyle={{fontSize:20}}
+          titleStyle={{fontSize:20 ,    fontFamily:"Cairo-Bold"}}
         />
         <Button 
         onPress ={() => props.navigation.navigate('SignUp')}
-          buttonStyle={{ backgroundColor: "green",textAlign:"center",height:50,borderRadius:10  }}
-              containerStyle={{ marginHorizontal: 15, marginVertical: 15}}
-              titleStyle={{fontSize:20}}
+          buttonStyle={{ backgroundColor: "green",textAlign:"center",borderRadius:10 ,    fontFamily:"Cairo-Bold" }}
+              containerStyle={{ marginHorizontal: 15, marginVertical: 15 ,    fontFamily:"Cairo-Bold"}}
+              titleStyle={{fontSize:20,    fontFamily:"Cairo-Bold"}}
           title="Awesome! Sign me up!"
         />
 
         <Text style={styles.textThree }  onPress ={() => props.navigation.navigate('SignIn')}>I am already a member</Text>
       </View>
+     
     </View>
 
   )
@@ -70,7 +89,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginVertical: 10,
     marginHorizontal: 15,
-
+    fontFamily:"Montserrat-ExtraLight"
 
     
 
@@ -79,6 +98,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginHorizontal: 15,
     fontSize: 19,
+    fontFamily:"Montserrat-ExtraLight"
 
 
   },
@@ -88,6 +108,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "green",
     fontSize: 20,
+    fontFamily:"Cairo-Bold"
    
 
   },

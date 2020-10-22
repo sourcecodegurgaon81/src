@@ -9,7 +9,7 @@ import APIKit, { setClientToken } from '../../Api/APIKit'
 import Spinner from 'react-native-loading-spinner-overlay';
 import { AsyncStorage } from 'react-native';
 import { Overlay } from 'react-native-elements';
-
+import Moment from 'moment';
 
 
 
@@ -41,7 +41,15 @@ const SignIn = props => {
             const LogoutToken = JSON.parse(result)
             if(LogoutToken != null)
             {
-              props.navigation.navigate('FindFriends')
+
+                Http.get('user/' + LogoutToken.data.user.uid, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Cookie': LogoutToken.data.sessid + "=" + LogoutToken.data.session_name, 'X-CSRF-Token': LogoutToken.data.token } }).then((response) => {
+                    if(LogoutToken.data.user.field_trial_period_start_date.length == undefined) 
+                    {
+                        becomeCerified()
+                    }
+                 })
+                 
+           
             }
           })
     }, [])
@@ -71,7 +79,16 @@ const SignIn = props => {
                        {
                         AsyncStorage.setItem('Connected',JSON.stringify(response))
                         setspinner(false)
-                            props.navigation.navigate('FindFriends')
+                        Http.get('user/' + LogoutToken.data.user.uid, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Cookie': LogoutToken.data.sessid + "=" + LogoutToken.data.session_name, 'X-CSRF-Token': LogoutToken.data.token } }).then((response) => {
+                           if(LogoutToken.data.user.field_trial_period_start_date.length == undefined) 
+                           {
+                            becomeCerified()
+                           }
+                           else 
+                           {
+                            props.navigation.navigate('Becomeverified')
+                           }
+                        })
                        }
                        
                     
@@ -90,6 +107,29 @@ const SignIn = props => {
     }
 
 
+
+  const becomeCerified = () =>{
+    AsyncStorage.getItem('Token', (err, result) => {
+    const LogoutToken = JSON.parse(result)
+    if(LogoutToken.data.user.field_trial_period_start_date.length == undefined) 
+    {
+    var msDiff =  new Date().getTime() - new Date(LogoutToken.data.user.field_trial_period_start_date.und[0].value).getTime();    //Future date - current date
+    }
+    var daysTill30June2035 = Math.floor(msDiff / (1000 * 60 * 60 * 24));
+  
+     if(daysTill30June2035 > 8)
+     {
+        props.navigation.navigate('Tabs')
+
+     }
+     else
+     {
+        props.navigation.navigate('FindFriends')
+     }
+
+
+    });
+  }
 
 
     return (
@@ -121,6 +161,7 @@ const SignIn = props => {
                             labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
                             placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
                             placeholder='Password'
+                            secureTextEntry={true}
                         />
                     </View>
                     

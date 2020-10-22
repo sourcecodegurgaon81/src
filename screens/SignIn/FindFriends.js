@@ -252,7 +252,8 @@ const FindFriends = props => {
 const styles = StyleSheet.create({
 
     mainContainer: {
-        flex: 1
+        flex: 1,
+        backgroundColor:"white"
     },
     secondMainCotainer:
     {
