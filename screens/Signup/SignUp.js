@@ -22,6 +22,9 @@ import { Overlay } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import { Entypo } from '@expo/vector-icons';
 import MultiSelect from 'react-native-multiple-select';
+import { Camera } from 'expo-camera'; 
+import ImgToBase64 from 'react-native-image-base64';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const FirstRoute = ({ navigation: { navigate } }) => {
 
@@ -381,68 +384,62 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
 const ThirdRoute = ({ navigation: { navigate }, route }) => {
     const [image, setImage] = useState(null);
+    const [hasPermission, setHasPermission] = useState(null);
+    const [type, setType] = useState(Camera.Constants.Type.back);
+    const [imageUrls, setImageUrls] = useState()
+    const [spinner, setspinner] = useState(false)
+    const [doSomething,doSomethingWith] = useState()
+    const [imageNotUploaded, setimageNotUploaded] = useState(true)
+    const [uploadedImage , setuploadedImage ] = useState(false)
     const  secondRoute = route.params
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
+            base64: true,
             aspect: [4, 3],
             quality: 1,
         });
 
-        console.log(result);
 
+       
         if (!result.cancelled) {
           setImage(result.uri);
-        }
+          setimageNotUploaded(false)
+        } 
+        setspinner(true)
+        // Get File Name
+        var url = result.uri;
+        var filename = url.substring(url.lastIndexOf('/')+1);
+  
+        //Post File Name
+        Http.post('file/' , {
+            file: result.base64,
+      filename: filename,
+      filepath: "public://" + filename,}).then((response) => {
 
+      //Getting Full Url
+        Http.get('file/' + response.data.fid).then((imageUrl) => {
+            console.log(imageUrl.data)
+           setImageUrls(imageUrl.data)
+           setuploadedImage(true)
+           setspinner(false)
 
+        })
 
-        
-
-        // this.FilePath.resolveNativePath(fileuri).then((filePath) => {
-        //     fetch(imagePath).then((res) => {
-        //         res.blob().then((blob) => {
-
-
-        //             let newInstance = getFileReader();
-        //             newInstance.onload = function () {
-        //                // Is it JPG or PNG
-        //                 let base64data = newInstance.result.toString();
-        //                 if (base64data.includes("data:image/jpeg;base64,")) {
-                            
-        //                    // File Name
-        //                     let timestamp = Math.floor(Date.now() / 1000);
-        //                     const fileName =
-        //                         this.name + "_profile_image_" + timestamp + ".jpg";
-        //                    // Base 64 string
-        //                     let removeString = "data:image/jpeg;base64,";
-        //                     this.base64textString = base64data.replace(removeString, "");
-        //                     console.log(this.base64textString);
-        //                 } else if (base64data.includes("data:image/png;base64,")) {
-        //                     let timestamp = Math.floor(Date.now() / 1000);
-        //                     this.fileName =
-        //                         this.name + "_profile_image_" + timestamp + ".png";
-
-        //                    // Base 64 string
-        //                     let removeString = "data:image/png;base64,";
-        //                     this.base64textString = base64data.replace(removeString, "");
-        //                     console.log(this.base64textString);
-        //                 }
-
-        //                 this.picture = this.fileName;
-        //                 this.changeDetector.detectChanges();
-        //                 this.onUpload(this.picture);
-        //             }.bind(this);
-
-        //             newInstance.readAsDataURL(blob);
-        //         });
-        //     });
-        // });
-
-
+    })
+    
 
     };
+    
+
+   
+  
+      if (hasPermission === false) {
+        return <Text>No access to camera</Text>;
+      }
+
+
 
     return (
 
@@ -450,17 +447,25 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
             <View style={{ marginVertical: 20, borderWidth: 1, borderRadius: 20, marginHorizontal: 10 }}>
                 <Progress.Bar progress={0.7} unfilledColor="white" color="#027BFF" animationType="spring" width={300} borderColor="white" height={20} borderRadius={10} />
             </View>
-
+            <Spinner
+                visible={spinner}
+                textContent={'Uploading Image...'}
+                textStyle={styles.spinnerTextStyle}
+            />
+              
             <View style={{ flex: 2, backgroundColor: "white", alignItems: "center" }}>
-
+            {imageNotUploaded?(
+              <View>
                 <View style={styles.ImageTopHeading}>
                     <Text style={styles.ImageTopHeadingText}>Choose Your Profile Photo</Text>
                 </View>
+            
                 <View style={styles.imageUploadButton}>
+              
                     <Entypo name="camera" size={24} color="black" />
-                    <Text style={styles.imageUploadButtonText} onPress={pickImage} >Take a selfie</Text>
+                    <Text style={styles.imageUploadButtonText} >Take a selfie</Text>
                 </View>
-
+                
                 <View style={styles.ImageTopHeading}>
                     <Text style={styles.ImageTopHeadingText}>
                         OR
@@ -472,19 +477,24 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
                     <Text style={styles.imageUploadButtonText} onPress={pickImage} >Upload from library</Text>
 
                 </View>
-                {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-            </View>
+                </View>
+                ):null}
+           {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
 
+            </View>
+              
+       {uploadedImage ?(
             <View style={styles.mainContainerPicker}>
                 <Button
                     containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
                     buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                     title="Continue"
                     titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
-                    onPress={() => navigate('Fourth',{secondRoute:secondRoute ,result:image})}
+                    onPress={() => navigate('Fourth',{secondRoute:secondRoute ,result:imageUrls})}
 
                 />
             </View>
+            ):null}    
 
             <View style={styles.mainContainerPicker}>
                 <Button
@@ -932,21 +942,29 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
 
 
 
-const FifthRoute = ({ navigation: { navigate }, route }) => {
-    //console.log(route.params)
+const FifthRoute = ({ navigation: { navigate }, route},props) => {
+console.log(navigate)
     const routerOutput = route.params
 
     const [enterEmail,setEnterEmail] = useState()
     const [ ConfirmEmail ,setConfirmEmail] = useState()
     const [errorOverLay, seterrorOverLay] = useState(false);
     const [message, setMessage] = useState()
+    const [spinner, setspinner] = useState(false)
+    const [imageUrls ,setImageUrls] = useState()
+
+     
     const toggleOverlay = () => {
         seterrorOverLay(!errorOverLay);
     };
 
     const submitDetails = () =>{
+            setImageUrls(route.params.thirdRoute.result)
+        
+            console.log(imageUrls)
+        
         let ts = Math.round(new Date().getTime() / 1000);
-        setspinner(true)
+        //setspinner(true)
          Http.post("user/register",{
             name: routerOutput.thirdRoute.secondRoute.firstRoute.userName,
             mail: enterEmail,
@@ -994,12 +1012,12 @@ const FifthRoute = ({ navigation: { navigate }, route }) => {
             field_look_meet: {
               und: routerOutput.thirdRoute.secondRoute.meet,
             },
-            picture_upload: routerOutput.thirdRoute.image,
+            picture_upload: routerOutput.thirdRoute.result,
       
-            picture: routerOutput.thirdRoute.image,
+            picture: routerOutput.thirdRoute.result,
       
             field_user_avatar: {
-              und: [routerOutput.thirdRoute.image],
+              und: [routerOutput.thirdRoute.result],
             },
       
             field_want_contarct: {
@@ -1010,13 +1028,14 @@ const FifthRoute = ({ navigation: { navigate }, route }) => {
               {
                 toggleOverlay()
                 setMessage("Account Created Successfully Please verify your mail")
+                setspinner(false)
               }
-            
-            setspinner(false)
+              setspinner(false)
+     
         }).catch((error)=>{
-        
+ 
             if(error.response.status == 406)
-            {
+            {  
               toggleOverlay()
               setMessage("Username is already taken/Email is already taken")
               setspinner(false)
@@ -1054,7 +1073,11 @@ const FifthRoute = ({ navigation: { navigate }, route }) => {
                 <Progress.Bar progress={1} unfilledColor="white" color="#027BFF" animationType="spring" width={350} borderColor="white" height={20} borderRadius={10} />
             </View>
 
-
+            <Spinner
+                visible={spinner}
+                textContent={'Uploading Image...'}
+                textStyle={styles.spinnerTextStyle}
+            />
 
             <View style={styles.FieldContainer}>
      
@@ -1106,7 +1129,7 @@ const FifthRoute = ({ navigation: { navigate }, route }) => {
                     buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 }}
                     title="Previous"
                     titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
-                    onPress={()=>navigate('Fourth')}
+                    onPress={()=>navigate('Home')}
                 />
             </View>
 
@@ -1128,6 +1151,7 @@ const FifthRoute = ({ navigation: { navigate }, route }) => {
 const Tab = createMaterialTopTabNavigator();
 
 const SignUp = props => {
+
     useEffect(() => {
         font.loadAsync({
             'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
@@ -1149,8 +1173,8 @@ const SignUp = props => {
                     <Tab.Screen name="First" component={FirstRoute} options={{ tabBarLabel: '' }} />
                     <Tab.Screen name="Second" component={SecondRoute} options={{ tabBarLabel: '' }} />
                     <Tab.Screen name="Third" component={ThirdRoute} options={{ tabBarLabel: '' }} />
-                    <Tab.Screen name="Fourth" component={FourthRoute} options={{ tabBarLabel: '' }} />
-                    <Tab.Screen name="Fifth" component={FifthRoute} options={{ tabBarLabel: '' }} />
+                    <Tab.Screen name="Fourth" component={FourthRoute} options={{ tabBarLabel: '' }}  />
+                    <Tab.Screen name="Fifth"  options={{ tabBarLabel: '' }}  component={FifthRoute}/>
 
                 </Tab.Navigator>
 

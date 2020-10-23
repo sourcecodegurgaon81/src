@@ -778,22 +778,51 @@ function FourthRoute({ navigation, route }) {
     const [spinner, setspinner] = useState(false)
     const [images, setImages] = useState()
     const [image, setImage] = useState(null);
-
+    const [imageUrls, setImageUrls] = useState()
     const pickImage = async () => {
+      
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: false,
+            allowsEditing: true,
+            base64: true,
             aspect: [4, 3],
             quality: 1,
         });
-    
 
+
+       
         if (!result.cancelled) {
           setImage(result.uri);
-          
-   
-        }
-    }
+        } 
+     
+        // Get File Name
+        var url = result.uri;
+        var filename = url.substring(url.lastIndexOf('/')+1);
+
+        //Post File Name
+
+        Http.post('file',{file: result.base64, filename: filename,filepath: "public://" + filename}).then((responses) => {
+      console.log(responses)
+      setspinner(false)
+    
+      //Getting Full Url
+        Http.get('file/' + responses.data.fid).then((imageUrl) => {
+            console.log(imageUrl)
+           setImageUrls(imageUrl.data)
+           setspinner(false)
+
+        }).catch((error)=>{
+ console.log(error.response)
+           
+       
+})
+       
+    })
+
+  
+    
+    
+    };
 
     var items = [];
     useEffect(() => {
@@ -887,6 +916,9 @@ function FourthRoute({ navigation, route }) {
                 field_favorite_tv_shows: { und: [{ value: routesSection.TVvalue }] },
                 field_favorite_music: { und: [{ value: routesSection.Musicvalue }] },
                 field_you_say: { und: [{ value: anyThingvalue }] },
+                field_user_avatar: {
+                    und: [imageUrls],
+                  },
             }, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Cookie': UserDetail.data.sessid + "=" + UserDetail.data.session_name, 'X-CSRF-Token': UserDetail.data.token } }).then((response) => {
                 setspinner(false)
             })
@@ -931,7 +963,7 @@ function FourthRoute({ navigation, route }) {
                         }}
                     />
 
-<View style={styles.imageUploadButton}>
+                 <View style={styles.imageUploadButton}>
                     <Entypo name="camera" size={24} color="black" />
                     <Text style={styles.imageUploadButtonText} onPress={pickImage} >Upload From Gallery</Text>
                 </View>

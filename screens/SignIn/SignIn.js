@@ -119,7 +119,8 @@ const SignIn = props => {
   
      if(daysTill30June2035 > 8)
      {
-        props.navigation.navigate('Tabs')
+        props.navigation.navigate('FindFriends')
+        //props.navigation.navigate('Tabs')
 
      }
      else
