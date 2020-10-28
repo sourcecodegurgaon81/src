@@ -55,6 +55,10 @@ const ViewBlockUser = () =>{
   toggleOverlay()
   props.navigation.navigate('BlockUser')
 }
+const AccountSetting = () =>{
+  toggleOverlay()
+  props.navigation.navigate('AccountSetting')
+}
 
 const LogOut = () => {
   setspinner(true)
@@ -97,7 +101,7 @@ return (
       <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
           <View style={styles.overlaystyling}>
               <Button title="View/Edit Profile" buttonStyle={styles.buttonHeight} titleStyle={styles.titleStyles} onPress={ViewEdit } />
-              <Button title="Account Settings" buttonStyle={styles.buttonHeight} titleStyle={styles.titleStyles} />
+              <Button title="Account Settings" buttonStyle={styles.buttonHeight} titleStyle={styles.titleStyles} onPress={AccountSetting}/>
               <Button title="Blocked Users" buttonStyle={styles.buttonHeight} titleStyle={styles.titleStyles} onPress={ViewBlockUser}/>
               <Text style={styles.titleStyles} onPress={LogOut}>Log Out</Text>
           </View>

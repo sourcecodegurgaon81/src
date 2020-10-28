@@ -10,20 +10,20 @@ import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 
 
 const AccountSetting = props => {
-
     let [fontsLoaded] = useFonts({
         Cairo_700Bold,
         Montserrat_200ExtraLight
       });
  
-if(!fontsLoaded){
-<AppLoading />
-}else{
-
+if(!fontsLoaded)
+{
+    return(<AppLoading />)
+}
+else{
     return (
         <View style={styles.mainContainer}>
             <SafeAreaView style={styles.secondMainCotainer}>
-                <TouchableOpacity style={styles.imageContainer}>
+                <TouchableOpacity style={styles.imageContainer} onPress={()=>props.navigation.goBack()}>
                     <Image style={styles.Image} source={require('../../assets/Images/cross.png')} />
                 </TouchableOpacity>
                 <ScrollView>
@@ -40,7 +40,7 @@ if(!fontsLoaded){
                         />
                         <CheckBox
                             title='Switch to Annual'
-                        />x
+                        />
                         <CheckBox
                             title='Freeze Subscription'
                         />
