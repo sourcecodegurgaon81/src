@@ -16,6 +16,10 @@ import Chats from './Chats'
 import { AsyncStorage } from 'react-native';
 import { any } from 'prop-types';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
+
 
  
 //Search User Tab
@@ -43,6 +47,7 @@ function SettingsScreen (props) {
    var Chatting = any
 
 
+  
    const ParseFavorate =[];
     useEffect(() => {
         font.loadAsync({

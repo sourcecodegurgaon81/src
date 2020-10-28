@@ -6,11 +6,23 @@ import * as font from 'expo-font';
 import { AsyncStorage } from 'react-native';
 import Http from '../../Api/Http'
 import Moment from 'moment';
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 
 
 const Chats = (props) => {
-
-
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
+      if(!fontsLoaded)
+      {
+        return(<AppLoading />)
+      }
+      else{
+     
+     
     return (
         <View style={styles.mainContainer}>
 
@@ -24,7 +36,6 @@ const Chats = (props) => {
                     keyExtractor={item => item.thread_id}
                     renderItem={({ item }) => {
                         const PictureUrl = "https://gowebtutorial.com/sites/default/files/" + item.picture.filename
-                
                        //Time Stamp to Date
                         var t = new Date();
                         t.setSeconds( item.time );
@@ -51,11 +62,11 @@ const Chats = (props) => {
                                             />
                                         </View>
                                         <View style={styles.textContainer}>
-                                            <Text style={{ fontFamily: 'Cairo-Bold' }}>{item.name}</Text>
-                                            <Text style={{ fontFamily: 'Montserrat-ExtraLight', color: 'black', fontSize: 15,width: 100 }} numberOfLines = {1}>{item.subject}</Text>
+                                            <Text style={{ fontFamily: 'Cairo_700Bold' }}>{item.name}</Text>
+                                            <Text style={{ fontFamily: 'Montserrat_200ExtraLight', color: 'black', fontSize: 15,width: 100 }} numberOfLines = {1}>{item.subject}</Text>
                                         </View>
                                         <View style={styles.textContainerTime}>
-                                            <Text style={{ fontFamily: 'Cairo-Bold' }}>{formatted}</Text>
+                                            <Text style={{ fontFamily: 'Cairo_700Bold' }}>{formatted}</Text>
                                         </View>
 
                                     </View>
@@ -86,6 +97,7 @@ const Chats = (props) => {
 
 
 }
+}
 const styles = StyleSheet.create({
     mainContainer: {
         backgroundColor: 'white',
@@ -103,7 +115,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         marginVertical: 10,
         fontSize: 23,
-        fontFamily: 'Cairo-Bold'
+        fontFamily: 'Cairo_700Bold'
     },
     secondContainer: {
         flex: 2,

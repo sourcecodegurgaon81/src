@@ -18,6 +18,10 @@ import MultiSelect from 'react-native-multiple-select';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
+
 
 const SearchFields = (props) => { 
 
@@ -39,13 +43,12 @@ const navigation = useNavigation();
   const [search, setSearchField] = useState(true)
  //Spinner
  const [spinner ,setspinner] = useState(false)
-  useEffect(() => {
-    font.loadAsync({
-      'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-      'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-    });
 
-  }, [])
+ let [fontsLoaded] = useFonts({
+  Cairo_700Bold,
+  Montserrat_200ExtraLight
+});
+ 
 
 // Dummy Data for the MutiSelect
 const items = [
@@ -99,7 +102,11 @@ const items = [
     setoutput(false)
     setSearchField(true)
   }
- 
+  if(!fontsLoaded)
+  {
+    return(<AppLoading />)
+  }
+  else{
   return (
     <SafeAreaView>
    <ScrollView>
@@ -219,9 +226,9 @@ const items = [
           selectedItemIconColor="#CCC"
           itemTextColor="#000"
           displayKey="name"
-          fontFamily= 'Montserrat-ExtraLight'
-          itemFontFamily	= 'Montserrat-ExtraLight'
-          selectedItemFontFamily= 'Montserrat-ExtraLight'
+          fontFamily= 'Montserrat_200ExtraLight'
+          itemFontFamily	= 'Montserrat_200ExtraLight'
+          selectedItemFontFamily= 'Montserrat_200ExtraLight'
           selectedItemIconColor= "black"
           selectedItemTextColor= "black"
           submitButtonColor="#CCC"
@@ -238,8 +245,8 @@ const items = [
                     <Button title="Find Friends"
                       onPress={searchResult}
                       containerStyle={{ marginVertical: 10 }}
-                      buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo-Bold' }}
-                      titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                      buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo_700Bold' }}
+                      titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                       containerStyle={{ width: "100%" }} />
                   </View>
 
@@ -269,8 +276,8 @@ const items = [
           <Button title="Back"
             onPress={showSearchFields}
             containerStyle={{ marginVertical: 20 }}
-            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo-Bold'}}
-            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo_700Bold'}}
+            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
             containerStyle={{ width: "100%" }} />
         </View>
       ) : null}
@@ -289,6 +296,7 @@ const items = [
 
   )
 
+}
 }
 const styles = StyleSheet.create({
 
@@ -309,7 +317,7 @@ const styles = StyleSheet.create({
     },
     upperText:
     {
-      fontFamily: "Cairo-Bold",
+      fontFamily: "Cairo_700Bold",
       fontSize: 20,
       textAlign: "center",
       marginVertical: 20,
@@ -317,7 +325,7 @@ const styles = StyleSheet.create({
   
     },
     endText: {
-      fontFamily: "Cairo-Bold",
+      fontFamily: "Cairo_700Bold",
       fontSize: 20,
       textAlign: "center",
       marginVertical: 20,
@@ -330,12 +338,12 @@ const styles = StyleSheet.create({
     iAmContainer: {
       borderWidth: 1,
       marginHorizontal: 10,
-      fontFamily: 'Montserrat-ExtraLight'
+      fontFamily: 'Montserrat_200ExtraLight'
     },
     labelText: {
       marginHorizontal: 10,
       marginVertical: 5,
-      fontFamily: 'Montserrat-ExtraLight',
+      fontFamily: 'Montserrat_200ExtraLight',
       fontSize: 16
     },
     mainContainerPicker:
@@ -353,7 +361,7 @@ const styles = StyleSheet.create({
   
     },
     upperTextHeading: {
-      fontFamily: "Cairo-Bold",
+      fontFamily: "Cairo_700Bold",
       fontSize: 20,
       textAlign: "left",
       marginHorizontal: 10,
@@ -409,14 +417,14 @@ const styles = StyleSheet.create({
    
     },
     dropDownActive: {
-      fontFamily: 'Montserrat-ExtraLight'
+      fontFamily: 'Montserrat_200ExtraLight'
     },
     TextInput: {
       borderWidth: 1,
       height: 40,
       marginHorizontal: 10,
       paddingHorizontal: 10,
-      fontFamily: 'Montserrat-ExtraLight',
+      fontFamily: 'Montserrat_200ExtraLight',
       borderRadius: 5,
       backgroundColor: "white"
     },
@@ -442,7 +450,7 @@ const styles = StyleSheet.create({
       marginHorizontal: 10,
       marginVertical: 10,
       fontSize: 23,
-      fontFamily: 'Cairo-Bold'
+      fontFamily: 'Cairo_700Bold'
     },
     textContainer: {
       marginHorizontal: 10
@@ -464,7 +472,7 @@ const styles = StyleSheet.create({
       marginHorizontal: 10,
       marginVertical: 10,
       fontSize: 23,
-      fontFamily: 'Cairo-Bold'
+      fontFamily: 'Cairo_700Bold'
   },
   secondContainer: {
       flex: 2,
@@ -482,11 +490,11 @@ const styles = StyleSheet.create({
       marginHorizontal: 10
   },
   elipsText:
-  { fontFamily: 'Montserrat-ExtraLight', color: 'black', fontSize: 15 ,marginRight:110},
+  { fontFamily: 'Montserrat_200ExtraLight', color: 'black', fontSize: 15 ,marginRight:110},
   iAmContainer: {
     borderWidth: 1,
     marginHorizontal: 10,
-    fontFamily: 'Montserrat-ExtraLight',
+    fontFamily: 'Montserrat_200ExtraLight',
     borderRadius:5,
     paddingTop:3
 },

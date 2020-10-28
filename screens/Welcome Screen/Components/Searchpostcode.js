@@ -16,6 +16,8 @@ import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { AsyncStorage } from 'react-native';
 
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 const Searchpostcode = props => {
 
     const [location, setLocation] = useState(null);
@@ -31,7 +33,9 @@ const Searchpostcode = props => {
     const [selectedValue, setSelectedValue] = useState("");
 
     const [locationOff, setLocationoff] = useState(false)
-
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold
+      });
 
     const toggleOverlay = () => {
         setVisible(visible);
@@ -40,9 +44,7 @@ const Searchpostcode = props => {
         
         async function getKind() {
    
-        font.loadAsync({
-            'Cairo-Bold': require('../../../../assets/fonts/Cairo-Bold.ttf')
-        });
+     
 
         (async () => {
             setspinner(true)
@@ -189,7 +191,11 @@ const Searchpostcode = props => {
     const [searchPostcode, setserachPostocde] = useState([])
 
 
-
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
 
 
     return (
@@ -239,7 +245,7 @@ const Searchpostcode = props => {
                 <Text style={styles.upperText}>Don’t see your country?<Text onPress={() => Linking.openURL('mailto:contactus@not4dating.com')}> Click here</Text> to tell us where to expand next.</Text>
 
                 <Button containerStyle={{ marginHorizontal: 30, marginVertical: 30 }}
-                    titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                    titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                     underlineColor="transparent"
                     inputContainerStyle={{ borderWidth: "none" }}
                     buttonStyle={{ textAlign: "center", alignItems: "center", justifyContent: "center" }}
@@ -263,7 +269,7 @@ const Searchpostcode = props => {
     );
 
 };
-
+}
 
 
 
@@ -286,7 +292,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         textAlign: "center",
         fontSize: 23,
-        fontFamily: 'Cairo-Bold',
+        fontFamily: 'Cairo_700Bold',
         lineHeight: 30
 
     },
@@ -295,7 +301,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         textAlign: "center",
         fontSize: 20,
-        fontFamily: 'Cairo-Bold',
+        fontFamily: 'Cairo_700Bold',
     },
     container: {
         alignItems: "center",

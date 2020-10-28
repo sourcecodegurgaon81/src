@@ -8,12 +8,22 @@ import Http from '../../Api/Http'
 import { TextInput } from 'react-native';
 import Textarea from 'react-native-textarea';
 import Spinner from 'react-native-loading-spinner-overlay';
-
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 const NewChat = props => {
     const [enterSubject, setSubject] = useState()
     const [Message, setMessage] = useState()
           //Spinner
           const [spinner ,setspinner] = useState(false)
+
+
+
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
+    
     useEffect(() => {
 
         AsyncStorage.getItem('Token', (err, result) => {
@@ -21,9 +31,6 @@ const NewChat = props => {
             if (UserDetail != null) {
             }
         })
-        font.loadAsync({
-            'Cairo-Bold': { uri: require('../../../assets/fonts/Cairo-Bold.ttf') },
-        });
     }, [])
 
     const sendMessage = () =>{
@@ -41,7 +48,11 @@ const NewChat = props => {
             })
         })
     }
-
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
 
     return (
 
@@ -88,6 +99,7 @@ const NewChat = props => {
     )
 
 };
+}
 
 const styles = StyleSheet.create({
     FieldContainer: {
@@ -100,17 +112,17 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderWidth: 1,
         borderRadius: 5,
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     textarea: {
         textAlignVertical: 'top',  // hack android
         height: 140,
         fontSize: 14,
         color: '#333',
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     headingText: {
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         fontSize: 20,
         textAlign: "center",
         marginVertical: 5

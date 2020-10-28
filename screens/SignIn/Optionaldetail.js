@@ -16,7 +16,9 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import * as ImagePicker from 'expo-image-picker';
 import { Entypo } from '@expo/vector-icons';
 import MultiSelect from 'react-native-multiple-select';
-
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 const FirstRoute = ({ navigation: { navigate } }) => {
 
 
@@ -33,14 +35,17 @@ const FirstRoute = ({ navigation: { navigate } }) => {
     const [daysvalue, setdays] = useState("")
     const [spaekvalue, setspeak] = useState("")
 
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
 
 
 
     useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
+
+
+    
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
 
@@ -133,7 +138,11 @@ const onSelectedItemsChange = (activityValue) => {
     // Set Selected Items
     setactivityValue(activityValue);
 };
-
+if(!fontsLoaded)
+{
+  return(<AppLoading />)
+}
+else{
     return (
         <SafeAreaView style={{ backgroundColor: "white" }}>
             <ScrollView>
@@ -164,9 +173,9 @@ const onSelectedItemsChange = (activityValue) => {
     selectedItemIconColor="#CCC"
     itemTextColor="#000"
     displayKey="name"
-    fontFamily='Montserrat-ExtraLight'
-    itemFontFamily='Montserrat-ExtraLight'
-    selectedItemFontFamily='Montserrat-ExtraLight'
+    fontFamily='Montserrat_200ExtraLight'
+    itemFontFamily='Montserrat_200ExtraLight'
+    selectedItemFontFamily='Montserrat_200ExtraLight'
     selectedItemIconColor="black"
     selectedItemTextColor="black"
     submitButtonColor="#CCC"
@@ -290,7 +299,7 @@ const onSelectedItemsChange = (activityValue) => {
                             containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
                             buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                             title="Continue"
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                         />
                     </View>
 
@@ -302,6 +311,7 @@ const onSelectedItemsChange = (activityValue) => {
 
     )
 };
+}
 
 const SecondRoute = ({ navigation: { navigate }, route }) => {
 
@@ -318,14 +328,15 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
     const [PetValue, setPetValue] = useState("")
     const [daysvalue, setdays] = useState("")
     const [spaekvalue, setspeak] = useState("")
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
 
 
 
     useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
+    
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
 
@@ -416,7 +427,11 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
     }, [])
 
-
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
 
     return (
         <SafeAreaView style={{ backgroundColor: "white" }}>
@@ -518,8 +533,8 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             style={styles.TextInput}
                             onChangeText={text => setspeak(text)}
                             value={spaekvalue}
-                            labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
-                            placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                            labelStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
+                            placeholderStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
                         />
                     </View>
 
@@ -532,7 +547,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
                             buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                             title="Continue"
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                         />
                     </View>
 
@@ -542,7 +557,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             containerStyle={{ marginHorizontal: 10, backgroundColor: " #4472C4", marginVertical: 8, paddingBottom: 10 }}
                             buttonStyle={{ backgroundColor: "#4472C4", borderRadius: 10 }}
                             title="Previous"
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
 
                         />
                     </View>
@@ -553,7 +568,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
     )
 };
-
+}
 
 
 const ThirdRoute = ({ navigation: { navigate }, route }) => {
@@ -566,14 +581,15 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
     const [TVvalue, setTV] = useState("");
     const [Musicvalue, setMusic] = useState("");
 
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
 
 
 
     useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
+       
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
             if (UserDetail != null) {
@@ -609,7 +625,11 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
 
 
 
-
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
 
 
     return (
@@ -751,7 +771,7 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
                             containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
                             buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                             title="Continue"
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                             onPress={() => navigate('Fourth', { secondRoute: secondRoute, smokeValue: smokeValue, alcoholValue: alcoholValue, Booksvalue: Booksvalue, Moviesvalue: Moviesvalue, TVvalue, Musicvalue: Musicvalue })}
                         />
                     </View>
@@ -762,7 +782,7 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
                             buttonStyle={{ fontFamily: "roboto-bold" }}
                             buttonStyle={{ backgroundColor: "#4472C4", borderRadius: 10 }}
                             title="Previous"
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                             onPress={() => navigate('Second')}
                         />
                     </View>
@@ -773,12 +793,19 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
         </ScrollView>
     )
 }
+}
 function FourthRoute({ navigation, route }) {
     const [anyThingvalue, setanyThing] = useState("");
     const [spinner, setspinner] = useState(false)
     const [images, setImages] = useState()
     const [image, setImage] = useState(null);
     const [imageUrls, setImageUrls] = useState()
+
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
+
     const pickImage = async () => {
       
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -826,10 +853,7 @@ function FourthRoute({ navigation, route }) {
 
     var items = [];
     useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
+       
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
             const userId = UserDetail.data.user.uid
@@ -930,7 +954,11 @@ function FourthRoute({ navigation, route }) {
     }
 
 
-
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
 
     return (
         <View style={{backgroundColor:"white",flex:1}}>
@@ -998,7 +1026,7 @@ function FourthRoute({ navigation, route }) {
                         containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
                         buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                         title="Continue"
-                        titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                        titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                         onPress={UserDetails}
 
                     />
@@ -1007,7 +1035,7 @@ function FourthRoute({ navigation, route }) {
                         containerStyle={{ marginHorizontal: 10, backgroundColor: " #4472C4", marginVertical: 8, paddingBottom: 10 }}
                         buttonStyle={{ backgroundColor: "#4472C4", borderRadius: 10 }}
                         title="Previous"
-                        titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                        titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                         onPress={() => navigation.navigate('Third')}
                     />
                 </View>
@@ -1021,6 +1049,7 @@ function FourthRoute({ navigation, route }) {
 
 
 
+}
 }
 
 
@@ -1037,13 +1066,7 @@ const Optionaldetail = (props) => {
 
 
     useEffect(() => {
-        async function getKind() {
-            font.loadAsync({
-                'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-                'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-            });
-        }
-        getKind()
+      
     }, [])
     const [index, setIndex] = React.useState(0);
     const network = React.useContext(NetworkContext);
@@ -1070,17 +1093,17 @@ const styles = StyleSheet.create({
     iAmContainer: {
         borderWidth: 1,
         marginHorizontal: 10,
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     labelText: {
         marginHorizontal: 10,
         marginVertical: 5,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         fontSize: 16
     },
     labelTextTextarea: {
         marginVertical: 5,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         fontSize: 16
     },
     mainContainerPicker:
@@ -1102,14 +1125,14 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
         textAlign: "justify",
         marginVertical: 10,
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     lowerTextfield: {
         marginTop: -23,
         fontSize: 18,
         marginLeft: 10,
         marginBottom: 10,
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
 
     },
     textArea:
@@ -1134,7 +1157,7 @@ const styles = StyleSheet.create({
         height: 45,
         marginHorizontal: 10,
         paddingHorizontal: 10,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         borderRadius: 5
     },
     FieldContainer: {
@@ -1151,7 +1174,7 @@ const styles = StyleSheet.create({
 
     },
     dropDownActive: {
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     textareaContainer: {
         height: 140,
@@ -1159,14 +1182,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderWidth: 1,
         borderRadius: 5,
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     textarea: {
         textAlignVertical: 'top',  // hack android
         height: 140,
         fontSize: 14,
         color: '#333',
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     TextAreaContainer: {
         marginHorizontal: 10
@@ -1224,7 +1247,7 @@ const styles = StyleSheet.create({
     },
     imageUploadButtonText: {
         fontSize: 20,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         backgroundColor: "#DFF4F5",
         marginLeft: 10,
         alignItems: "center",
@@ -1234,7 +1257,7 @@ const styles = StyleSheet.create({
     },
     imageUploadButton: {
         fontSize: 20,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         backgroundColor: "#DFF4F5",
         paddingHorizontal: 30,
         paddingVertical: 15,
@@ -1249,7 +1272,7 @@ const styles = StyleSheet.create({
     iAmContainer: {
         borderWidth: 1,
         marginHorizontal: 10,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         borderRadius:5,
         paddingTop:3
     },

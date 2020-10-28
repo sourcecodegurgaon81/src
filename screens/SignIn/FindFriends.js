@@ -5,17 +5,19 @@ import { Tooltip, Input } from 'react-native-elements';
 import * as font from 'expo-font';
 import { AsyncStorage } from 'react-native';
 import Http from '../../Api/Http'
-
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 
 const FindFriends = props => {
 
     const [totalPercentage, setTotalPercentage] = useState("")
-
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
     useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
+    
 
 
         AsyncStorage.getItem('Token', (err, result) => {
@@ -201,7 +203,11 @@ const FindFriends = props => {
 
 
     }, [])
-
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
 
     return (
         <View style={styles.mainContainer}>
@@ -210,8 +216,8 @@ const FindFriends = props => {
                     <Text style={styles.upperText}>Hello! What would you like to do first?</Text>
                     <View >
                         <Button title="Find Friends"
-                            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo-Bold' }}
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo_700Bold' }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                             containerStyle={{ width: "100%" }}
                             onPress={() => props.navigation.navigate('Tabs')} />
                     </View>
@@ -220,8 +226,8 @@ const FindFriends = props => {
                     <Text style={styles.upperText}>Or</Text>
                     <View >
                         <Button title="Finish My Profile"
-                            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo-Bold' }}
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo_700Bold' }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                             containerStyle={{ width: "100%" }} 
                             onPress={() => props.navigation.navigate('Optionaldetail')} />
                     </View>
@@ -249,6 +255,7 @@ const FindFriends = props => {
     )
 
 }
+}
 const styles = StyleSheet.create({
 
     mainContainer: {
@@ -269,7 +276,7 @@ const styles = StyleSheet.create({
     },
     upperText:
     {
-        fontFamily: "Montserrat-ExtraLight",
+        fontFamily: "Montserrat_200ExtraLight",
         fontSize: 20,
         textAlign: "center",
         marginVertical: 20,

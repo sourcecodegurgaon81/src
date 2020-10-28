@@ -15,7 +15,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Textarea from 'react-native-textarea';
 import Http from '../../Api/Http'
-
+  
 import DatePicker from 'react-native-datepicker';
 import { CheckBox } from "native-base"
 import { Overlay } from 'react-native-elements';
@@ -25,8 +25,11 @@ import MultiSelect from 'react-native-multiple-select';
 import { Camera } from 'expo-camera'; 
 import ImgToBase64 from 'react-native-image-base64';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 
-const FirstRoute = ({ navigation: { navigate } }) => {
+
+function FirstRoute({navigation: {navigate}}) {
 
 
     //Fields 
@@ -41,7 +44,10 @@ const FirstRoute = ({ navigation: { navigate } }) => {
     const toggleOverlay = () => {
         seterrorOverLay(!errorOverLay);
     };
-
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
     const checkUserDetail = () => {
         if (userName == null) {
             toggleOverlay()
@@ -75,7 +81,7 @@ const FirstRoute = ({ navigation: { navigate } }) => {
         else {
             navigate('Second', {
                 userName: userName, userFirstName: userFirstName, userLastName: userLastName,
-                userLastName: userLastName, date: date
+                userLastName: userLastName, date: date 
             })
         }
 
@@ -85,14 +91,15 @@ const FirstRoute = ({ navigation: { navigate } }) => {
 
     useEffect(() => {
 
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
+
 
 
     }, [])
-
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
     return (
 
         <View style={{ backgroundColor: "white", flex: 1 }}>
@@ -109,8 +116,8 @@ const FirstRoute = ({ navigation: { navigate } }) => {
                     style={styles.TextInput}
                     onChangeText={text => setuserName(text)}
                     value={userName}
-                    labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
-                    placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                    labelStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
+                    placeholderStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
                     placeholder="Username"
                 />
             </View>
@@ -184,8 +191,8 @@ const FirstRoute = ({ navigation: { navigate } }) => {
             <Button containerStyle={{ marginHorizontal: 20 }}
                 onPress={checkUserDetail}
                 title="Continue"
-                buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo-Bold' }}
-                titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo_700Bold' }}
+                titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
 
             />
 
@@ -201,6 +208,7 @@ const FirstRoute = ({ navigation: { navigate } }) => {
 
     )
 };
+}
 
 const SecondRoute = ({ navigation: { navigate }, route }) => {
 
@@ -217,7 +225,10 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
         seterrorOverLay(!errorOverLay);
     };
 
-
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
     const checkFields = () => {
         if (IamName == null) {
             toggleOverlay()
@@ -239,7 +250,11 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
             navigate('Third', { Gender: IamName, Contract: contracted, meet: meet, consider: consider, firstRoute: firstRoute })
         }
     }
-
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
     return (
         <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
             <ScrollView>
@@ -297,7 +312,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             buttonStyle={{ borderRadius: 10 }}
                             title="Why do we ask this if its
   not for dating or sex?"
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 18 }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 18 }}
 
                         />
                     </View>
@@ -349,7 +364,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
                             buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10}}
                             title="Continue"
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                             onPress={checkFields}
 
                         />
@@ -360,7 +375,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             containerStyle={{ marginHorizontal: 10, backgroundColor: " #E62E2D", marginVertical: 8, paddingBottom: 10 }}
                             buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 }}
                             title="Previous"
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                             onPress={() => navigate('First')}
 
                         />
@@ -379,6 +394,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
     )
 };
+}
 
 
 
@@ -392,6 +408,12 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
     const [imageNotUploaded, setimageNotUploaded] = useState(true)
     const [uploadedImage , setuploadedImage ] = useState(false)
     const  secondRoute = route.params
+
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
+
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -439,7 +461,11 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
         return <Text>No access to camera</Text>;
       }
 
-
+      if(!fontsLoaded)
+      {
+        return(<AppLoading />)
+      }
+      else{
 
     return (
 
@@ -489,7 +515,7 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
                     containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
                     buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                     title="Continue"
-                    titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                    titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                     onPress={() => navigate('Fourth',{secondRoute:secondRoute ,result:imageUrls})}
 
                 />
@@ -501,13 +527,14 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
                     containerStyle={{ marginHorizontal: 10, backgroundColor: " #E62E2D", marginVertical: 8, paddingBottom: 10 }}
                     buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 }}
                     title="Previous"
-                    titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                    titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                     onPress={() => navigate('Second')}
                 />
             </View>
 
         </View>
     )
+}
 }
 const FourthRoute = ({ navigation: { navigate }, route }) => {
 
@@ -521,6 +548,11 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
     const [selectedItems, setSelectedItems] = useState([]);
     const [errorOverLay, seterrorOverLay] = useState(false);
     const [message, setMessage] = useState()
+
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
     const toggleOverlay = () => {
         seterrorOverLay(!errorOverLay);
     };
@@ -589,7 +621,11 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
         setSelectedItems(selectedItems);
     };
 
-
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
 
     return (
         <ScrollView style={{backgroundColor:"white"}}>
@@ -630,7 +666,7 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                         <Button
                             containerStyle={{ marginHorizontal: 10 }}
                             title="Why isn't my country here?"
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 18 }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 18 }}
                             containerStyle={{ marginHorizontal: 10 }}
                             buttonStyle={{ borderRadius: 10 }}
                         />
@@ -643,8 +679,8 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                             style={styles.TextInput}
                             onChangeText={text => setPostal(text)}
                             value={Postalcode}
-                            labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
-                            placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                            labelStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
+                            placeholderStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
                         />
                     </View>
 
@@ -656,7 +692,7 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                             title="Why can i only meet people who live near me?"
                             containerStyle={{ marginHorizontal: 10 }}
                             buttonStyle={{ borderRadius: 10 }}
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 18 }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 18 }}
 
                         />
                     </View>
@@ -683,9 +719,9 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                                     selectedItemIconColor="#CCC"
                                     itemTextColor="#000"
                                     displayKey="name"
-                                    fontFamily='Montserrat-ExtraLight'
-                                    itemFontFamily='Montserrat-ExtraLight'
-                                    selectedItemFontFamily='Montserrat-ExtraLight'
+                                    fontFamily='Montserrat_200ExtraLight'
+                                    itemFontFamily='Montserrat_200ExtraLight'
+                                    selectedItemFontFamily='Montserrat_200ExtraLight'
                                     selectedItemIconColor="black"
                                     selectedItemTextColor="black"
                                     submitButtonColor="#CCC"
@@ -907,7 +943,7 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                             containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
                             buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10}}
                             title="Continue"
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                             onPress={checkUserDetails}
                         />
                     </View>
@@ -917,7 +953,7 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                             containerStyle={{ marginHorizontal: 10, backgroundColor: " #E62E2D", marginVertical: 8, paddingBottom: 10 }}
                             buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10}}
                             title="Previous"
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                             onPress={()=> navigate('Third')}
 
                         />
@@ -939,11 +975,12 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
 
 
 }
+}
 
 
 
 const FifthRoute = ({ navigation: { navigate }, route},props) => {
-console.log(navigate)
+
     const routerOutput = route.params
 
     const [enterEmail,setEnterEmail] = useState()
@@ -952,7 +989,10 @@ console.log(navigate)
     const [message, setMessage] = useState()
     const [spinner, setspinner] = useState(false)
     const [imageUrls ,setImageUrls] = useState()
-
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
      
     const toggleOverlay = () => {
         seterrorOverLay(!errorOverLay);
@@ -960,8 +1000,6 @@ console.log(navigate)
 
     const submitDetails = () =>{
             setImageUrls(route.params.thirdRoute.result)
-        
-            console.log(imageUrls)
         
         let ts = Math.round(new Date().getTime() / 1000);
         //setspinner(true)
@@ -1062,7 +1100,11 @@ console.log(navigate)
 
 
 
-
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
 
 
 
@@ -1085,8 +1127,8 @@ console.log(navigate)
                     style={styles.TextInput}
                     onChangeText={text => setEnterEmail(text)}
                     value={enterEmail}
-                    labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
-                    placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                    labelStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
+                    placeholderStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
                     placeholder="Enter email address"
                 />
             </View>
@@ -1096,8 +1138,8 @@ console.log(navigate)
          style={styles.TextInput}
          onChangeText={text => setConfirmEmail(text)}
          value={ConfirmEmail}
-         labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
-         placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+         labelStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
+         placeholderStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
          placeholder="Confirm email address"
      />
       </View>
@@ -1117,7 +1159,7 @@ console.log(navigate)
                     containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
                     buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                     title="Continue"
-                    titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                    titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                     onPress={submitDetails}
                 />
             </View>
@@ -1128,7 +1170,7 @@ console.log(navigate)
                     buttonStyle={{ fontFamily: "roboto-bold" }}
                     buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 }}
                     title="Previous"
-                    titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                    titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                     onPress={()=>navigate('Home')}
                 />
             </View>
@@ -1141,7 +1183,7 @@ console.log(navigate)
 
     )
 }
-//const initialLayout = { width: Dimensions.get('window').width };
+}
 
 
 
@@ -1152,14 +1194,7 @@ const Tab = createMaterialTopTabNavigator();
 
 const SignUp = props => {
 
-    useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
-
-
-    }, [])
+   
     const [index, setIndex] = React.useState(0);
 
 
@@ -1170,7 +1205,7 @@ const SignUp = props => {
 
             <NavigationContainer>
                 <Tab.Navigator tabBarOptions={{ activeTintColor: 'transparent', inactiveTintColor: '#D3D3D3', indicatorStyle: { backgroundColor: 'transparent' } }} tabBarPosition='bottom'>
-                    <Tab.Screen name="First" component={FirstRoute} options={{ tabBarLabel: '' }} />
+                    <Tab.Screen name="First"  options={{ tabBarLabel: '' }}  component={FirstRoute}/>
                     <Tab.Screen name="Second" component={SecondRoute} options={{ tabBarLabel: '' }} />
                     <Tab.Screen name="Third" component={ThirdRoute} options={{ tabBarLabel: '' }} />
                     <Tab.Screen name="Fourth" component={FourthRoute} options={{ tabBarLabel: '' }}  />
@@ -1189,12 +1224,12 @@ const styles = StyleSheet.create({
     iAmContainer: {
         borderWidth: 1,
         marginHorizontal: 10,
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     labelText: {
         marginHorizontal: 10,
         marginVertical: 5,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         fontSize: 16
     },
     mainContainerPicker:
@@ -1216,30 +1251,30 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
         textAlign: "justify",
         marginVertical: 10,
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     lowerTextfield: {
 
         fontSize: 14,
         marginLeft: 10,
         marginBottom: 10,
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
 
     },
     iAmContainer: {
         borderWidth: 1,
         marginHorizontal: 10,
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     labelText: {
         marginHorizontal: 10,
         marginVertical: 5,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         fontSize: 16
     },
     labelTextTextarea: {
         marginVertical: 5,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         fontSize: 16
     },
     mainContainerPicker:
@@ -1261,7 +1296,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
         textAlign: "justify",
         marginVertical: 10,
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
 
     textArea:
@@ -1286,7 +1321,7 @@ const styles = StyleSheet.create({
         height: 40,
         marginHorizontal: 10,
         paddingHorizontal: 10,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         borderRadius: 5,
 
     },
@@ -1304,7 +1339,7 @@ const styles = StyleSheet.create({
 
     },
     dropDownActive: {
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     textareaContainer: {
         height: 140,
@@ -1312,14 +1347,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderWidth: 1,
         borderRadius: 5,
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     textarea: {
         textAlignVertical: 'top',  // hack android
         height: 140,
         fontSize: 14,
         color: '#333',
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     TextAreaContainer: {
         marginHorizontal: 10
@@ -1381,7 +1416,7 @@ const styles = StyleSheet.create({
 
     },
     notifyText: {
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         fontSize: 14,
         color: "grey",
         marginHorizontal: 10
@@ -1392,14 +1427,14 @@ const styles = StyleSheet.create({
     },
     ImageTopHeadingText: {
         fontSize: 20,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         marginVertical: 10,
         alignItems: "center",
         justifyContent: "center"
     },
     imageUploadButtonText: {
         fontSize: 20,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         backgroundColor: "#DFF4F5",
         marginLeft: 10,
         alignItems: "center",
@@ -1409,7 +1444,7 @@ const styles = StyleSheet.create({
     },
     imageUploadButton: {
         fontSize: 20,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         backgroundColor: "#DFF4F5",
         paddingHorizontal: 30,
         paddingVertical: 15,
@@ -1436,10 +1471,10 @@ const styles = StyleSheet.create({
      
       },
       dropDownActive: {
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
       },
       errorText: {
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         paddingHorizontal: 20,
         paddingVertical: 20,
         fontSize: 16,

@@ -10,19 +10,19 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { AsyncStorage } from 'react-native';
 import { Overlay } from 'react-native-elements';
 import Moment from 'moment';
-
-
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 
 
 const Becomeverified = (props) => {
     const [spinner, setspinner] = useState(false)
 
-
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
     useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
         becomeCerified()
     }, [])
 
@@ -78,7 +78,11 @@ const Becomeverified = (props) => {
 
     
       }
-   
+      if(!fontsLoaded)
+      {
+        return(<AppLoading />)
+      }
+      else{
 
     return (
 
@@ -103,7 +107,7 @@ const Becomeverified = (props) => {
                     containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
                     buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10}}
                     title="Free 7 Days Trial"
-                    titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                    titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                     onPress={sevenDaysTrail}
                 />
                 <Text style={styles.alignTextContainerButton}>(No card required)</Text>
@@ -118,7 +122,7 @@ const Becomeverified = (props) => {
                         containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
                         buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                         title="Become Verified"
-                        titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                        titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                         onPress={()=> props.navigation.navigate('TrialOver')}
                     
                     />
@@ -147,6 +151,7 @@ const Becomeverified = (props) => {
     )
 
 }
+}
 
 const styles = StyleSheet.create({
 
@@ -160,23 +165,23 @@ const styles = StyleSheet.create({
     {
         textAlign: "center",
         fontSize: 18,
-        fontFamily: 'Montserrat-ExtraLight'
+        fontFamily: 'Montserrat_200ExtraLight'
     },
     alignTextContainerButton: {
         textAlign: "center",
         fontSize: 18,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
     },
     alignTextContainerTwo: {
         textAlign: "center",
         fontSize: 18,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         marginTop: 25
     },
     alignTextContainerthree: {
         textAlign: "center",
         fontSize: 18,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         marginTop: 40
     }
 })

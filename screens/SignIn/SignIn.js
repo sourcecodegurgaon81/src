@@ -10,7 +10,9 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { AsyncStorage } from 'react-native';
 import { Overlay } from 'react-native-elements';
 import Moment from 'moment';
-
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 
 
 const SignIn = props => {
@@ -29,14 +31,13 @@ const SignIn = props => {
     //Spinner
     const [spinner ,setspinner] = useState(false)
 
-
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
 
 
     useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
         AsyncStorage.getItem('Token', (err, result) => {
             const LogoutToken = JSON.parse(result)
             if(LogoutToken != null)
@@ -131,7 +132,11 @@ const SignIn = props => {
 
     });
   }
-
+  if(!fontsLoaded)
+  {
+    return(<AppLoading />)
+  }
+  else{
 
     return (
         <View style={styles.mainContainer}>
@@ -149,8 +154,8 @@ const SignIn = props => {
                             style={styles.TextInput}
                             onChangeText={newValue => setUser(newValue)}
                             value={user}
-                            labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
-                            placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                            labelStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
+                            placeholderStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
                             placeholder='Username'
                         />
                     </View>
@@ -159,8 +164,8 @@ const SignIn = props => {
                             style={styles.TextInput}
                             onChangeText={newValues => setPass(newValues)}
                             value={pass}
-                            labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
-                            placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                            labelStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
+                            placeholderStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
                             placeholder='Password'
                             secureTextEntry={true}
                         />
@@ -170,8 +175,8 @@ const SignIn = props => {
 
                 <View >
                     <Button title="Sign In" onPress={Login}
-                        buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10,  fontFamily: 'Cairo-Bold' }}
-                        titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                        buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10,  fontFamily: 'Cairo_700Bold' }}
+                        titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                         containerStyle={{ width: "100%" }} />
                 </View>
 
@@ -185,7 +190,7 @@ const SignIn = props => {
             
         </View>
     )
-
+    }
 }
 
 const styles = StyleSheet.create({
@@ -207,12 +212,12 @@ const styles = StyleSheet.create({
     },
     forgotPasswprdText: {
         textAlign: "right",
-        marginHorizontal: 20, fontSize: 15,fontFamily: 'Montserrat-ExtraLight',
+        marginHorizontal: 20, fontSize: 15,fontFamily: 'Montserrat_200ExtraLight',
         marginVertical:10
     },
     TextContainer: {
         textAlign: "center",
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         fontSize: 20
     },
     spinnerTextStyle: {
@@ -221,7 +226,7 @@ const styles = StyleSheet.create({
       labelText: {
         marginHorizontal: 10,
         marginVertical: 5,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         fontSize: 16
     },
     TextInput: {
@@ -229,7 +234,7 @@ const styles = StyleSheet.create({
         height: 45,
         marginHorizontal: 10,
         paddingHorizontal: 10,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         borderRadius: 5
     },
     FieldContainer:{
@@ -242,7 +247,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#28A745"
     },
     tittleText: {
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         paddingHorizontal: 20,
         paddingVertical: 20,
         fontSize: 16
@@ -252,7 +257,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
     },
     errorText: {
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         paddingHorizontal: 20,
         paddingVertical: 20,
         fontSize: 16,

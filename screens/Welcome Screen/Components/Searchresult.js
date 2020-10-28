@@ -8,6 +8,9 @@ import Http from '../../../Api/Http'
 import UserResult from './UserResult'
 import * as font from 'expo-font';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 const SearchResult = props => {
     const { navigation } = props;
     const post = navigation.getParam('term')
@@ -24,7 +27,10 @@ const SearchResult = props => {
 
     const [currPages,setcurrPage] = useState()
 
-
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
 
     const toggleOverlay = () => {
         setVisible(!visible);
@@ -36,10 +42,7 @@ const SearchResult = props => {
        
         getSearchData()
         }
-        font.loadAsync({
-            'Cairo-Bold': require('../../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
+      
         getKind();
     }, []);
 
@@ -105,7 +108,11 @@ const SearchResult = props => {
 }
 
 
-
+if(!fontsLoaded)
+{
+  return(<AppLoading />)
+}
+else{
 
 
     return (
@@ -140,7 +147,7 @@ const SearchResult = props => {
 
 
 }
-
+}
 
 
 const styles = StyleSheet.create({
@@ -156,7 +163,7 @@ const styles = StyleSheet.create({
     notFoundText: {
         paddingVertical: 25,
         textAlign: "center",
-        fontFamily: "Montserrat-ExtraLight",
+        fontFamily: "Montserrat_200ExtraLight",
         fontSize: 17,
         marginTop: 10
     }

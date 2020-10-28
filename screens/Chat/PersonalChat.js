@@ -18,13 +18,17 @@ import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import Http from '../../Api/Http'
 import { AsyncStorage } from 'react-native';
-
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 
 
 const Personalchat = (props) => {
     const { navigation } = props;
-
- console.log(navigation.state.params.Uid)
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
     const [pmtid, setpmtid] = useState()
     const [userId, setUserId] = useState()
     const [userSend, setUserSend] = useState([])
@@ -40,13 +44,8 @@ const Personalchat = (props) => {
 
 
     useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
+    
         getChat()
-
-
 
     }, [])
 
@@ -90,6 +89,11 @@ const Personalchat = (props) => {
             })
         })
     }
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
     return (
         <View style={styles.mainContainer}>
 
@@ -205,6 +209,7 @@ const Personalchat = (props) => {
     )
 
 }
+}
 
 const styles = StyleSheet.create({
     mainContainer: {
@@ -252,12 +257,12 @@ const styles = StyleSheet.create({
     },
     chatText: {
         color: "black",
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         textAlign:"center"
     },
     leftchatText: {
         color: "white",
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         textAlign:"center"
     },
     rightChat: {

@@ -6,6 +6,9 @@ import * as font from 'expo-font';
 import Http from '../../Api/Http'
 import { Overlay } from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 const Forgotpassword = props => {
     const [user, setUser] = useState('')
     const [visible, setVisible] = useState(false);
@@ -26,13 +29,11 @@ const Forgotpassword = props => {
         props.navigation.goBack()
         setSuccessVisible(!successvisible);
     }
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
 
-    useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
-    }, [])
 
     const resetPassword = () => {
 
@@ -52,7 +53,11 @@ const Forgotpassword = props => {
                 }
             })
     }
-
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
 
     return (
 
@@ -70,8 +75,8 @@ const Forgotpassword = props => {
                         style={styles.TextInput}
                         value={user}
                         onChangeText={newValue => setUser(newValue)}
-                        labelStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
-                        placeholderStyle={{ fontFamily: 'Montserrat-ExtraLight' }}
+                        labelStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
+                        placeholderStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
                         placeholder='User Name/Email'
                     />
                 </View>
@@ -81,7 +86,7 @@ const Forgotpassword = props => {
                     containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
                     buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                     title="Continue"
-                    titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                    titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                     onPress={resetPassword}
                 />
 
@@ -91,7 +96,7 @@ const Forgotpassword = props => {
                     title="Previous"
                     onPress={() => props.navigation.navigate('SignIn')}
 
-                    titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                    titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
 
                 />
 
@@ -117,7 +122,7 @@ const Forgotpassword = props => {
 
 
 
-
+    }
 
 }
 const styles = StyleSheet.create({
@@ -131,13 +136,13 @@ const styles = StyleSheet.create({
     },
     TextContainer: {
         textAlign: "center",
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         fontSize: 20
     },
     labelText: {
         marginHorizontal: 10,
         marginVertical: 5,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         fontSize: 16
     },
     TextInput: {
@@ -145,7 +150,7 @@ const styles = StyleSheet.create({
         height: 45,
         marginHorizontal: 10,
         paddingHorizontal: 10,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         borderRadius: 5
     },
     FieldContainer: {
@@ -158,7 +163,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#28A745"
     },
     tittleText: {
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         paddingHorizontal: 20,
         paddingVertical: 20,
         fontSize: 16
@@ -168,7 +173,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
     },
     errorText: {
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         paddingHorizontal: 20,
         paddingVertical: 20,
         fontSize: 16,

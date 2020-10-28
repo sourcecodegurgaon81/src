@@ -7,7 +7,9 @@ import Http from '../../Api/Http'
 import Moment from 'moment';
 import { Button, Overlay } from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
-
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 
 
 
@@ -90,16 +92,12 @@ const UserDetails = props => {
     const  ReportOverlay = () => {
         setReportVisible(!Reportvisible);
     };
-   
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
 
     useEffect(() => {
-
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf'),
-            'Montserrat-LightItalic': require('../../../assets/fonts/Montserrat-LightItalic.ttf'),
-
-        });
 
         const uid = navigation.getParam('uid')
         setUserId(uid)
@@ -576,7 +574,11 @@ function ReportAdmin() {
 }
 
 
-
+if(!fontsLoaded)
+{
+  return(<AppLoading />)
+}
+else{
 
     return (
         <View style={styles.mainContainer}>
@@ -595,7 +597,7 @@ function ReportAdmin() {
 
 
                         <View style={styles.thirdPhotoContainer}>
-                            <Text style={{ fontFamily: 'Cairo-Bold' }}>{name}{"\n"}
+                            <Text style={{ fontFamily: 'Cairo_700Bold' }}>{name}{"\n"}
                                 {age} ,{IamName}
                             </Text>
                             <Image style={styles.ImageProfile} source={{ uri: Picture }} />
@@ -791,6 +793,7 @@ function ReportAdmin() {
 
 
 }
+}
 
 const styles = StyleSheet.create({
 
@@ -820,14 +823,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginHorizontal: 16,
         marginVertical: 10,
-        fontFamily: 'Cairo-Bold'
+        fontFamily: 'Cairo_700Bold'
     },
     buttonstyle: {
         marginHorizontal: 20
     },
     bottomText: {
         textAlign: "center",
-        fontFamily: 'Cairo-Bold',
+        fontFamily: 'Cairo_700Bold',
         color: "red",
         fontSize: 16
     },
@@ -867,7 +870,7 @@ const styles = StyleSheet.create({
 
     },
     fourConatinerText: {
-        fontFamily: "Montserrat-ExtraLight",
+        fontFamily: "Montserrat_200ExtraLight",
         marginVertical: 10,
         marginRight: 45,
         fontSize: 16
@@ -882,7 +885,7 @@ const styles = StyleSheet.create({
 
     },
     fourthContentContainerBold: {
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         marginRight: 40
     },
     Outputfont:
@@ -894,7 +897,7 @@ const styles = StyleSheet.create({
         marginVertical: 10
     },
     StatusText: {
-        fontFamily: "Montserrat-ExtraLight",
+        fontFamily: "Montserrat_200ExtraLight",
         fontSize: 16
     },
     mainContainerTwoLiner: {
@@ -910,7 +913,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
     },
     overLayText: {
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         textAlign: "center",
         paddingVertical: 20,
         paddingHorizontal: 30,
@@ -923,7 +926,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#28A745"
     },
     tittleText: {
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         paddingHorizontal: 20,
         paddingVertical: 20,
         fontSize: 16

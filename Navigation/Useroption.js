@@ -5,19 +5,21 @@ import { Button, Overlay } from 'react-native-elements';
 import { Tooltip, Input } from 'react-native-elements';
 import { CheckBox } from 'react-native-elements'
 import * as font from 'expo-font';
-
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 
 
 const Useroption = () => {
-    useEffect(() => {
-
-            font.loadAsync({
-                'Cairo-Bold': require('../../assets/fonts/Cairo-Bold.ttf'),
-                'Montserrat-ExtraLight': require('../../assets/fonts/Montserrat-ExtraLight.ttf')
-            });
-        
-
-    }, [])
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
+      if(!fontsLoaded)
+      {
+        return(<AppLoading />)
+      }
+      else{
     return (
         <View style={styles.mainContainer}>
 
@@ -36,6 +38,7 @@ const Useroption = () => {
 
 
 
+}
 }
 
 const styles = StyleSheet.create({
@@ -66,14 +69,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginHorizontal: 16,
         marginVertical: 10,
-        fontFamily: 'Cairo-Bold'
+        fontFamily: 'Cairo_700Bold'
     },
     buttonstyle: {
         marginHorizontal: 20
     },
     bottomText: {
         textAlign: "center",
-        fontFamily: 'Cairo-Bold',
+        fontFamily: 'Cairo_700Bold',
         color: "red",
         fontSize: 16
     },

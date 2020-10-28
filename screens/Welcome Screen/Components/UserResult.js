@@ -6,16 +6,18 @@ import * as font from 'expo-font';
 import { Overlay } from 'react-native-elements';
 import { Button } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
-
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 const UserResult = props => { 
     const [isSelected, setSelection] = useState(true);
 
-
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
     useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
+       
 
 
 
@@ -34,6 +36,11 @@ const UserResult = props => {
         toggleOverlay()
         props.navigation.navigate('SignUp')
     }
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
 
     return (
 
@@ -61,10 +68,10 @@ const UserResult = props => {
                                             />
                                         </View>
                                         <View style={styles.textContainer}>
-                                        <Text style={{ fontFamily: 'Montserrat-ExtraLight' }}>{item.Postal}</Text>
+                                        <Text style={{ fontFamily: 'Montserrat_200ExtraLight' }}>{item.Postal}</Text>
                                         
-                                            <Text style={{ fontFamily: 'Montserrat-ExtraLight' }}>{item.name}</Text>
-                                            <Text style={styles.activityText} numberOfLines = {2}><Text style={{ fontFamily: 'Cairo-Bold' }}>Activity :</Text> {active} </Text>
+                                            <Text style={{ fontFamily: 'Montserrat_200ExtraLight' }}>{item.name}</Text>
+                                            <Text style={styles.activityText} numberOfLines = {2}><Text style={{ fontFamily: 'Cairo_700Bold' }}>Activity :</Text> {active} </Text>
                                         </View>
 
                                     </View>
@@ -103,7 +110,7 @@ const UserResult = props => {
                         onPress={navSignup}
                         buttonStyle={{ backgroundColor: "green", textAlign: "center",  borderRadius: 10 }}
                         containerStyle={{ marginHorizontal: 15, marginVertical: 15 }}
-                        titleStyle={{ fontSize: 20 ,fontFamily:"Cairo-Bold"}}
+                        titleStyle={{ fontSize: 20 ,fontFamily:"Cairo_700Bold"}}
                         title="Awesome! Sign me up!"
                     />
                     <Button
@@ -111,7 +118,7 @@ const UserResult = props => {
                         containerStyle={{ marginHorizontal: 15, marginVertical: 15,  borderRadius: 10 }}
                         buttonStyle={{ }}
                         title="I am already a member"
-                        titleStyle={{ fontSize: 20 ,fontFamily:"Cairo-Bold"}}
+                        titleStyle={{ fontSize: 20 ,fontFamily:"Cairo_700Bold"}}
                         onPress={navSigin}
                     />
                    
@@ -121,7 +128,7 @@ const UserResult = props => {
         </View>
 
     )
-
+            }
 }
 const styles = StyleSheet.create({
     mainContainer: {
@@ -148,7 +155,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         marginVertical: 10,
         fontSize: 23,
-        fontFamily: 'Cairo-Bold'
+        fontFamily: 'Cairo_700Bold'
     },
     checkboxContainer: {
         flexDirection: "row",
@@ -161,7 +168,7 @@ const styles = StyleSheet.create({
     },
     label: {
         margin: 8,
-        fontFamily: "Montserrat-ExtraLight",
+        fontFamily: "Montserrat_200ExtraLight",
         fontSize: 16
     },
     ImageCheck: {
@@ -169,20 +176,20 @@ const styles = StyleSheet.create({
         width: 20
     },
     popupTopMessage: {
-        fontFamily: "Montserrat-ExtraLight",
+        fontFamily: "Montserrat_200ExtraLight",
         fontSize: 20,
         textAlign: "center",
         paddingVertical: 20,
 
     },
     popupTopHeading: {
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         fontSize: 24,
         marginHorizontal: 20
 
     },
     activityText:
-    { fontFamily: 'Montserrat-ExtraLight', color: 'black', fontSize: 15,marginRight:20 }
+    { fontFamily: 'Montserrat_200ExtraLight', color: 'black', fontSize: 15,marginRight:20 }
 
 });
 

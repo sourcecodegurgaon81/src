@@ -6,18 +6,27 @@ import * as font from 'expo-font';
 import { createStackNavigator } from 'react-navigation-stack';
 import UserDetails from '../Details/UserDetails'
 
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
+
 
 
 
 
 const SearchItems = props => {
-    useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        })
-  }, [])
 
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
+    
+
+  if(!fontsLoaded)
+  {
+    return(<AppLoading />)
+  }
+  else{
 
     return (
 
@@ -48,8 +57,8 @@ const SearchItems = props => {
                                             />
                                         </View>
                                         <View style={styles.textContainer}>
-                                            <Text style={{ fontFamily: 'Montserrat-ExtraLight' }}>{item.name} {item.uid}</Text>
-                                            <Text style={styles.elipsText} numberOfLines = { 2} ><Text style={{ fontFamily: 'Cairo-Bold' }}>Activity :</Text>{item.Activities}</Text>
+                                            <Text style={{ fontFamily: 'Montserrat_200ExtraLight' }}>{item.name} {item.uid}</Text>
+                                            <Text style={styles.elipsText} numberOfLines = { 2} ><Text style={{ fontFamily: 'Cairo_700Bold' }}>Activity :</Text>{item.Activities}</Text>
                                         </View>
                                     </View>
                                 </ScrollView>
@@ -66,7 +75,7 @@ const SearchItems = props => {
     )
         
 }
-         
+} 
 
 const styles = StyleSheet.create({
     mainContainer: {
@@ -85,7 +94,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         marginVertical: 10,
         fontSize: 23,
-        fontFamily: 'Cairo-Bold'
+        fontFamily: 'Cairo_700Bold'
     },
     secondContainer: {
         flex: 2,
@@ -103,7 +112,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
     },
     elipsText:
-    { fontFamily: 'Montserrat-ExtraLight', color: 'black', fontSize: 15 ,marginRight:110}
+    { fontFamily: 'Montserrat_200ExtraLight', color: 'black', fontSize: 15 ,marginRight:110}
 
 
 });

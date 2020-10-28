@@ -8,6 +8,10 @@ import MultiSelect from 'react-native-multiple-select';
 import Http from '../../Api/Http'
 import { AsyncStorage } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
+
 const Tophobbies = (props) => {
     const [selectedItems, setSelectedItems] = useState([]);
 
@@ -15,16 +19,13 @@ const Tophobbies = (props) => {
 
     const [activityValue, setactivityValue] = useState("");
 
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
       //Spinner
       const [spinner ,setspinner] = useState(false)
-    useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
-
-
-    }, [])
+  
     // Dummy Data for the MutiSelect
     const items = [
         // name key is must. It is to show the text in front
@@ -130,6 +131,11 @@ const Tophobbies = (props) => {
 
 
     }
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
 
     return (
         <View style={styles.mainContainer}>
@@ -164,9 +170,9 @@ const Tophobbies = (props) => {
                                     selectedItemIconColor="#CCC"
                                     itemTextColor="#000"
                                     displayKey="name"
-                                    fontFamily='Montserrat-ExtraLight'
-                                    itemFontFamily='Montserrat-ExtraLight'
-                                    selectedItemFontFamily='Montserrat-ExtraLight'
+                                    fontFamily='Montserrat_200ExtraLight'
+                                    itemFontFamily='Montserrat_200ExtraLight'
+                                    selectedItemFontFamily='Montserrat_200ExtraLight'
                                     selectedItemIconColor="black"
                                     selectedItemTextColor="black"
                                     submitButtonColor="#CCC"
@@ -208,9 +214,9 @@ const Tophobbies = (props) => {
                                     selectedItemIconColor="#CCC"
                                     itemTextColor="#000"
                                     displayKey="name"
-                                    fontFamily='Montserrat-ExtraLight'
-                                    itemFontFamily='Montserrat-ExtraLight'
-                                    selectedItemFontFamily='Montserrat-ExtraLight'
+                                    fontFamily='Montserrat_200ExtraLight'
+                                    itemFontFamily='Montserrat_200ExtraLight'
+                                    selectedItemFontFamily='Montserrat_200ExtraLight'
                                     selectedItemIconColor="black"
                                     selectedItemTextColor="black"
                                     submitButtonColor="#CCC"
@@ -228,8 +234,8 @@ const Tophobbies = (props) => {
                     <View style={{marginVertical:20}}>
                         <Button title="Continue"
                             containerStyle={{marginVertical:10}}
-                            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10,fontFamily: 'Cairo-Bold' }}
-                            titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10,fontFamily: 'Cairo_700Bold' }}
+                            titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                             containerStyle={{ width: "100%" }}
                             onPress= {SubmitDetails} />
                     </View>
@@ -254,6 +260,7 @@ const Tophobbies = (props) => {
     )
 
 }
+}
 const styles = StyleSheet.create({
 
     mainContainer: {
@@ -274,7 +281,7 @@ const styles = StyleSheet.create({
     },
     upperText:
     {
-        fontFamily: "Montserrat-ExtraLight",
+        fontFamily: "Montserrat_200ExtraLight",
         fontSize: 20,
         textAlign: "center",
         marginVertical: 20,
@@ -288,14 +295,14 @@ const styles = StyleSheet.create({
     iAmContainer: {
         borderWidth: 1,
         marginHorizontal: 10,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         borderRadius:5,
         paddingTop:3
     },
     labelText: {
         marginHorizontal: 10,
         marginVertical: 5,
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         fontSize: 16
     },
     mainContainerPicker:

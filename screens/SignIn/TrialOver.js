@@ -10,22 +10,29 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { AsyncStorage } from 'react-native';
 import { Overlay } from 'react-native-elements';
 import Moment from 'moment';
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 
 const TrialOver = props => {
-    useEffect(() => {
-        font.loadAsync({
-            'Cairo-Bold': require('../../../assets/fonts/Cairo-Bold.ttf'),
-            'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-        });
-    })
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
+  
+    if(!fontsLoaded)
+    {
+      return(<AppLoading />)
+    }
+    else{
 
     return (
         <View style={styles.MainContainer}>
             <View style={styles.SecondMainContainer}>
                 <Text style={styles.TopText}>Your trail ended,please subscribe continue using our app services.</Text>
                 <Button title="Become Verified "
-                    buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo-Bold' }}
-                    titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}
+                    buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo_700Bold' }}
+                    titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                     containerStyle={{ width: "100%" }} />
                 <Text style={styles.BelowText} onPress={() => Linking.openURL('https://not4dating.com/')}>No Thanks! I am happy to
                 stay a basic member. Take
@@ -36,20 +43,20 @@ const TrialOver = props => {
         </View>
     )
 
-
+    }
 
 }
 const styles = StyleSheet.create({
 
     BelowText: {
-        fontFamily: "Montserrat-ExtraLight",
+        fontFamily: "Montserrat_200ExtraLight",
         fontSize: 18,
         textAlign: "center",
         marginVertical: 15,
 
     },
     TopText: {
-        fontFamily: "Cairo-Bold",
+        fontFamily: "Cairo_700Bold",
         textAlign: "center",
         textAlign: "center",
         fontSize: 19,

@@ -5,21 +5,22 @@ import { Button } from 'react-native-elements';
 import * as font from 'expo-font';
 import { AsyncStorage } from 'react-native';
 import Http from '../../Api/Http'
+import { configureFonts, DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 
-
+ 
 const HomeScreen = props => {
 
+  let [fontsLoaded] = useFonts({
+    Cairo_700Bold,
+    Montserrat_200ExtraLight
+  });
 
-
-  useEffect(() => {
-    async function loadFont() {
-      return await Font.loadAsync({
-        'Cairo-Bold':{uri: require('../../../assets/fonts/Cairo-Bold.ttf')},
-        'Montserrat-ExtraLight': require('../../../assets/fonts/Montserrat-ExtraLight.ttf')
-
-      });
-    }
+ 
+  useEffect(() => {  
   
         AsyncStorage.getItem('Token', (err, result) => {
           const UserDetail= JSON.parse(result)
@@ -37,10 +38,14 @@ const HomeScreen = props => {
           })
           }     
         }) 
-       
+
       }, []) 
- 
-    
+ if(!fontsLoaded)
+ {
+   return(<AppLoading />)
+ }
+ else{
+
   return (
 
  
@@ -62,16 +67,16 @@ kindly save your energy and use another app.</Text>
 
         <Button 
         onPress ={() => props.navigation.navigate('Postcode')}
-          containerStyle={{ marginHorizontal: 15, marginVertical: 15, borderRadius:10 ,    fontFamily:"Cairo-Bold"}}
-          buttonStyle = {{    fontFamily:"Cairo-Bold"}}
+          containerStyle={{ marginHorizontal: 15, marginVertical: 15, borderRadius:10 ,    }}
+          buttonStyle = {{    fontFamily: 'Cairo_700Bold' }}
           title="Sounds Cool! Who can I meet"
-          titleStyle={{fontSize:20 ,    fontFamily:"Cairo-Bold"}}
+          titleStyle={{fontSize:20 , fontFamily: 'Cairo_700Bold' }}
         />
         <Button 
         onPress ={() => props.navigation.navigate('SignUp')}
-          buttonStyle={{ backgroundColor: "green",textAlign:"center",borderRadius:10 ,    fontFamily:"Cairo-Bold" }}
-              containerStyle={{ marginHorizontal: 15, marginVertical: 15 ,    fontFamily:"Cairo-Bold"}}
-              titleStyle={{fontSize:20,    fontFamily:"Cairo-Bold"}}
+          buttonStyle={{ backgroundColor: "green",textAlign:"center",borderRadius:10 , }}
+              containerStyle={{ marginHorizontal: 15, marginVertical: 15 ,   }}
+              titleStyle={{fontSize:20,    fontFamily: 'Cairo_700Bold' }}
           title="Awesome! Sign me up!"
         />
 
@@ -83,13 +88,15 @@ kindly save your energy and use another app.</Text>
   )
   
 };
+}
 
 const styles = StyleSheet.create({
   text: {
     fontSize: 30,
     marginVertical: 10,
     marginHorizontal: 15,
-    fontFamily:"Montserrat-ExtraLight"
+    fontFamily:"Montserrat_200ExtraLight"
+  
 
     
 
@@ -98,7 +105,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginHorizontal: 15,
     fontSize: 19,
-    fontFamily:"Montserrat-ExtraLight"
+    fontFamily:"Montserrat_200ExtraLight"
 
 
   },
@@ -108,7 +115,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "green",
     fontSize: 20,
-    fontFamily:"Cairo-Bold"
+    fontFamily:"Cairo_700Bold"
    
 
   },

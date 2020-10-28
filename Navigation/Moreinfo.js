@@ -5,7 +5,9 @@ import { Tooltip, Input } from 'react-native-elements';
 import { CheckBox } from 'react-native-elements'
 import * as font from 'expo-font';
 import { AsyncStorage } from 'react-native';
-
+import { AppLoading } from 'expo';
+import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
+import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 
 
 const Moreinfo = props => {
@@ -18,13 +20,13 @@ const Moreinfo = props => {
     const [Picture, setuserPicture] = useState();
     const [name, setName] = useState();
 
+    let [fontsLoaded] = useFonts({
+        Cairo_700Bold,
+        Montserrat_200ExtraLight
+      });
     useEffect(() => {
-        async function getKind() {
-            font.loadAsync({
-                'Cairo-Bold': require('../../assets/fonts/Cairo-Bold.ttf'),
-                'Montserrat-ExtraLight': require('../../assets/fonts/Montserrat-ExtraLight.ttf')
-            });
-        }
+   
+        
 
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
@@ -36,8 +38,13 @@ const Moreinfo = props => {
          setuserActivity(UserDetail.data.user.field_activities_interests.und[0].value)
 
         })
-        getKind()
+
     }, [])
+    if(!fontsLoaded) {
+        return(
+        <AppLoading/>)
+    }
+    else{
     return (
 
 
@@ -75,8 +82,8 @@ const Moreinfo = props => {
                             <Button containerStyle={{ marginHorizontal: 20, marginVertical: 15 }}
                                 onPress={() => props.navigation.navigate('Editprofile')}
                                 title="Add More Info"
-                                buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10,  fontFamily: 'Cairo-Bold' }}
-                                titleStyle={{ fontFamily: 'Cairo-Bold', fontSize: 20 }}/>
+                                buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10,  fontFamily: 'Cairo_700Bold' }}
+                                titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}/>
                         </View>
                     </View>
 
@@ -87,7 +94,7 @@ const Moreinfo = props => {
         </View>
     )
 
-
+ }
 
 }
 
@@ -121,14 +128,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginHorizontal: 16,
         marginVertical: 10,
-        fontFamily: 'Cairo-Bold'
+        fontFamily: 'Cairo_700Bold'
     },
     buttonstyle: {
         marginHorizontal: 20
     },
     bottomText: {
         textAlign: "center",
-        fontFamily: 'Cairo-Bold',
+        fontFamily: 'Cairo_700Bold',
         color: "red",
         fontSize: 16
     },
@@ -144,7 +151,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10, marginVertical: 10
     },
     upperHeadingOutput: {
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
         marginHorizontal: 15
     },
     topImage: {
@@ -159,7 +166,7 @@ const styles = StyleSheet.create({
     },
     rightText: {
         justifyContent: "center",
-        fontFamily: 'Montserrat-ExtraLight',
+        fontFamily: 'Montserrat_200ExtraLight',
     }
 
 
