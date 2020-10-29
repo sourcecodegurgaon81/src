@@ -56,6 +56,7 @@ const Searchpostcode = props => {
             }
 
             let location = await Location.getCurrentPositionAsync({});
+            console.log(location.coords);
 
 
             setLocationoff(false)
@@ -68,8 +69,8 @@ const Searchpostcode = props => {
                 .then(json => {
 
                     const addressData = json
-
                     const address = addressData.results[0].address_components;
+                    console.log(address);
 
                     for (var i = 0; i < address.length; i++) {
                         if (address[i].types.includes("postal_code")) {
@@ -115,8 +116,8 @@ const Searchpostcode = props => {
 
                     }
                   
-                    postcountryCode()
-                        setspinner(false)
+                    postcountryCode();
+                        setspinner(false);
                         //props.navigation.navigate('WelcomeResult', { term, selectedValue })
                 
                 });

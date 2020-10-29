@@ -198,10 +198,12 @@ function FirstRoute({navigation: {navigate}}) {
 
 
             <Overlay isVisible={errorOverLay} onBackdropPress={toggleOverlay}>
+                <>
                 <Text style={styles.errorText}>{message}</Text>
                 <View style={{paddingHorizontal:10}}>
                 <Button title="Ok" containerStyle={styles.buttoncontainerStyle} buttonStyle={styles.successButton} titleStyle={styles.tittleText} onPress={toggleOverlay} />
                 </View>
+                </>
             </Overlay>
 
         </View>
@@ -384,10 +386,12 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                 </View>
 
                 <Overlay isVisible={errorOverLay} onBackdropPress={toggleOverlay}>
+                    <>
                     <Text style={styles.errorText}>{message}</Text>
                     <View style={{paddingHorizontal:10}}>
                     <Button title="Ok" containerStyle={styles.buttoncontainerStyle} buttonStyle={styles.successButton} titleStyle={styles.tittleText} onPress={toggleOverlay} />
                     </View>
+                    </>
                 </Overlay>
             </ScrollView>
         </SafeAreaView>
@@ -960,10 +964,12 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                     </View>
 
                     <Overlay isVisible={errorOverLay} onBackdropPress={toggleOverlay}>
+                        <>
                     <Text style={styles.errorText}>{message}</Text>
                     <View style={{paddingHorizontal:10}}>
                     <Button title="Ok" containerStyle={styles.buttoncontainerStyle} buttonStyle={styles.successButton} titleStyle={styles.tittleText} onPress={toggleOverlay} />
                     </View>
+                    </>
                 </Overlay>
 
                 </View>
@@ -1146,12 +1152,14 @@ const FifthRoute = ({ navigation: { navigate }, route},props) => {
         
 
                 <Overlay isVisible={errorOverLay} onBackdropPress={toggleOverlay}>
+                    <>
                     <Text style={styles.errorText}>{message}</Text>
                     <View style={{paddingHorizontal:10}}>
                     <View style={{paddingHorizontal:10}}>
                     <Button title="Ok" containerStyle={styles.buttoncontainerStyle} buttonStyle={styles.successButton} titleStyle={styles.tittleText} onPress={toggleOverlay} />
                     </View>
                     </View>
+                    </>
                 </Overlay>
 
             <View style={styles.mainContainerPicker}>
@@ -1339,7 +1347,7 @@ const styles = StyleSheet.create({
 
     },
     dropDownActive: {
-        fontFamily: 'Montserrat_200ExtraLight'
+        // fontFamily: 'Montserrat_200ExtraLight'
     },
     textareaContainer: {
         height: 140,

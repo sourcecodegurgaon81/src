@@ -49,9 +49,8 @@ const UserResult = props => {
             <Text style={styles.mainHeading}>{props.tittle}</Text>
             <FlatList
                 data={props.searchPostcode}
-                keyExtractor={item => item.uid}
-                renderItem={({ item }) => {
-                    
+                keyExtractor={(item, index) => String(index)}
+                renderItem={({ item }) => {                    
                     var active = item.Activity.join(', ')
                     return (
                         <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} >
