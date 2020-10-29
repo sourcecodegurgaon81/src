@@ -27,7 +27,7 @@ import ImgToBase64 from 'react-native-image-base64';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
 import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
-
+import { FontAwesome5 } from '@expo/vector-icons';
 
 function FirstRoute({navigation: {navigate}}) {
 
@@ -41,6 +41,9 @@ function FirstRoute({navigation: {navigate}}) {
     const [message, setMessage] = useState()
 
     const [errorOverLay, seterrorOverLay] = useState(false);
+
+
+    const[avaliableSpinner,setavaliableSpinner] = useState(false)
     const toggleOverlay = () => {
         seterrorOverLay(!errorOverLay);
     };
@@ -89,6 +92,35 @@ function FirstRoute({navigation: {navigate}}) {
     }
 
 
+    const checkUserName = () =>{
+        setavaliableSpinner(true)
+        Http.get("CheckUsername", {
+            params:{
+                Name:userName
+            }
+        }).then((userNames)=>{
+            if(userNames.data.length == 0)
+            {
+                setavaliableSpinner(false)
+                toggleOverlay()
+                setMessage("Username available")
+                
+            }
+            else
+            {
+                setavaliableSpinner(false)
+                console.log(userNames.data.length )
+                toggleOverlay()
+                setMessage("Username already taken")
+            
+            }
+            
+           
+        })
+      
+        
+    }
+
     useEffect(() => {
 
 
@@ -101,13 +133,20 @@ function FirstRoute({navigation: {navigate}}) {
     }
     else{
     return (
-
+        <SafeAreaView>
+        <ScrollView>
         <View style={{ backgroundColor: "white", flex: 1 }}>
             <View style={{ marginVertical: 20, borderWidth: 1, borderRadius: 20, marginHorizontal: 10 }}>
                 <Progress.Bar progress={0.3} unfilledColor="white" color="#027BFF" animationType="spring" width={300} borderColor="white" height={20} borderRadius={10} />
             </View>
 
-
+          
+            <Spinner
+                visible={avaliableSpinner}
+                textContent={'Searching...'}
+                textStyle={styles.spinnerTextStyle}
+            />
+            
 
             {/*Field Name Container*/}
             <View style={styles.FieldContainer}>
@@ -122,7 +161,13 @@ function FirstRoute({navigation: {navigate}}) {
                 />
             </View>
             <Text style={styles.lowerTextfield}>(This is your username)</Text>
-
+            <Button
+                    containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
+                    buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
+                    title="Check availability"
+                    titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
+                    onPress={ checkUserName}
+                />
 
             {/*Field First Name Container*/}
             <View style={styles.FieldContainer}>
@@ -205,9 +250,11 @@ function FirstRoute({navigation: {navigate}}) {
                 </View>
                 </>
             </Overlay>
-
+          
         </View>
-
+        </ScrollView>
+                </SafeAreaView>
+     
     )
 };
 }
@@ -279,7 +326,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                                 defaultIndex={0}
                                 containerStyle={styles.DropDown}
                                 onChangeItem={item => setuserIamtName(item.value)}
-                                activeItemStyle={styles.dropDownActive}
+                                
                                 dropDownStyle={{}}
                                 labelStyle={styles.dropDownActive}
 
@@ -301,13 +348,12 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                                 defaultValue={contracted}
                                 defaultIndex={0}
                                 containerStyle={styles.DropDown}
-                                onChangeItem={contr => setContracted(contr.value)}
-                                activeItemStyle={styles.dropDownActive}
+                                onChangeItem={contr => setContracted(contr.value)}                      
                                 dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
                                 labelStyle={styles.dropDownActive}
                             />
                         </View>
-                    </View>
+                    </View> 
                     <View style={styles.mainContainerPicker}>
                         <Button
                             containerStyle={{ marginHorizontal: 10, }}
@@ -331,7 +377,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             defaultIndex={0}
                             containerStyle={styles.DropDown}
                             onChangeItem={cont => setconsider(cont.value)}
-                            activeItemStyle={styles.dropDownActive}
+                            
                             dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
                             labelStyle={styles.dropDownActive}
                         />
@@ -355,7 +401,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             defaultIndex={0}
                             containerStyle={styles.DropDown}
                             onChangeItem={item => setMeet(item.value)}
-                            activeItemStyle={styles.dropDownActive}
+                            
                             dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
                             labelStyle={styles.dropDownActive}
                         />
@@ -474,6 +520,7 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
     return (
 
         <View style={{ flex: 1, backgroundColor: "white" }}>
+            
             <View style={{ marginVertical: 20, borderWidth: 1, borderRadius: 20, marginHorizontal: 10 }}>
                 <Progress.Bar progress={0.7} unfilledColor="white" color="#027BFF" animationType="spring" width={300} borderColor="white" height={20} borderRadius={10} />
             </View>
@@ -535,7 +582,7 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
                     onPress={() => navigate('Second')}
                 />
             </View>
-
+          
         </View>
     )
 }
@@ -632,9 +679,11 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
     else{
 
     return (
-        <ScrollView style={{backgroundColor:"white"}}>
-            <SafeAreaView>
-                <View >
+        <View style={{backgroundColor:"white",flex:1}}>
+     <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
+            <ScrollView nestedScrollEnabled={false}>
+
+              
                     <View style={{ marginVertical: 20, borderWidth: 1, borderRadius: 20, marginHorizontal: 10 }}>
                         <Progress.Bar progress={0.9} unfilledColor="white" color="#027BFF" animationType="spring" width={300} borderColor="white" height={20} borderRadius={10} />
                     </View>
@@ -653,7 +702,7 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                             ]}
                             containerStyle={styles.DropDown}
                             labelStyle={styles.dropDownActive}
-                            activeItemStyle={styles.dropDownActive}
+                            
 
                             onChangeItem={items => setCountry(items.value)}
                             value={CountryValue}
@@ -664,8 +713,7 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
 
                     </View>
 
-
-
+   
                     <View style={styles.mainContainerPicker}>
                         <Button
                             containerStyle={{ marginHorizontal: 10 }}
@@ -703,11 +751,11 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
 
 
 
-                    <SafeAreaView>
-                        <View >
+             
+                 
                             <Text style={styles.labelText}>Actvities/Interest</Text>
-                            <View style={{borderWidth:1,backgroundColor:"white",marginHorizontal:10,borderRadius:5,marginTop:5}} >
-
+                        {/* <View style={{borderWidth:1,backgroundColor:"white",marginHorizontal:10,borderRadius:5,marginTop:5}} > */}
+                        <SafeAreaView style={{borderWidth:1,backgroundColor:"white",marginHorizontal:10,borderRadius:5,marginTop:5}} emulateUnlessSupported={true}>
                                 <MultiSelect
                                     hideTags
                                     items={items}
@@ -716,11 +764,6 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                                     selectedItems={selectedItems}
                                     selectText="   Pick Activities"
                                     searchInputPlaceholderText="Search Items..."
-                                    tagRemoveIconColor="#CCC"
-                                    tagBorderColor="#CCC"
-                                    tagTextColor="#CCC"
-                                    selectedItemTextColor="#CCC"
-                                    selectedItemIconColor="#CCC"
                                     itemTextColor="#000"
                                     displayKey="name"
                                     fontFamily='Montserrat_200ExtraLight'
@@ -731,12 +774,13 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                                     submitButtonColor="#CCC"
                                     submitButtonText="Submit"
                                     styleSelectorContainer={{backgroundColor:"red"}}
-                                    styleDropdownMenuSubsection={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                                    styleDropdownMenuSubsection={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center",flex:1 }}
                                 />
-                            </View>
-                        </View>
-                    </SafeAreaView>
-
+                            </SafeAreaView>
+                            {/* </View> */}
+                       
+                       
+                
 
                     <Text style={styles.labelText}>Terms and Conditions</Text>
 
@@ -962,7 +1006,7 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
 
                         />
                     </View>
-
+                   
                     <Overlay isVisible={errorOverLay} onBackdropPress={toggleOverlay}>
                         <>
                     <Text style={styles.errorText}>{message}</Text>
@@ -972,10 +1016,13 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                     </>
                 </Overlay>
 
-                </View>
+           
 
-            </SafeAreaView>
-        </ScrollView>
+             
+            </ScrollView>
+           </SafeAreaView>
+  
+        </View>
     )
 
 
@@ -1179,7 +1226,7 @@ const FifthRoute = ({ navigation: { navigate }, route},props) => {
                     buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 }}
                     title="Previous"
                     titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
-                    onPress={()=>navigate('Home')}
+                    onPress={()=>navigate('Fourth')}
                 />
             </View>
 
@@ -1213,12 +1260,15 @@ const SignUp = props => {
 
             <NavigationContainer>
                 <Tab.Navigator tabBarOptions={{ activeTintColor: 'transparent', inactiveTintColor: '#D3D3D3', indicatorStyle: { backgroundColor: 'transparent' } }} tabBarPosition='bottom'>
+               
                     <Tab.Screen name="First"  options={{ tabBarLabel: '' }}  component={FirstRoute}/>
                     <Tab.Screen name="Second" component={SecondRoute} options={{ tabBarLabel: '' }} />
                     <Tab.Screen name="Third" component={ThirdRoute} options={{ tabBarLabel: '' }} />
+              
                     <Tab.Screen name="Fourth" component={FourthRoute} options={{ tabBarLabel: '' }}  />
+    
                     <Tab.Screen name="Fifth"  options={{ tabBarLabel: '' }}  component={FifthRoute}/>
-
+                   
                 </Tab.Navigator>
 
 
