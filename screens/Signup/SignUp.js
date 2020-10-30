@@ -15,9 +15,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Textarea from 'react-native-textarea';
 import Http from '../../Api/Http'
-  
 import DatePicker from 'react-native-datepicker';
-import { CheckBox } from "native-base"
+import { CheckBox } from 'react-native-elements'
 import { Overlay } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import { Entypo } from '@expo/vector-icons';
@@ -28,6 +27,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
 import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import SelectMultiple from 'react-native-select-multiple'
 
 function FirstRoute({navigation: {navigate}}) {
 
@@ -161,12 +162,15 @@ function FirstRoute({navigation: {navigate}}) {
                 />
             </View>
             <Text style={styles.lowerTextfield}>(This is your username)</Text>
+
+
             <Button
-                    containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
+                    containerStyle={{ marginHorizontal: 10, marginVertical:10}}
+                    onPress={checkUserName}
                     buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                     title="Check availability"
                     titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
-                    onPress={ checkUserName}
+                    
                 />
 
             {/*Field First Name Container*/}
@@ -227,13 +231,14 @@ function FirstRoute({navigation: {navigate}}) {
             <Text style={styles.notifyText}>*Must be over 18 years old to be a member and use the app By continuing below</Text>
 
             <View style={styles.CheckboxContainer}>
-                <CheckBox color="#fc5185" color="#fc5185" onPress={() => setCheckBox(1)} checked={checkBoxes == 1} style={{ marginRight: 10 }} />
-                <Text style={styles.lowerTextfield}>I confirm I am over 18.</Text>
+            <CheckBox color="#fc5185" color="#fc5185" onPress={() => setCheckBox(1)} checked={checkBoxes == 1} style={{ marginRight: 10 }} title='I confirm I am over 18.' textStyle={styles.lowerTextfield}/>
+               
+          
 
 
             </View>
 
-            <Button containerStyle={{ marginHorizontal: 20 }}
+            <Button containerStyle={{ marginHorizontal: 10 ,marginVertical:10 }}
                 onPress={checkUserDetail}
                 title="Continue"
                 buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo_700Bold' }}
@@ -299,6 +304,13 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
             navigate('Third', { Gender: IamName, Contract: contracted, meet: meet, consider: consider, firstRoute: firstRoute })
         }
     }
+
+     const popup =() =>{
+        toggleOverlay()
+        setMessage("Havent you got the text for this?")
+
+     }
+
     if(!fontsLoaded)
     {
       return(<AppLoading />)
@@ -359,9 +371,9 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             containerStyle={{ marginHorizontal: 10, }}
                             buttonStyle={{ borderRadius: 10 }}
                             title="Why do we ask this if its
-  not for dating or sex?"
+                          not for dating or sex?"
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 18 }}
-
+                            onPress={popup}
                         />
                     </View>
                     {/*I consider myself Container*/}
@@ -409,8 +421,8 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
                     <View style={styles.mainContainerPicker}>
                         <Button
-                            containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
-                            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10}}
+                            containerStyle={{ marginHorizontal: 10 ,marginVertical:10}}
+                            buttonStyle={{ backgroundColor: "green", borderRadius: 10 , marginHorizontal: 10,marginVertical:10}}
                             title="Continue"
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                             onPress={checkFields}
@@ -420,8 +432,8 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
                     <View style={styles.mainContainerPicker}>
                         <Button
-                            containerStyle={{ marginHorizontal: 10, backgroundColor: " #E62E2D", marginVertical: 8, paddingBottom: 10 }}
-                            buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 }}
+                            containerStyle={{ marginHorizontal: 10 , marginVertical:10}}
+                            buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 , marginHorizontal: 10,marginVertical:10}}
                             title="Previous"
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                             onPress={() => navigate('First')}
@@ -450,21 +462,40 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
 const ThirdRoute = ({ navigation: { navigate }, route }) => {
     const [image, setImage] = useState(null);
-    const [hasPermission, setHasPermission] = useState(null);
-    const [type, setType] = useState(Camera.Constants.Type.back);
+  
+
     const [imageUrls, setImageUrls] = useState()
     const [spinner, setspinner] = useState(false)
     const [doSomething,doSomethingWith] = useState()
     const [imageNotUploaded, setimageNotUploaded] = useState(true)
     const [uploadedImage , setuploadedImage ] = useState(false)
     const  secondRoute = route.params
+    //Camers
+    const [hasPermission, setHasPermission] = useState(null);
+    const [type, setType] = useState(Camera.Constants.Type.back);
+   const [Openingspinner, setOpeningspinner] = useState()
 
     let [fontsLoaded] = useFonts({
         Cairo_700Bold,
         Montserrat_200ExtraLight
       });
 
+
+      useEffect(() => {
+        (async () => {
+          const { status } = await Camera.requestPermissionsAsync();
+          setHasPermission(status === 'granted');
+        })();
+      }, []);
+      if (hasPermission === null) {
+        return <View />;
+      }
+      if (hasPermission === false) {
+        return <Text>No access to camera</Text>;
+      }    
+
     const pickImage = async () => {
+
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
@@ -472,8 +503,8 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
             aspect: [4, 3],
             quality: 1,
         });
-
-
+  
+    
        
         if (!result.cancelled) {
           setImage(result.uri);
@@ -503,8 +534,20 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
     
 
     };
-    
+    const resetImage = () =>{
+        setImage(null)
+        setuploadedImage(false)
+        setimageNotUploaded(true)
 
+    }
+   const cameras = () =>{
+    setType(
+        type === Camera.Constants.Type.back
+          ? Camera.Constants.Type.front
+          : Camera.Constants.Type.back
+      );
+
+   } 
    
   
       if (hasPermission === false) {
@@ -518,15 +561,21 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
       else{
 
     return (
-
+ 
+      
         <View style={{ flex: 1, backgroundColor: "white" }}>
-            
+           
             <View style={{ marginVertical: 20, borderWidth: 1, borderRadius: 20, marginHorizontal: 10 }}>
                 <Progress.Bar progress={0.7} unfilledColor="white" color="#027BFF" animationType="spring" width={300} borderColor="white" height={20} borderRadius={10} />
             </View>
             <Spinner
                 visible={spinner}
                 textContent={'Uploading Image...'}
+                textStyle={styles.spinnerTextStyle}
+            />
+               <Spinner
+                visible={Openingspinner}
+                textContent={'Image...'}
                 textStyle={styles.spinnerTextStyle}
             />
               
@@ -536,17 +585,20 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
                 <View style={styles.ImageTopHeading}>
                     <Text style={styles.ImageTopHeadingText}>Choose Your Profile Photo</Text>
                 </View>
-            
-                <View style={styles.imageUploadButton}>
-              
+          
+                <TouchableOpacity onPress={() => {cameras}}>
+                <View style={styles.imageUploadButton} >
                     <Entypo name="camera" size={24} color="black" />
                     <Text style={styles.imageUploadButtonText} >Take a selfie</Text>
                 </View>
-                
+                </TouchableOpacity>
+               
+
+
                 <View style={styles.ImageTopHeading}>
                     <Text style={styles.ImageTopHeadingText}>
                         OR
-           </Text>
+                 </Text>
                 </View>
                 <View style={styles.imageUploadButton}>
                     <Entypo name="camera" size={24} color="black" />
@@ -556,14 +608,19 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
                 </View>
                 </View>
                 ):null}
+                
            {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-
+           
             </View>
               
        {uploadedImage ?(
+          
             <View style={styles.mainContainerPicker}>
+                 <TouchableOpacity onPress={resetImage}>
+           <Text style={styles.ImageTopHeadingText}>Remove Image</Text>
+           </TouchableOpacity>
                 <Button
-                    containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
+                    containerStyle={{ marginHorizontal: 10 , marginVertical:10}}
                     buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                     title="Continue"
                     titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
@@ -575,8 +632,9 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
 
             <View style={styles.mainContainerPicker}>
                 <Button
-                    containerStyle={{ marginHorizontal: 10, backgroundColor: " #E62E2D", marginVertical: 8, paddingBottom: 10 }}
-                    buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 }}
+                    containerStyle={{ marginHorizontal: 10 ,marginVertical:10}}
+                    buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 , marginHorizontal: 10,marginVertical:10}}
+
                     title="Previous"
                     titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                     onPress={() => navigate('Second')}
@@ -584,6 +642,7 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
             </View>
           
         </View>
+      
     )
 }
 }
@@ -635,9 +694,14 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
 
         
     }
+   
+    const popup =() =>{
+        toggleOverlay()
+        setMessage("Havent you got the text for this?")
 
+     }
 
-
+     const fruits = ['Apples', 'Oranges', 'Pears']
 
     // Dummy Data for the MutiSelect
     const items = [
@@ -721,6 +785,7 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 18 }}
                             containerStyle={{ marginHorizontal: 10 }}
                             buttonStyle={{ borderRadius: 10 }}
+                            onPress={popup}
                         />
                     </View>
 
@@ -745,7 +810,7 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                             containerStyle={{ marginHorizontal: 10 }}
                             buttonStyle={{ borderRadius: 10 }}
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 18 }}
-
+                           onPress={popup}
                         />
                     </View>
 
@@ -778,9 +843,12 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                                 />
                             </SafeAreaView>
                             {/* </View> */}
-                       
-                       
                 
+                       
+                            <SelectMultiple
+            items={items}
+            onSelectedItemsChange={onSelectedItemsChange}
+            selectedItems={selectedItems}/>
 
                     <Text style={styles.labelText}>Terms and Conditions</Text>
 
@@ -988,7 +1056,7 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                     </View>
                     <View style={styles.mainContainerPicker}>
                         <Button
-                            containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
+                            containerStyle={{ marginHorizontal: 10 ,marginVertical:10}}
                             buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10}}
                             title="Continue"
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
@@ -998,8 +1066,8 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
 
                     <View style={styles.mainContainerPicker}>
                         <Button
-                            containerStyle={{ marginHorizontal: 10, backgroundColor: " #E62E2D", marginVertical: 8, paddingBottom: 10 }}
-                            buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10}}
+                            containerStyle={{ marginHorizontal: 10 }}
+                            buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 , marginHorizontal: 10,marginVertical:10}}
                             title="Previous"
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                             onPress={()=> navigate('Third')}
@@ -1052,6 +1120,7 @@ const FifthRoute = ({ navigation: { navigate }, route},props) => {
     };
 
     const submitDetails = () =>{
+        setspinner(true)
             setImageUrls(route.params.thirdRoute.result)
         
         let ts = Math.round(new Date().getTime() / 1000);
@@ -1115,6 +1184,7 @@ const FifthRoute = ({ navigation: { navigate }, route},props) => {
               und: routerOutput.thirdRoute.secondRoute.Contract,
             },
           }).then((response) => {
+              console.log(response)
               if(response.status == 200)
               {
                 toggleOverlay()
@@ -1123,13 +1193,15 @@ const FifthRoute = ({ navigation: { navigate }, route},props) => {
               }
               setspinner(false)
      
-        }).catch((error)=>{
+         })
+         .catch((error)=>{
  
-            if(error.response.status == 406)
+            if(error.response.status)
             {  
+             
+              setspinner(false)
               toggleOverlay()
               setMessage("Username is already taken/Email is already taken")
-              setspinner(false)
             }
        
 
@@ -1170,7 +1242,7 @@ const FifthRoute = ({ navigation: { navigate }, route},props) => {
 
             <Spinner
                 visible={spinner}
-                textContent={'Uploading Image...'}
+                textContent={'Creating Account...'}
                 textStyle={styles.spinnerTextStyle}
             />
 
@@ -1211,7 +1283,7 @@ const FifthRoute = ({ navigation: { navigate }, route},props) => {
 
             <View style={styles.mainContainerPicker}>
                 <Button
-                    containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
+                    containerStyle={{ marginHorizontal: 10 }}
                     buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                     title="Continue"
                     titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
@@ -1221,9 +1293,9 @@ const FifthRoute = ({ navigation: { navigate }, route},props) => {
 
             <View style={styles.mainContainerPicker}>
                 <Button
-                    containerStyle={{ marginHorizontal: 15, marginVertical: 15, height: 100, fontFamily: "roboto-bold" }}
+                    containerStyle={{ marginHorizontal: 10,marginVertical:10}}
                     buttonStyle={{ fontFamily: "roboto-bold" }}
-                    buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 }}
+                    buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10 , marginHorizontal: 10,marginVertical:10}}
                     title="Previous"
                     titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                     onPress={()=>navigate('Fourth')}
@@ -1260,15 +1332,11 @@ const SignUp = props => {
 
             <NavigationContainer>
                 <Tab.Navigator tabBarOptions={{ activeTintColor: 'transparent', inactiveTintColor: '#D3D3D3', indicatorStyle: { backgroundColor: 'transparent' } }} tabBarPosition='bottom'>
-               
                     <Tab.Screen name="First"  options={{ tabBarLabel: '' }}  component={FirstRoute}/>
                     <Tab.Screen name="Second" component={SecondRoute} options={{ tabBarLabel: '' }} />
                     <Tab.Screen name="Third" component={ThirdRoute} options={{ tabBarLabel: '' }} />
-              
                     <Tab.Screen name="Fourth" component={FourthRoute} options={{ tabBarLabel: '' }}  />
-    
                     <Tab.Screen name="Fifth"  options={{ tabBarLabel: '' }}  component={FifthRoute}/>
-                   
                 </Tab.Navigator>
 
 
@@ -1315,7 +1383,6 @@ const styles = StyleSheet.create({
 
         fontSize: 14,
         marginLeft: 10,
-        marginBottom: 10,
         fontFamily: 'Montserrat_200ExtraLight'
 
     },
@@ -1488,7 +1555,8 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat_200ExtraLight',
         marginVertical: 10,
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        textAlign:"center"
     },
     imageUploadButtonText: {
         fontSize: 20,

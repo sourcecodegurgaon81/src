@@ -140,7 +140,11 @@ return (
 
         <UserResult searchPostcode={searchPostcode.items} tittle="Members near you"  navigation={navigation}/>
         <View style={{marginVertical:10}}>
-        <Button title="Show More"  onPress={getSearchData}/>
+        <Button title="Show More"
+       containerStyle={{marginBottom:20}}
+         buttonStyle={{ backgroundColor: "lightgrey"}}
+         titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 15 , color:"black"}}
+        onPress={getSearchData}/>
         </View>
 
 
