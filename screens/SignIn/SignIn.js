@@ -117,12 +117,11 @@ const SignIn = props => {
     var msDiff =  new Date().getTime() - new Date(LogoutToken.data.user.field_trial_period_start_date.und[0].value).getTime();    //Future date - current date
     }
     var daysTill30June2035 = Math.floor(msDiff / (1000 * 60 * 60 * 24));
-  
+   console.log(daysTill30June2035)
      if(daysTill30June2035 > 8)
      {
-        props.navigation.navigate('FindFriends')
-        //props.navigation.navigate('Tabs')
-
+        //props.navigation.navigate('FindFriends')
+        props.navigation.navigate('TrialOver') 
      }
      else
      {

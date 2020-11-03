@@ -38,11 +38,11 @@ const Becomeverified = (props) => {
       
          if(daysTill30June2035 > 8)
          {
-            props.navigation.navigate('Tabs')
+            //props.navigation.navigate('Tabs')
         }
          else
          {
-            props.navigation.navigate('FindFriends')
+            //props.navigation.navigate('FindFriends')
          }
         });
       }
@@ -68,6 +68,7 @@ const Becomeverified = (props) => {
 
                 
             }, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Cookie': UserDetail.data.sessid + "=" + UserDetail.data.session_name, 'X-CSRF-Token': UserDetail.data.token } }).then((response) => {
+        
                 setspinner(false)
                 props.navigation.navigate('FindFriends')
             })
@@ -114,7 +115,7 @@ const Becomeverified = (props) => {
                 <View>
                     <Text style={styles.alignTextContainerTwo}>Become a verified member
                     now for ad-free app usage,
-                    unlimited instant messages,
+                    unlimited chat,
                     and enhanced search</Text>
 
 
@@ -123,7 +124,7 @@ const Becomeverified = (props) => {
                         buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                         title="Become Verified"
                         titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
-                        onPress={()=> props.navigation.navigate('TrialOver')}
+                        onPress={()=> props.navigation.navigate('PayPal')}
                     
                     />
 

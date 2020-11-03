@@ -11,6 +11,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { AppLoading } from 'expo';
 import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
 import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
+import { Linking } from 'react-native'
+
 const SearchResult = props => {
 const { navigation } = props;
 const post = navigation.getParam('term')
@@ -150,14 +152,20 @@ return (
 
         <Overlay isVisible={visible} onBackdropPress={toggleOverlay} >
             <View>
-                <TouchableOpacity>
-                    <Image style={styles.ImageStyle} source={require('../../../../assets/Images/cross.png')} />
+            <TouchableOpacity onBackdropPress={toggleOverlay}>
+                    <Image style={styles.ImageStyle} source={require('../../../../assets/Images/cross.png')} onBackdropPress={toggleOverlay}/>
                 </TouchableOpacity>
-
-                <Text style={styles.notFoundText}>Looks like we have not yet expanded to your area. Click here to suggest that we come to you next!
-                    Click here to suggest that we come to you next</Text>
+                <View>
+              
+                <View style={{paddingVertical:10}}>
+                <Text style={styles.notFoundText}>Looks like we have not yet expanded to your area. </Text>
+                <Text style={{fontFamily:"Montserrat_200ExtraLight", textAlign:"center"}}><Text onPress={() => Linking.openURL('mailto:contactus@not4dating.com')} style={{fontFamily:"Cairo_700Bold"}}> Click here </Text> 
+                to suggest that we come to you next!</Text>
+                </View>
+                </View>
             </View>
-        </Overlay>
+        </Overlay> 
+    
 
     </View>
 
@@ -170,8 +178,8 @@ return (
 
 const styles = StyleSheet.create({
 ImageStyle: {
-    height: 20,
-    width: 20,
+    height: 25,
+    width: 25,
     justifyContent: "flex-end",
     position: "absolute",
     right: 10,

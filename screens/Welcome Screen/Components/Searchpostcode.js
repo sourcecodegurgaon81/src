@@ -209,7 +209,7 @@ const Searchpostcode = props => {
             />
             <View style={styles.SecondMainBackground}>
                 <Text style={styles.upperText}>Oops! Looks like we have not yet expanded to your area.
-       <Text onPress={() => Linking.openURL('mailto:contactus@not4dating.com')}>Click here </Text>to suggest that we come to you next</Text>
+       <Text onPress={() => Linking.openURL('mailto:contactus@not4dating.com')}> Click here </Text>to suggest that we come to you next</Text>
 
 
 
