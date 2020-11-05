@@ -1305,7 +1305,7 @@ const FifthRoute = ({ navigation: { navigate } ,route}) => {
                         buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                         title="Continue"
                         titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
-                        onPress={check}
+                        onPress={submitDetails}
                     />
                 </View>
 
@@ -1316,7 +1316,7 @@ const FifthRoute = ({ navigation: { navigate } ,route}) => {
                         buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10, marginHorizontal: 10, marginVertical: 10 }}
                         title="Previous"
                         titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
-                        //onPress={() => navigate('Fourth')}
+                        onPress={() => navigate('Fourth')}
                     />
                 </View>
 
