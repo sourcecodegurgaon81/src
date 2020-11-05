@@ -236,9 +236,7 @@ const FindFriends = props => {
                     <Text style={styles.upperText}>Your Profile is currently {totalPercentage} % complete. Our members who share more information in
       their profile get better results. But, if you don’t want to finish now you can add to your profile later at
       any time.</Text>
-                    < TouchableOpacity onPress={() => props.navigation.navigate('Tabs')}>
-                        <Text style={styles.upperText}>Update Profile Later</Text>
-                    </TouchableOpacity>
+                  
                 </View>
 
 

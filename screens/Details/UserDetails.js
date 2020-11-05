@@ -10,6 +10,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { AppLoading } from 'expo';
 import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
 import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
+import { Linking } from 'react-native'
 
 
 
@@ -74,7 +75,7 @@ const UserDetails = props => {
     const [smokeStatus, setsmokeStatus] = useState(false)
     const [alcoholStatus, setalcoholStatus] = useState(false)
     const [considerStatus, setconsiderStatus] = useState(false)
-
+    const [unVerfied,setUnVerfied] = useState(true)
     //OverLay
     const [Favvisible, setFavVisible] = useState(false);
     const [Blockvisible, setBlockVisible] = useState(false);
@@ -101,6 +102,7 @@ const UserDetails = props => {
 
         const uid = navigation.getParam('uid')
         setUserId(uid)
+        setspinner(true)
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
             Http.get('user/' + uid, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Cookie': UserDetail.data.sessid + "=" + UserDetail.data.session_name, 'X-CSRF-Token': UserDetail.data.token } })
@@ -109,41 +111,63 @@ const UserDetails = props => {
                     setuserName(response.data.name)
                     setuserPicture(response.data.picture.url)
 
-                    const dateDMY = Moment(response.data.field_birth_date.und[0].value).format('yyyy/MM/DD')
-                    setdatelValue(dateDMY)
-                    var today = new Date();
-                    var birthDate = new Date(date);
-                    var age = today.getFullYear() - birthDate.getFullYear();
-                    var m = today.getMonth() - birthDate.getMonth();
-                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                        age--;
-                    }
-                    
-                    setAge(age)
+                  
+
 
                     if (response.data.field_consider_myself_.length == undefined) {
                         setconsiderStatus(true)
                         setconsider(response.data.field_consider_myself_.und[0].value)
                     }
 
+                    if (response.data.field_birth_date.length == undefined)
+                    {
+                        const dateDMY = Moment(response.data.field_birth_date.und[0].value).format('yyyy/MM/DD')
+                        setdatelValue(dateDMY)
+                        var today = new Date();
+                        var birthDate = new Date(dateDMY);
+                        var age = today.getFullYear() - birthDate.getFullYear();
+                        var m = today.getMonth() - birthDate.getMonth();
+                        const ages = age
+                     
+                      
+                        setAge(ages)
+                        // if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                        //     age--;
+                        // }
+                  
+
+                    }
+
                     //Meet If Satement
-                    setMeet(response.data.field_look_meet.und[0].value)
-                    if (meet == 2) {
+                    if (response.data.field_look_meet.length ==  undefined){
+                      
+                    if (response.data.field_look_meet.und[0].value == 2) {
                         setmeetValue("A lot of acquaintances")
                     }
-                    if (meet == 1) {
+                    if (response.data.field_look_meet.und[0].value == 1) {
                         setmeetValue("A few good friends")
                     }
-                    if (meet == 3) {
+                    if (response.data.field_look_meet.und[0].value == 3) {
                         setmeetValue("Does not Matter")
                     }
+                }
 
 
-                    if (response.data.field_activities_interests.length == undefined) {
-                        setactivityValue(response.data.field_activities_interests.und[0].value)
+                if (response.data.field_activities_interests.length == undefined) {
+    
+                    const activityLength = response.data.field_activities_interests.und.length
+                    for (let i = 0; i <= activityLength; i++) {
+
+                       
+                            if (response.data.field_activities_interests.und[i] != undefined) {
+                                setactivityValue(response.data.field_activities_interests.und[i].value)
+
+                              } 
+                    
                     }
-                    setFavorateActivity(response.data.field_activities_interests.und)
-
+                       
+                    }
+ 
 
                     if (response.data.field_long_in_city.length == undefined) {
                         if (response.data.field_long_in_city.und[0].value == 0) {
@@ -164,19 +188,19 @@ const UserDetails = props => {
                             settalkValue(response.data.field_talk_about.und[0].value)
                         }
                     }
-                    if (response.data.field_good_friend.length == undefined) {
+                   if (response.data.field_good_friend.length == undefined) {
                         setGoodFriendstatus(true)
                         setFriendValue(response.data.field_good_friend.und[0].value)
                     }
 
 
-                    if (response.data.field_plans_get_cancelled.length == undefined) {
+               if (response.data.field_plans_get_cancelled.length == undefined) {
                         setSomeoneCancelStaus(true)
                         setCancelValue(response.data.field_plans_get_cancelled.und[0].value)
                     }
 
 
-                    if (response.data.field_relationship_status.length == undefined) {
+                  if (response.data.field_relationship_status.length == undefined) {
                         setrealyionshipstatus(true)
                         if (response.data.field_relationship_status.und[0].value == 'No') {
 
@@ -187,7 +211,7 @@ const UserDetails = props => {
                         }
                     }
 
-                    if (response.data.field_languages.length == undefined) {
+                   if (response.data.field_languages.length == undefined) {
                         setspeakstatus(true)
                         setspeak(response.data.field_languages.und[0].value)
                     }
@@ -212,34 +236,39 @@ const UserDetails = props => {
                         setMoviesstatus(true)
                         setMovies(response.data.field_favorite_movies.und[0].value)
                     }
-                    if (response.data.field_favorite_tv_shows.length == undefined) {
+                   if (response.data.field_favorite_tv_shows.length == undefined) {
                         setTvstatus(true)
                         setTV(response.data.field_favorite_tv_shows.und[0].value)
                     }
 
 
-                    if (response.data.field_smoke.length == undefined) {
+                   if (response.data.field_smoke.length == undefined) {
                         setsmokeStatus(true)
                         setsmokeValue(response.data.field_smoke.und[0].value)
                     }
 
-                    if (response.data.field_alcohol.length == undefined) {
+                   if (response.data.field_alcohol.length == undefined) {
                         setalcoholStatus(true)
                         setalcoholValue(response.data.field_alcohol.und[0].value)
                     }
+
+                    if(response.data.field_gender.length == undefined){
                     setuserIamtName(response.data.field_gender.und[0].value)
+                    }
                     //Verified User
-                    if (response.data.field_verfied.length == undefined) {
+                   if (response.data.field_verfied.length == undefined) {
                         setverifed(true)
+                        setUnVerfied(false)
                     }
 
 
                     setconvert(response.data.login)
-                    const unixTime = convert;
+                    const converting = response.data.login
+                    const unixTime = converting;
                     const dates = new Date(unixTime * 1000);
                     setconverted(dates.toLocaleDateString("en-US"))
 
-
+                    setspinner(false)
 
                     setfavInfo([{
                         name: name,
@@ -267,7 +296,7 @@ const UserDetails = props => {
                     ])
 
                     getLoggedInUser()
-                    getBlockedLoggedInUser()
+                    getBlockedLoggedInUser() 
                 })
         })
     }, [])
@@ -584,7 +613,7 @@ else{
         <View style={styles.mainContainer}>
     <Spinner
           visible={spinner}
-          textContent={'Signing...'}
+          textContent={'Loading...'}
           textStyle={styles.spinnerTextStyle}
         />
             <SafeAreaView style={styles.secondMainCotainer}>
@@ -597,10 +626,20 @@ else{
 
 
                         <View style={styles.thirdPhotoContainer}>
-                            <Text style={{ fontFamily: 'Cairo_700Bold' }}>{name}{"\n"}
-                                {age} ,{IamName}
+                        <Image style={styles.ImageProfile} source={{ uri: Picture }} />
+
+                            <View style={{flexDirection:"column"}}>
+                            {unVerfied ? (
+                            <Text style={{ fontFamily: 'Cairo_700Bold' }}>{name}</Text>
+                            ):null}
+                            {verfied ? (
+                            <Text style={{ fontFamily: 'Cairo_700Bold' , color:"blue"}}>{name}</Text>
+                            ) : null} 
+                            <Text style={{ fontFamily: 'Cairo_700Bold' }}>
+                                {age}, {IamName}
                             </Text>
-                            <Image style={styles.ImageProfile} source={{ uri: Picture }} />
+
+                            </View>
 
                         </View>
 
@@ -626,7 +665,7 @@ else{
                                 <TouchableOpacity onPress={() => navigation.navigate('NewChat',{
                                     Name:name
                                 })}>
-                                <Ionicons name="ios-chatbubbles" style={{ fontSize: 30 }} />
+                                 <Ionicons name="ios-chatbubbles" style={{ fontSize: 30 }} />
                                 <Text>Chat</Text>
                                 </TouchableOpacity>
 
@@ -640,7 +679,7 @@ else{
                                 <Ionicons name="ios-close" style={{ fontSize: 40 }} />
                                 </TouchableOpacity>
 
-                                 <TouchableOpacity onPress={ReportOverlay}>
+                                 <TouchableOpacity onPress={() => Linking.openURL('mailto:contactus@not4dating.com?subject=Report&body=' + "Block Username : " + " "  + name) }>
                                 <Image style={styles.saidImage} source={require('../../../assets/Images/more.png')} />
                                 </TouchableOpacity>
                                 <Text>Report to{"\n"} admin</Text>
@@ -652,12 +691,12 @@ else{
                                     {considerStatus ? (
                                         <Text>
                                             I consider myself <Text style={styles.fourConatinerTextOuput}> </Text>
-                                            <Text style={styles.Outputfont}>{consider} and</Text>
+                                            <Text style={styles.Outputfont}>{consider} and </Text>
                                         </Text>
                                     ) : null}
                                  I want to meet <Text style={styles.Outputfont}> {meetValue} </Text></Text>
 
-                                <Text style={styles.fourConatinerText}>My hobbies and interests are:<Text style={styles.Outputfont}>{activityValue} </Text></Text>
+                                <Text style={styles.fourConatinerText}>My hobbies and interests are: <Text style={styles.Outputfont}>{activityValue} </Text></Text>
 
                                 <Text style={styles.fourConatinerText}>I have lived here for <Text style={styles.Outputfont}>{liveValue}</Text></Text>
 
@@ -851,7 +890,7 @@ const styles = StyleSheet.create({
     thirdPhotoContainer: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between"
+        
     },
     saidImage: {
         height: 30, width: 30
@@ -867,7 +906,6 @@ const styles = StyleSheet.create({
     fourthContentContainer: {
         marginRight: 10,
         marginLeft: 10
-
     },
     fourConatinerText: {
         fontFamily: "Montserrat_200ExtraLight",
@@ -881,7 +919,8 @@ const styles = StyleSheet.create({
     },
     fourConatinerTextOuput: {
         color: "#0C0D0E",
-        fontWeight: '500'
+        fontWeight: '500',
+        fontFamily: "Cairo_700Bold",
 
     },
     fourthContentContainerBold: {
@@ -889,7 +928,7 @@ const styles = StyleSheet.create({
         marginRight: 40
     },
     Outputfont:
-        { fontFamily: "Montserrat-LightItalic" },
+        {  fontFamily: "Cairo_700Bold" },
     UserStatus: {
         flexDirection: "row",
         justifyContent: "space-between",

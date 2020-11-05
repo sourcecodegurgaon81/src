@@ -30,6 +30,8 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import SelectMultiple from 'react-native-select-multiple'
 import CustomMultiPicker from "react-native-multiple-select-list";
+import { Linking } from 'react-native'
+import Moment from 'moment';
 
 function FirstRoute({ navigation: { navigate } }) {
 
@@ -39,7 +41,6 @@ function FirstRoute({ navigation: { navigate } }) {
     const [userFirstName, setuserFirstName] = useState();
     const [userLastName, setuserLastName] = useState();
     const [date, setDate] = useState();
-    const [checkBoxes, setCheckBox] = useState(0)
     const [message, setMessage] = useState()
 
     const [errorOverLay, seterrorOverLay] = useState(false);
@@ -78,10 +79,6 @@ function FirstRoute({ navigation: { navigate } }) {
         ) {
             toggleOverlay()
             setMessage("age must be 18+")
-        }
-        else if (checkBoxes == 0) {
-            toggleOverlay()
-            setMessage("Please Select Checkbox")
         }
         else {
             navigate('Second', {
@@ -149,7 +146,7 @@ function FirstRoute({ navigation: { navigate } }) {
 
                         {/*Field Name Container*/}
                         <View style={styles.FieldContainer}>
-                            <Text style={styles.labelText}>What should we call you here?</Text>
+                            <Text style={styles.labelText}>What should we call you here?*</Text>
                             <TextInput
                                 style={styles.TextInput}
                                 onChangeText={text => setuserName(text)}
@@ -173,7 +170,7 @@ function FirstRoute({ navigation: { navigate } }) {
 
                         {/*Field First Name Container*/}
                         <View style={styles.FieldContainer}>
-                            <Text style={styles.labelText}>What is your First name</Text>
+                            <Text style={styles.labelText}>What is your First name*</Text>
                             <TextInput
                                 style={styles.TextInput}
                                 onChangeText={text => setuserFirstName(text)}
@@ -186,7 +183,7 @@ function FirstRoute({ navigation: { navigate } }) {
 
                         {/*Field Last Name Container*/}
                         <View style={styles.FieldContainer}>
-                            <Text style={styles.labelText}>What is your Last name</Text>
+                            <Text style={styles.labelText}>What is your Last name*</Text>
                             <TextInput
                                 style={styles.TextInput}
                                 onChangeText={text => setuserLastName(text)}
@@ -197,7 +194,7 @@ function FirstRoute({ navigation: { navigate } }) {
 
 
                         <View style={styles.FieldContainer}>
-                            <Text style={styles.labelText}>When is your birthday*?</Text>
+                            <Text style={styles.labelText}>When is your birthday?*</Text>
                             <DatePicker
                                 style={styles.datePickerStyle}
                                 date={date} // Initial date from state
@@ -216,9 +213,15 @@ function FirstRoute({ navigation: { navigate } }) {
                                     },
 
                                 }}
+
+                                // minDate={Moment().subtract(100, "years")}
+                                 maxDate={Moment().subtract(18, "years")}
+                           
                                 onDateChange={(date) => {
                                     setDate(date);
                                 }}
+                                disableScroll={true}
+                                
                             />
                         </View>
                         <Text style={styles.lowerTextfield}>(Only age is displayed publicly)</Text>
@@ -228,13 +231,7 @@ function FirstRoute({ navigation: { navigate } }) {
 
                         <Text style={styles.notifyText}>*Must be over 18 years old to be a member and use the app By continuing below</Text>
 
-                        <View style={styles.CheckboxContainer}>
-                            <CheckBox color="#fc5185" color="#fc5185" onPress={() => setCheckBox(1)} checked={checkBoxes == 1} style={{ marginRight: 10 }} title='I confirm I am over 18.' textStyle={styles.lowerTextfield} />
-
-
-
-
-                        </View>
+                   
 
                         <Button containerStyle={{ marginHorizontal: 10, marginVertical: 10 }}
                             onPress={checkUserDetail}
@@ -305,7 +302,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
     const popup = () => {
         toggleOverlay()
-        setMessage("Havent you got the text for this?")
+        setMessage("We want to know who you want to be contacted by so we can filter search results you show up in appropriately.")
 
     }
 
@@ -326,9 +323,9 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                                 <Text style={styles.labelText}>I am</Text>
                                 <DropDownPicker
                                     items={[
-                                        { label: 'Male', value: 'Male' },
-                                        { label: 'Female', value: 'Female' },
-                                        { label: 'Gender Diverse', value: 'Gender Diverse' },
+                                        { label: 'male', value: 'Male' },
+                                        { label: 'female', value: 'Female' },
+                                        { label: 'gender diverse', value: 'Gender Diverse' },
                                     ]}
                                     defaultValue={IamName}
                                     value={IamName}
@@ -378,9 +375,9 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             <Text style={styles.labelText}>I consider myself</Text>
                             <DropDownPicker
                                 items={[
-                                    { label: 'Outgoing', value: 'Outgoing' },
-                                    { label: 'On the Quieter Side', value: 'On the Quieter Side' },
-                                    { label: 'A Mix of Both', value: 'A Mix of Both' },
+                                    { label: 'outgoing', value: 'Outgoing' },
+                                    { label: 'on the quieter side', value: 'On the Quieter Side' },
+                                    { label: 'a mix of both', value: 'A Mix of Both' },
                                 ]}
                                 defaultValue={consider}
                                 defaultIndex={0}
@@ -650,9 +647,9 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
     const [liveValue, setliveValue] = useState("");
     const [activityValue, setactivityValue] = useState("");
 
-    const [CountryValue, setCountry] = useState("");
-    const [Postalcode, setPostal] = useState("")
-    const [selectedItems, setSelectedItems] = useState([]);
+    const [CountryValue, setCountry] = useState(null);
+    const [Postalcode, setPostal] = useState(null)
+    const [selectedItems, setSelectedItems] = useState(0);
     const [errorOverLay, seterrorOverLay] = useState(false);
     const [message, setMessage] = useState()
 
@@ -675,12 +672,19 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
             toggleOverlay()
             setMessage("Please enter Postcode")
         }
-        else if (selectedItems == null) {
+        else if (selectedItems.length < 4) {
             toggleOverlay()
-            setMessage("Please enter Activity")
+            setMessage("Select Top 3 activities")
+        }
+        else if (selectedItems.length > 4)
+        {
+            toggleOverlay()
+            setMessage("Select Max 3 activities")
         }
         else {
-            navigate('Fifth', { thirdRoute: thirdRoute, CountryValue: CountryValue, Postalcode: Postalcode, Activity: selectedItems })
+            const params = {thirdRoute: thirdRoute, CountryValue: CountryValue, Postalcode: Postalcode, Activity: selectedItems}
+            navigate('Fifth')
+            AsyncStorage.setItem('SignupData',JSON.stringify(params))
 
 
         }
@@ -690,9 +694,22 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
 
     const popup = () => {
         toggleOverlay()
-        setMessage("Havent you got the text for this?")
+        setMessage(
+
+
+      <Text>I’m sorry, we haven’t yet expanded worldwide.  If you would like us to expand to your area next, please let us know at  <Text onPress={() => Linking.openURL('mailto:contactus@not4dating.com')}> contactus@not4dating.com </Text></Text>
+
+     )
 
     }
+
+    const Secondpopup = () => {
+        toggleOverlay()
+        setMessage("We focus your search results near you because Not4Dating wants to help people make friends in the real world, not just online.")
+
+    }
+
+
     const userList = {
         'yoga': 'yoga',
         'playdates (parents and children)': 'playdates (parents and children)',
@@ -797,7 +814,7 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
                                 containerStyle={{ marginHorizontal: 10 }}
                                 buttonStyle={{ borderRadius: 10 }}
                                 titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 18 }}
-                                onPress={popup}
+                                onPress={Secondpopup}
                             />
                         </View>
 
@@ -809,7 +826,7 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
 
 
                     <View style={{marginHorizontal:5}}>
-                    <Text style={styles.labelText}>Actvities/Interest</Text>
+                    <Text style={styles.labelText}>What are your top 3 hobbies or interests?  (Don’t worry you can add more later)</Text>
                     <View style={{marginHorizontal:5 ,borderWidth:1,borderRadius:5}}>
                         <CustomMultiPicker
                             options={userList}
@@ -1083,9 +1100,10 @@ const FourthRoute = ({ navigation: { navigate }, route }) => {
 
 
 
-const FifthRoute = ({ navigation: { navigate }, route }, props) => {
+const FifthRoute = ({ navigation: { navigate } ,route}) => {
 
-    const routerOutput = route.params
+    //const routerOutput = route.params
+
 
     const [enterEmail, setEnterEmail] = useState()
     const [ConfirmEmail, setConfirmEmail] = useState()
@@ -1093,6 +1111,8 @@ const FifthRoute = ({ navigation: { navigate }, route }, props) => {
     const [message, setMessage] = useState()
     const [spinner, setspinner] = useState(false)
     const [imageUrls, setImageUrls] = useState()
+
+  
     let [fontsLoaded] = useFonts({
         Cairo_700Bold,
         Montserrat_200ExtraLight
@@ -1101,6 +1121,23 @@ const FifthRoute = ({ navigation: { navigate }, route }, props) => {
     const toggleOverlay = () => {
         seterrorOverLay(!errorOverLay);
     };
+  
+
+    const check = () =>{
+        AsyncStorage.getItem('SignupData', (err, result) => {
+           const userData = JSON.parse(result)
+            console.log(userData)
+    
+        })
+    }
+    useEffect(() => {
+        AsyncStorage.getItem('SignupData', (err, result) => {
+
+            console.log(result)
+
+        })
+    },[])
+
 
     const submitDetails = () => {
         setspinner(true)
@@ -1149,7 +1186,7 @@ const FifthRoute = ({ navigation: { navigate }, route }, props) => {
                 und: routerOutput.thirdRoute.secondRoute.Gender,
             },
 
-            field_activities_interests: {
+            field_top3_activities: {
                 und: routerOutput.Activity,
             },
             field_look_meet: {
@@ -1167,7 +1204,7 @@ const FifthRoute = ({ navigation: { navigate }, route }, props) => {
                 und: routerOutput.thirdRoute.secondRoute.Contract,
             },
         }).then((response) => {
-            console.log(response)
+        
             if (response.status == 200) {
                 toggleOverlay()
                 setMessage("Account Created Successfully Please verify your mail")
@@ -1179,7 +1216,8 @@ const FifthRoute = ({ navigation: { navigate }, route }, props) => {
             .catch((error) => {
 
                 if (error.response.status) {
-
+                    console.log(error.response.data.form_errors.mail);
+                    console.log(error.response.status);
                     setspinner(false)
                     toggleOverlay()
                     setMessage("Username is already taken/Email is already taken")
@@ -1267,7 +1305,7 @@ const FifthRoute = ({ navigation: { navigate }, route }, props) => {
                         buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                         title="Continue"
                         titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
-                        onPress={submitDetails}
+                        onPress={check}
                     />
                 </View>
 
@@ -1278,7 +1316,7 @@ const FifthRoute = ({ navigation: { navigate }, route }, props) => {
                         buttonStyle={{ backgroundColor: "#E62E2D", borderRadius: 10, marginHorizontal: 10, marginVertical: 10 }}
                         title="Previous"
                         titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
-                        onPress={() => navigate('Fourth')}
+                        //onPress={() => navigate('Fourth')}
                     />
                 </View>
 
@@ -1316,7 +1354,7 @@ const SignUp = props => {
                     <Tab.Screen name="Second" component={SecondRoute} options={{ tabBarLabel: '' }} />
                     <Tab.Screen name="Third" component={ThirdRoute} options={{ tabBarLabel: '' }} />
                     <Tab.Screen name="Fourth" component={FourthRoute} options={{ tabBarLabel: '' }} />
-                    <Tab.Screen name="Fifth" options={{ tabBarLabel: '' }} component={FifthRoute} />
+                    <Tab.Screen name="Fifth" options={{ tabBarLabel: '' }}   component={FifthRoute}   />
                 </Tab.Navigator>
 
 

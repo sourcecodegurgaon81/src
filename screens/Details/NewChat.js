@@ -12,7 +12,7 @@ import { AppLoading } from 'expo';
 import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
 import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 const NewChat = props => {
-    const [enterSubject, setSubject] = useState()
+    const [enterSubject, setSubject] = useState("hello")
     const [Message, setMessage] = useState()
           //Spinner
           const [spinner ,setspinner] = useState(false)
@@ -65,35 +65,42 @@ const NewChat = props => {
         />
 
             <View style={styles.secondmainTextContainer}>
-                <Text style={styles.headingText}>Create new chat thread</Text>
 
-                <TextInput
-                    style={{ height: 40, borderColor: 'black', borderWidth: 1, borderRadius: 5, paddingLeft: 7 }}
-                    onChangeText={text => setSubject(text)}
-                    value={enterSubject}
-                    placeholder=" Enter Subject"
-                />
+                <View style={styles.Textcontainer}>
+                <Text style={styles.headingText}>Hello! What are you currently reading or listening to?</Text>
 
-                <View style={styles.TextAreaContainer}>
-                    <View style={styles.FieldContainer}>
+                <Text style={styles.headingText}>Hey there! What is one thing that always makes you laugh or puts a smile on your face?</Text>
+                
+                <Text style={styles.headingText}>Hiyah! What is one thing you are looking forward to in the next few months and wouldn’t miss for the world</Text>
+                
 
-                        <Textarea
-                            containerStyle={styles.textareaContainer}
-                            style={styles.textarea}
-                            onChangeText={text => setMessage(text)}
-                            maxLength={120}
-                            value={Message}
-                            placeholder={' Type message here'}
-                            placeholderTextColor={'#c7c7c7'}
-                            underlineColorAndroid={'transparent'}
-                        />
-                    </View>
+                <Text style={styles.headingText}>Hi! What did you do on your best day ever? </Text>
+
+
+                <Text style={styles.headingText}>Helloooo! What is the best gift you have ever given?</Text>
 
                 </View>
-                <Button
-                    title="Send" onPress={sendMessage}/>
+   
+              <View style={styles.FieldArea}>
+                <TextInput
+                    style={{ height: 40, borderColor: 'black', borderWidth: 1, borderRadius: 5, paddingLeft: 7 }}
+                    onChangeText={text => setMessage(text)}
+                    value={Message}
+                    placeholder="Write your own message here"
+                />
 
+                
+
+                <Button
+                    title="Send" 
+                    onPress={sendMessage} 
+                    buttonStyle={{ backgroundColor: "green",textAlign:"center",borderRadius:10 , }}
+                    containerStyle={{ marginHorizontal: 15, marginVertical: 15 ,   }}
+                    titleStyle={{fontSize:20,    fontFamily: 'Cairo_700Bold' }}
+                    />
+</View>
             </View>
+
         </View>
 
     )
@@ -124,7 +131,7 @@ const styles = StyleSheet.create({
     headingText: {
         fontFamily: 'Montserrat_200ExtraLight',
         fontSize: 20,
-        textAlign: "center",
+ 
         marginVertical: 5
     },
     mainTextContainer: {
@@ -134,8 +141,17 @@ const styles = StyleSheet.create({
 
     },
     secondmainTextContainer: {
-        textAlign: "center",
-        marginHorizontal: 20
+     
+      
+    },
+    Textcontainer:{
+      marginHorizontal:20,
+      marginTop:10
+    },
+    FieldArea:{
+        justifyContent:"center",
+        marginHorizontal:20,
+        marginVertical:20
     }
 });
 

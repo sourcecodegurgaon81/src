@@ -61,7 +61,12 @@ function SettingsScreen (props) {
             const UserDetail = JSON.parse(result)
             Http.get('privatemsg' , { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Cookie': UserDetail.data.sessid + "=" + UserDetail.data.session_name, 'X-CSRF-Token': UserDetail.data.token } }).then((responses) => {
           var meassages =  responses.data
-  
+          if(meassages.length == 0)
+          {
+            setspinner(false)
+
+          }
+       else
           
         {
               for (var i = 0; i < meassages.length; i++) {
@@ -77,6 +82,7 @@ function SettingsScreen (props) {
                     chatMessages(ParseFavorate)
                     setspinner(false)
                   
+                   
                     }  
                         
                   }       

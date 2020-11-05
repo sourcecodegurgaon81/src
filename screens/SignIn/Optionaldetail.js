@@ -19,6 +19,8 @@ import MultiSelect from 'react-native-multiple-select';
 import { AppLoading } from 'expo';
 import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
 import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
+import CustomMultiPicker from "react-native-multiple-select-list";
+
 const FirstRoute = ({ navigation: { navigate } }) => {
 
 

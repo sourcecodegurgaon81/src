@@ -34,6 +34,7 @@ const forHelp = () =>{
   toggleHelpchat()
   Linking.openURL('mailto:contactus@not4dating.com')
 }
+
 let [fontsLoaded] = useFonts({
   Cairo_700Bold,
   Montserrat_200ExtraLight

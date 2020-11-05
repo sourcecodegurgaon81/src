@@ -16,8 +16,9 @@ export const NetworkContext = React.createContext();
 import { AppLoading } from 'expo';
 import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
 import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-const FirstRoute = ({ navigation: { navigate } }) => {
+const FirstRoute = ({navigation: { navigate }}) => {
 
 
     //Field Value
@@ -28,6 +29,7 @@ const FirstRoute = ({ navigation: { navigate } }) => {
     const [contracted, setContracted] = useState()
     const [meet, setMeet] = useState()
     const [consider, setconsider] = useState()
+    const [spinner, setspinner] = useState(false)
 
 
     let [fontsLoaded] = useFonts({
@@ -35,7 +37,7 @@ const FirstRoute = ({ navigation: { navigate } }) => {
         Montserrat_200ExtraLight
       });
     useEffect(() => {
-     
+        setspinner(true)
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
             if (UserDetail != null) {
@@ -48,6 +50,7 @@ const FirstRoute = ({ navigation: { navigate } }) => {
                         setContracted(response.data.field_want_contarct.und[0].value)
                         setMeet(response.data.field_look_meet.und[0].value)
                         setconsider(response.data.field_consider_myself_.und[0].value)
+                        setspinner(false)
 
                     }
                 })
@@ -77,6 +80,11 @@ const FirstRoute = ({ navigation: { navigate } }) => {
     else{
     return (
         <SafeAreaView style={{ backgroundColor: "white" }}>
+             <Spinner
+                    visible={spinner}
+                    textContent={'Loading...'}
+                    textStyle={styles.spinnerTextStyle}
+                />
             <ScrollView>
                 <View style={{ backgroundColor: "white", flex: 1 }}>
                     <View style={{ borderWidth: 1, borderRadius: 20, marginHorizontal: 10, marginVertical: 20 }}>
@@ -208,9 +216,9 @@ const FirstRoute = ({ navigation: { navigate } }) => {
 
                     <View>
                         <Button containerStyle={{ marginHorizontal: 20, marginVertical: 20 }}
-                            onPress={() => navigate('Second', { names: userName, FirstName: userFirstName, LastName: userLastName, Gender: IamName, Contract: contracted, meet: meet, consider: consider })}
+                            onPress={() => navigate('Second', { names: userName, FirstName: userFirstName, LastName: userLastName, Gender: IamName, Contract: contracted, meet: meet, consider: consider})}
                             title="Continue"
-                            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo_700Bold' }}
+                            buttonStyle={{ backgroundColor: "green", borderRadius: 10, fontFamily: 'Cairo_700Bold' }}
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                         />
                     </View>
@@ -280,6 +288,8 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
                         if (response.data.field_plans_get_cancelled.length == undefined) {
                             setCancelValue(response.data.field_plans_get_cancelled.und[0].value)
+                            console.log(response.data.field_good_friend)
+
                         }
 
                         if (response.data.field_relationship_status.length == undefined) {
@@ -287,25 +297,32 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                                 setStatusValue("Yes")
 
                             }
-                            else if (response.data.field_relationship_status.und[0].value == "Co-habitating") {
+                            if (response.data.field_relationship_status.und[0].value == "Co-habitating") {
                                 setStatusValue("Yes")
                             }
-                            else if (response.data.field_relationship_status.und[0].value == "Significant Other But Not Living Together") {
+                             if (response.data.field_relationship_status.und[0].value == "Significant Other But Not Living Together") {
                                 setStatusValue("No")
                             }
-                            else if (response.data.field_relationship_status.und[0].value == "Divorced") {
+                           if (response.data.field_relationship_status.und[0].value == "Divorced") {
                                 setStatusValue("No")
                             }
-                            else if (response.data.field_relationship_status.und[0].value == "Widowed") {
+                            if (response.data.field_relationship_status.und[0].value == "Widowed") {
                                 setStatusValue("No")
                             }
-                            else if (response.data.field_relationship_status.und[0].value == "Engaged") {
+                          if (response.data.field_relationship_status.und[0].value == "Engaged") {
                                 setStatusValue("Yes")
                             }
-                            else if (response.data.field_relationship_status.und[0].value == "Single") {
+                           if (response.data.field_relationship_status.und[0].value == "Single") {
                                 setStatusValue("No")
+                            }
+                            if (response.data.field_relationship_status.und[0].value == "No") {
+                                setStatusValue("No")
+                            }
+                           if (response.data.field_relationship_status.und[0].value == "Yes") {
+                                setStatusValue("Yes")
                             }
                         }
+                       
 
 
                         if (response.data.field_kids.length == undefined) {
@@ -664,8 +681,8 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                                 KidsValue: KidsValue, PetValue: PetValue, daysvalue: daysvalue, spaekvalue: spaekvalue,
                                 activityValue: activityValue, StatusValue: StatusValue
                             })}
-                            containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
-                            buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
+                            containerStyle={{  backgroundColor: "green", marginVertical: 8 ,marginHorizontal:8}}
+                            buttonStyle={{ backgroundColor: "green", borderRadius: 10 }}
                             title="Continue"
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
                         />
@@ -674,7 +691,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                     <View style={styles.mainContainerPicker}>
                         <Button
                             onPress={() => navigate('First')}
-                            containerStyle={{ marginHorizontal: 10, backgroundColor: " #F64225", marginVertical: 8, paddingBottom: 10 }}
+                            containerStyle={{  backgroundColor: " #F64225", marginVertical: 8 ,marginHorizontal:8}}
                             buttonStyle={{ backgroundColor: "#F64225", borderRadius: 10 }}
                             title="Previous"
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
@@ -889,7 +906,7 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
 
                     <View style={styles.mainContainerPicker}>
                         <Button
-                            containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
+                            containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8 }}
                             buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                             title="Continue"
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
@@ -915,7 +932,7 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
     )
                         }
 }
-const FourthRoute = ({ navigation, route }) => {
+function FourthRoute({ navigation , route }){
     const [anyThingvalue, setanyThing] = useState("");
     const routesSection = route.params
 
@@ -947,7 +964,7 @@ const FourthRoute = ({ navigation, route }) => {
         navigate("UserDetail");
     }
     //User Details Update
-    const UserDetails = props => {
+    const UserDetails = (props) => {
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
             const userId = UserDetail.data.user.uid
@@ -1041,10 +1058,23 @@ const FourthRoute = ({ navigation, route }) => {
                 field_favorite_music: { und: [{ value: routesSection.Musicvalue }] },
                 field_you_say: { und: [{ value: anyThingvalue }] },
             }, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Cookie': UserDetail.data.sessid + "=" + UserDetail.data.session_name, 'X-CSRF-Token': UserDetail.data.token } }).then((response) => {
+        
+                
                 if (response.status == 200) {
-                    //navigation.navigate('Home')
+                  //navigate('Tabs')
                     //console.log(props)
                 }
+            }).catch((error) => {
+                console.log(error);
+                // if (error.response.status) {
+                //     console.log(error.response.data.form_errors.mail);
+                //     console.log(error.response.status);
+                //     setspinner(false)
+                //     toggleOverlay()
+                //     setMessage("Username is already taken/Email is already taken")
+                // }
+
+
             })
 
 
@@ -1095,7 +1125,7 @@ const FourthRoute = ({ navigation, route }) => {
 
                     <View style={styles.mainContainerPicker}>
                         <Button
-                            containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8, alignItems: "center", justifyContent: "center" }}
+                            containerStyle={{ marginHorizontal: 10, backgroundColor: "green", marginVertical: 8 }}
                             buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                             title="Continue"
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
@@ -1104,7 +1134,7 @@ const FourthRoute = ({ navigation, route }) => {
                         />
 
                         <Button
-                            containerStyle={{ marginHorizontal: 10, backgroundColor: " #F64225", marginVertical: 8, paddingBottom: 10 }}
+                            containerStyle={{ marginHorizontal: 10, backgroundColor: " #F64225", marginVertical: 8}}
                             buttonStyle={{ backgroundColor: "#F64225", borderRadius: 10 }}
                             title="Previous"
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
@@ -1143,10 +1173,10 @@ const Editprofile = (props) => {
 
             <NavigationContainer>
                 <Tab.Navigator tabBarOptions={{ activeTintColor: 'transparent', inactiveTintColor: '#D3D3D3', indicatorStyle: { backgroundColor: 'transparent' } }} tabBarPosition='bottom'>
-                    <Tab.Screen name="First" component={FirstRoute} options={{ tabBarLabel: '' }} />
+                    <Tab.Screen name="First"  options={{ tabBarLabel: '' }} component={FirstRoute}/>
                     <Tab.Screen name="Second" component={SecondRoute} options={{ tabBarLabel: '' }} />
-                    <Tab.Screen name="Third" component={ThirdRoute} options={{ tabBarLabel: '' }} />
-                    <Tab.Screen name="Fourth" component={FourthRoute} options={{ tabBarLabel: '' }} />
+                    <Tab.Screen name="Third" component={ThirdRoute} options={{ tabBarLabel: '' }}  />
+                    <Tab.Screen name="Fourth" options={{ tabBarLabel: '' }}   component={FourthRoute}/>
                 </Tab.Navigator>
 
 

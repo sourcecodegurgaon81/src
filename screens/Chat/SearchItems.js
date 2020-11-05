@@ -21,7 +21,8 @@ const SearchItems = props => {
         Montserrat_200ExtraLight
       });
     
-
+const[verfified,setVerified] = useState()
+const[unverfified,setUnVerified] = useState(true)
   if(!fontsLoaded)
   {
     return(<AppLoading />)
@@ -37,8 +38,19 @@ const SearchItems = props => {
                 keyExtractor={item => item.Uid}
                 renderItem={({ item }) => {
 
-                    if(item.avatar == 0) {
-
+                   
+                    if(item.avatar == 0 && item.verfied.length == undefined) {
+                        // if(item.verfied.length == undefined)
+                        // {
+                        //     setVerified( {backgroundColor:"blue"})
+                        
+                        // }
+                        // else
+                        // {
+                        //     setVerified( {backgroundColor:"white"})
+                        // }
+                    
+                    
                     return (
                       
                
@@ -46,7 +58,41 @@ const SearchItems = props => {
                         uid:item.Uid
                     })}>
                         <View style={styles.secondContainer}>
-                            <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+                         
+                            <SafeAreaView style={{ flex: 1}}>
+                             
+                               
+                                <ScrollView style={styles.scrollView}>
+                                    <View style={styles.mainContainerVerifiedOutput}>
+                                        <View style={styles.Image}>
+                                            <Image
+                                                style={styles.tinyLogo}
+                                                source={{ uri: item.Picture[0] }}
+                                                style={{ width: 100, height: 100 }}
+                                            />
+                                        </View>
+                                        <View style={styles.textContainer}>
+                                            <Text style={{ fontFamily: 'Cairo_700Bold'  ,color:"white"}}>{item.name} {item.uid}</Text>
+                                            <Text style={styles.elipsVeifiedText} numberOfLines = { 2} ><Text style={{ fontFamily: 'Cairo_700Bold' ,color:"white" }}>Activity :</Text> {item.Activities}</Text>
+                                        </View>
+                                    </View>
+                                </ScrollView>
+                            </SafeAreaView>
+                        </View>
+                        </TouchableOpacity>
+
+                    )
+                }
+                else if(item.avatar == 0 && item.verfied.length != undefined) {
+                    return (
+                    <TouchableOpacity  onPress={()=> props.navigation.navigation.navigation.navigate('UserDetails',{
+                        uid:item.Uid
+                    })}>
+                        <View style={styles.secondContainer}>
+                         
+                            <SafeAreaView style={{ flex: 1 ,backgroundColor:"white"}}>
+                             
+                               
                                 <ScrollView style={styles.scrollView}>
                                     <View style={styles.mainContainerOutput}>
                                         <View style={styles.Image}>
@@ -67,6 +113,9 @@ const SearchItems = props => {
                         </TouchableOpacity>
 
                     )
+                    
+                    
+                    
                 }
                 }}
             />
@@ -75,6 +124,7 @@ const SearchItems = props => {
     )
         
 }
+
 } 
 
 const styles = StyleSheet.create({
@@ -108,11 +158,22 @@ const styles = StyleSheet.create({
         marginVertical: 20,
         borderRadius:3
     },
+    mainContainerVerifiedOutput: {
+        flexDirection: "row",
+        alignItems: "center",
+        borderWidth: 1,
+        marginVertical: 20,
+        borderRadius:3,
+        backgroundColor:"#4372C4"
+    },
     textContainer: {
         marginHorizontal: 10
     },
     elipsText:
-    { fontFamily: 'Montserrat_200ExtraLight', color: 'black', fontSize: 15 ,marginRight:110}
+    { fontFamily: 'Montserrat_200ExtraLight', color: 'black', fontSize: 15 ,marginRight:110},
+    elipsVeifiedText:{
+        fontFamily: 'Cairo_700Bold', color: 'black', fontSize: 15 ,marginRight:110,color:"white"
+    }
 
 
 });
