@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, StyleSheet, View, Dimensions, Picker, SafeAreaView, ScrollView, Image, Platform, TextInput } from "react-native";
+import { Text, StyleSheet, View, Dimensions,  SafeAreaView, ScrollView, Image, Platform, TextInput } from "react-native";
 import { Button } from 'react-native-elements';
 import { Tooltip, Input } from 'react-native-elements';
 import { TabView, SceneMap } from 'react-native-tab-view';
@@ -17,6 +17,11 @@ import { AppLoading } from 'expo';
 import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
 import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
 import Spinner from 'react-native-loading-spinner-overlay';
+import CustomMultiPicker from "react-native-multiple-select-list";
+import { Picker } from 'react-native'
+import Navigatetoscreen  from "./NavigateToScreen"
+
+
 
 const FirstRoute = ({navigation: { navigate }}) => {
 
@@ -30,13 +35,18 @@ const FirstRoute = ({navigation: { navigate }}) => {
     const [meet, setMeet] = useState()
     const [consider, setconsider] = useState()
     const [spinner, setspinner] = useState(false)
-
+    const [android, setAndroid] = useState(false)
+    const [ios, setIos] = useState(false)
 
     let [fontsLoaded] = useFonts({
         Cairo_700Bold,
         Montserrat_200ExtraLight
       });
     useEffect(() => {
+        Platform.select({
+            ios: () => setIos(true),
+            android: () => setAndroid(true)
+        })();
         setspinner(true)
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
@@ -129,22 +139,40 @@ const FirstRoute = ({navigation: { navigate }}) => {
                     <View style={styles.dropDownStyle}>
                         <View style={styles.dropDownStyle} >
                             <Text style={styles.labelText}>I am</Text>
-                            <DropDownPicker
-                                items={[
-                                    { label: 'Male', value: 'Male' },
-                                    { label: 'Female', value: 'Female' },
-                                    { label: 'Gender Diverse', value: 'Gender Diverse' },
-                                ]}
-                                defaultValue={IamName}
-                                value={IamName}
-                                defaultIndex={0}
-                                containerStyle={styles.DropDown}
-                                onChangeItem={item => setuserIamtName(item.value)}
-                                activeItemStyle={styles.dropDownActive}
-                                dropDownStyle={{}}
-                                labelStyle={styles.dropDownActive}
+                            {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={IamName}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setuserIamtName(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                        <Picker.Item label='male' value='Male' />
+                                        <Picker.Item label='female' value='Female' />
+                                        <Picker.Item label='gender diverse' value='Gender Diverse' />
 
-                            />
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+                            {ios ? (
+                                <DropDownPicker
+                                    items={[
+                                        { label: 'male', value: 'Male' },
+                                        { label: 'female', value: 'Female' },
+                                        { label: 'gender diverse', value: 'Gender Diverse' },
+                                    ]}
+                                    defaultValue={IamName}
+                                    value={IamName}
+                                    defaultIndex={0}
+                                    containerStyle={styles.DropDown}
+                                    onChangeItem={item => setuserIamtName(item.value)}
+                                    dropDownStyle={{}}
+                                    labelStyle={styles.dropDownActive}
+
+                                />
+                            ) : null}
+                            
                         </View>
                     </View>
 
@@ -153,22 +181,41 @@ const FirstRoute = ({navigation: { navigate }}) => {
                     <View style={styles.seconddropDownStyle}>
                         <View style={styles.FieldContainer}>
                             <Text style={styles.labelText}>Wanting to be contacted by</Text>
+                            {android ? (
+                                    <View style={styles.androidDropDown}>
+                                        <Picker
+                                            selectedValue={contracted}
+                                            style={styles.androidPickerDropdown}
+                                            onValueChange={(itemValue, itemIndex) => setContracted(itemValue)}
+                                            containerStyle={styles.DropDown}
+                                        >
+                                            <Picker.Item label='men only' value='0' />
+                                            <Picker.Item label='women only' value='1' />
+                                            <Picker.Item label='gender diverse only' value='2' />
+                                            <Picker.Item label='everyone' value='3' />
 
-                            <DropDownPicker
-                                items={[
-                                    { label: 'men only', value: '0' },
-                                    { label: 'women only', value: '1' },
-                                    { label: 'gender diverse only', value: '2' },
-                                    { label: 'everyone', value: '3' },
-                                ]}
-                                defaultValue={contracted}
-                                defaultIndex={0}
-                                containerStyle={styles.DropDown}
-                                onChangeItem={contr => setContracted(contr.value)}
-                                activeItemStyle={styles.dropDownActive}
-                                dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
-                                labelStyle={styles.dropDownActive}
-                            />
+                                        </Picker>
+                                    </View>
+                                ) : null}
+
+                                {ios ? (
+                                    <DropDownPicker
+                                        items={[
+                                            { label: 'men only', value: '0' },
+                                            { label: 'women only', value: '1' },
+                                            { label: 'gender diverse only', value: '2' },
+                                            { label: 'everyone', value: '3' },
+                                        ]}
+                                        defaultValue={contracted}
+                                        defaultIndex={0}
+                                        containerStyle={styles.DropDown}
+                                        onChangeItem={contr => setContracted(contr.value)}
+                                        dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
+                                        labelStyle={styles.dropDownActive}
+                                    />
+
+                                ) : null}
+                            
                         </View>
                     </View>
 
@@ -177,40 +224,86 @@ const FirstRoute = ({navigation: { navigate }}) => {
                     {/*I consider myself Container*/}
                     <View style={styles.thirddropDownStyle}>
                         <Text style={styles.labelText}>I consider myself</Text>
-                        <DropDownPicker
-                            items={[
-                                { label: 'Outgoing', value: 'Outgoing' },
-                                { label: 'On the Quieter Side', value: 'On the Quieter Side' },
-                                { label: 'A Mix of Both', value: 'A Mix of Both' },
-                            ]}
-                            defaultValue={consider}
-                            defaultIndex={0}
-                            containerStyle={styles.DropDown}
-                            onChangeItem={cont => setconsider(cont.value)}
-                            activeItemStyle={styles.dropDownActive}
-                            dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
-                            labelStyle={styles.dropDownActive}
-                        />
+                        {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={consider}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setconsider(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                        <Picker.Item label='outgoing' value='Outgoing' />
+                                        <Picker.Item label='on the quieter side' value='On the Quieter Side' />
+                                        <Picker.Item label='a mix of both' value='A Mix of Both' />
+
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+
+
+
+
+                            {ios ? (
+                                <DropDownPicker
+                                    items={[
+                                        { label: 'outgoing', value: 'Outgoing' },
+                                        { label: 'on the quieter side', value: 'On the Quieter Side' },
+                                        { label: 'a mix of both', value: 'A Mix of Both' },
+                                    ]}
+                                    defaultValue={consider}
+                                    defaultIndex={0}
+                                    containerStyle={styles.DropDown}
+                                    onChangeItem={cont => setconsider(cont.value)}
+                                    dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
+                                    labelStyle={styles.dropDownActive}
+                                />
+                            ) : null}
                     </View>
 
 
                     {/*Field I want to meet by Container*/}
                     <View style={styles.fourthdropDownStyle}>
                         <Text style={styles.labelText}>I want to meet</Text>
-                        <DropDownPicker
-                            items={[
-                                { label: 'a few goods friends', value: '1' },
-                                { label: 'a lot of accquaintances', value: '2' },
-                                { label: 'no preference', value: '3' },
-                            ]}
-                            defaultValue={meet}
-                            defaultIndex={0}
-                            containerStyle={styles.DropDown}
-                            onChangeItem={item => setMeet(item.value)}
-                            activeItemStyle={styles.dropDownActive}
-                            dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
-                            labelStyle={styles.dropDownActive}
-                        />
+                        {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={meet}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setMeet(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                        <Picker.Item label='a few goods friends' value='1' />
+                                        <Picker.Item label='a lot of accquaintances' value='2' />
+                                        <Picker.Item label='no preference' value='3' />
+
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+
+
+
+
+
+
+                            {ios ? (
+
+                                <DropDownPicker
+                                    items={[
+                                        { label: 'a few goods friends', value: '1' },
+                                        { label: 'a lot of accquaintances', value: '2' },
+                                        { label: 'no preference', value: '3' },
+                                    ]}
+                                    defaultValue={meet}
+                                    defaultIndex={0}
+                                    containerStyle={styles.DropDown}
+                                    onChangeItem={item => setMeet(item.value)}
+
+                                    dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
+                                    labelStyle={styles.dropDownActive}
+                                />
+                            ) : null}
                     </View>
 
 
@@ -251,6 +344,8 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
     const [PetValue, setPetValue] = useState("")
     const [daysvalue, setdays] = useState("")
     const [spaekvalue, setspeak] = useState("")
+    const [android, setAndroid] = useState(false)
+    const [ios, setIos] = useState(false)
 
 
     let [fontsLoaded] = useFonts({
@@ -258,7 +353,10 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
         Montserrat_200ExtraLight
       });
     useEffect(() => {
-      
+        Platform.select({
+            ios: () => setIos(true),
+            android: () => setAndroid(true)
+        })();
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
 
@@ -351,36 +449,33 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
         })
 
     }, [])
-    const items = [
-        // name key is must. It is to show the text in front
-        { id: 'yoga', name: 'yoga' },
-        { id: 'playdates (parents and children)', name: 'playdates (parents and children)' },
-        { id: 'happy hour/cocktails/beers', name: 'happy hour/cocktails/beers' },
-        { id: 'sightseeing', name: 'sightseeing' },
-        { id: 'artsy stuff (making or looking at)', name: 'artsy stuff (making or looking at)' },
-        { id: 'cooking', name: 'cooking' },
-        { id: 'dancing', name: 'dancing' },
-        { id: 'people watching', name: 'people watching' },
-        { id: 'traveling/vacations', name: 'traveling/vacations' },
-        { id: 'history buff', name: 'history buff' },
-        { id: 'board games', name: 'board games' },
-        { id: 'sports (playing)', name: 'sports (playing)' },
-        { id: "mom's/dad's night out w/o kids", name: "mom's/dad's night out w/o kids" },
-        { id: 'outdoor activities', name: 'outdoor activities' },
-        { id: 'dining out', name: 'dining out' },
-        { id: 'concerts/shows', name: 'concerts/shows' },
-        { id: 'sports (watching)', name: 'sports (watching)' },
-        { id: 'shopping', name: 'shopping' },
-        { id: 'video games', name: 'video games' },
-        { id: 'photography', name: 'photography' },
-        { id: 'animal lover/pet owner', name: 'animal lover/pet owner' },
-        { id: 'crime/mystery reader', name: 'crime/mystery reader' },
-        { id: 'chess', name: 'chess' },
-    ];
-    const onSelectedItemsChange = (activityValue) => {
-        // Set Selected Items
-        setactivityValue(activityValue);
-    };
+    const userList = {
+        'yoga': 'yoga',
+        'playdates (parents and children)': 'playdates (parents and children)',
+        'happy hour/cocktails/beers': 'happy hour/cocktails/beers',
+        'sightseeing': 'sightseeing',
+        'artsy stuff (making or looking at)': 'artsy stuff (making or looking at)',
+        'cooking': 'cooking',
+        'dancing': 'dancing',
+        'people watching': 'people watching',
+        'traveling/vacations': 'traveling/vacations',
+        'history buff': 'history buff',
+        'board games': 'board games',
+        'sports (playing)': 'sports (playing)',
+        "mom's/dad's night out w/o kids": "mom's/dad's night out w/o kids",
+        'outdoor activities': 'outdoor activities',
+        'dining out': 'dining out',
+        'concerts/shows': 'concerts/shows',
+        'sports (watching)': 'sports (watching)',
+        'shopping': 'shopping',
+        'video games': 'video games',
+        'photography': 'photography',
+        'animal lover/pet owner': 'animal lover/pet owner',
+        'crime/mystery reader': 'crime/mystery reader',
+        'chess': 'chess',
+
+    }
+   
 
     if(!fontsLoaded) {
         return(
@@ -399,26 +494,49 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                     <View style={styles.dropDownStyle}>
                         <Text style={styles.labelText}>I live in </Text>
 
-                        <DropDownPicker
-                            items={[
-                                { label: 'Australia', value: 'au' },
-                                { label: 'Canada', value: 'ca' },
-                                { label: 'India', value: 'in' },
-                                { label: 'New Zealand', value: 'nz' },
-                                { label: 'Singapore', value: 'sg' },
-                                { label: 'United Kingdom', value: 'uk' },
-                                { label: 'United States', value: 'us' },
-                            ]}
-                            containerStyle={styles.DropDown}
-                            labelStyle={styles.dropDownActive}
-                            activeItemStyle={styles.dropDownActive}
+                        {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={CountryValue}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setCountry(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                        <Picker.Item label= 'Australia' value= 'au' />
+                                        <Picker.Item label='Canada' value= 'ca' />
+                                        <Picker.Item label = 'India' value ='in'/>
+                                        <Picker.Item label = 'Singapore' value= 'sg'/>
+                                        <Picker.Item label = 'New Zealand' value = 'nz'/>
+                                        <Picker.Item label = 'United Kingdom' value = 'uk'/>
+                                        <Picker.Item label = 'United States' value = 'us'/>
 
-                            onChangeItem={items => setCountry(items.value)}
-                            value={CountryValue}
-                            defaultValue={CountryValue}
-                            defaultIndex={0}
+                                    </Picker>
+                                </View>
+                            ) : null}
 
-                        />
+
+                            {ios ?(
+                            <DropDownPicker
+                                items={[
+                                    { label: 'Australia', value: 'au' },
+                                    { label: 'Canada', value: 'ca' },
+                                    { label: 'India', value: 'in' },
+                                    { label: 'New Zealand', value: 'nz' },
+                                    { label: 'Singapore', value: 'sg' },
+                                    { label: 'United Kingdom', value: 'uk' },
+                                    { label: 'United States', value: 'us' },
+                                ]}
+                                containerStyle={styles.DropDown}
+                                labelStyle={styles.dropDownActive}
+
+
+                                onChangeItem={items => setCountry(items.value)}
+                                value={CountryValue}
+                                defaultValue={CountryValue}
+                                defaultIndex={0}
+
+                            />
+                            ):null}
 
                     </View>
 
@@ -439,34 +557,31 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
                     <View style={styles.dropDownStyle}>
                         <Text style={styles.labelText}>What do you like to do for fun?</Text>
-                        <View style={styles.iAmContainer} >
-
-                            <MultiSelect
-                                hideTags
-                                items={items}
-                                uniqueKey="id"
-                                onSelectedItemsChange={onSelectedItemsChange}
-                                selectedItems={activityValue}
-                                selectText="   Pick Activities"
-                                searchInputPlaceholderText="Search Items..."
-                                tagRemoveIconColor="#CCC"
-                                tagBorderColor="#CCC"
-                                tagTextColor="#CCC"
-                                selectedItemTextColor="#CCC"
-                                selectedItemIconColor="#CCC"
-                                itemTextColor="#000"
-                                displayKey="name"
-                                fontFamily='Montserrat_200ExtraLight'
-                                itemFontFamily='Montserrat_200ExtraLight'
-                                selectedItemFontFamily='Montserrat_200ExtraLight'
-                                selectedItemIconColor="black"
-                                selectedItemTextColor="black"
-                                submitButtonColor="#CCC"
-                                submitButtonText="Submit"
-                                styleSelectorContainer={{ backgroundColor: "red" }}
-                                styleDropdownMenuSubsection={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
-                            />
-                        </View>
+                 
+                        <View style={{ marginHorizontal: 10, borderWidth: 1, borderRadius: 5 }}>
+                                <CustomMultiPicker
+                                    options={userList}
+                                    search={false}
+                                    multiple={true}
+                                    placeholder={"Pick Activities"}
+                                    placeholderTextColor={'#757575'}
+                                    returnValue={"label"}
+                                    callback={(res) =>  setactivityValue(res)}
+                                    rowBackgroundColor={"#eee"}
+                                    rowHeight={45}
+                                    rowRadius={5}
+                                    searchIconName="ios-checkmark"
+                                    searchIconColor="red"
+                                    searchIconSize={30}
+                                    iconColor={"black"}
+                                    iconSize={30}
+                                    selectedIconName={"ios-checkmark-circle-outline"}
+                                    unselectedIconName={"ios-add-circle-outline"}
+                                    scrollViewHeight={150}
+                                />
+                            </View>
+                            
+                        
 
 
                     </View>
@@ -475,6 +590,24 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
                     <View style={styles.seconddropDownStyle}>
                         <Text style={styles.labelText}>How long have you lived here?</Text>
+
+                        {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={liveValue}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setliveValue(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                        <Picker.Item label= '< 2 years' value= '0'  />
+                                        <Picker.Item label = '2-5 years' value ='1'  />
+                                        <Picker.Item label ='> 5 years' value = '2'/>
+
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+                            {ios ?(
                         <DropDownPicker
                             items={[
                                 { label: '< 2 years', value: '0' },
@@ -491,6 +624,8 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             defaultIndex={0}
                             value={liveValue}
                         />
+                        ):null}
+                      
 
                     </View>
 
@@ -500,7 +635,31 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
                     <View style={styles.thirddropDownStyle}>
                         <Text style={styles.labelText}>My friends and I usually talk about</Text>
-                        <DropDownPicker
+
+                        {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={talkValue}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => settalkValue(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                     
+                                        <Picker.Item label='Work' value='Work'  />
+                                        <Picker.Item label = 'Family' value= 'Family'  />
+                                        <Picker.Item label ='Relationships' value = 'Relationships' />
+                                        <Picker.Item label = 'Gossip' value = 'Gossip' />
+                                        <Picker.Item label = 'Fashion' value ='Fashion' />
+                                        <Picker.Item label = 'Sports' value = 'Sports' />
+                                        <Picker.Item  label = 'Other' value = 'Other' />
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+
+
+                    {ios ? (
+                      <DropDownPicker
                             items={[
                                 { label: 'Work', value: 'Work' },
                                 { label: 'Family', value: 'Family' },
@@ -519,7 +678,9 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             value={talkValue}
                             defaultValue={talkValue}
 
-                        />
+                        /> 
+                        ):null}
+                     
 
                     </View>
 
@@ -527,6 +688,34 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
                     <View style={styles.fourthdropDownStyle}>
                         <Text style={styles.labelText}>A good friend is someone who..</Text>
+                        {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={FriendValue}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setFriendValue(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                     
+                                        <Picker.Item label = 'is always there for me' value = 'is always there for me' />
+                                        <Picker.Item label= 'always sides with me no matter what.' value= 'always sides with me no matter what.'  />
+                                        <Picker.Item label ='Relationships' value = 'Relationships' />
+                                        <Picker.Item label =  'Relationships'value = 'Relationships'/>
+                                        <Picker.Item label = 'will be honest with me even if it hurts.' value= 'will be honest with me even if it hurts.' />
+                                        <Picker.Item label = 'gives advice' value = 'gives advice'/>
+                                        <Picker.Item  label = 'is an activity partner' value = 'is an activity partner'/>
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+
+
+
+
+
+
+
+                  {ios?(
                         <DropDownPicker
                             items={[
                                 { label: 'is always there for me', value: 'is always there for me' },
@@ -547,6 +736,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             value={FriendValue}
                             defaultValue={FriendValue}
                         />
+                        ):null}
 
                     </View>
 
@@ -554,14 +744,34 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
                     <View style={styles.fifthdropDownStyle}>
                         <Text style={styles.labelText}>When someone cancels plans we made</Text>
+                        {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={CancelValue}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setCancelValue(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                     
+                                        <Picker.Item label = 'It really bothers me and I am wary of the friendship.'value = 'It really bothers me and I am wary of the friendship.'  />
+                                        <Picker.Item label = 'My reaction depends on the reason why.' value = 'My reaction depends on the reason why.'  />
+                                        <Picker.Item label = 'I’m generally understanding, but I can only be blown off so many times before I will start to question the friendship.'  value = 'I’m generally understanding, but I can only be blown off so many times before I will start to question the friendship.'/>
+                                        <Picker.Item label = 'Things happen – no big deal.' value = 'Things happen – no big deal.' />
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+
+
+                      {ios?(
                         <DropDownPicker
                             items={[
-                                { label: 'It really bothers me and I am wary of the friendship.', value: 'It really bothers me and I am wary of the friendship.' },
-                                { label: 'My reaction depends on the reason why.', value: 'My reaction depends on the reason why.' },
-                                { label: 'I’m generally understanding, but I can only be blown off so many times before I will start to question the friendship.', value: 'I’m generally understanding, but I can only be blown off so many times before I will start to question the friendship.' },
-                                { label: "Things happen – no big deal.", value: "Things happen – no big deal." },
+                                { label:'It really bothers me and I am wary of the friendship.', value: 'It really bothers me and I am wary of the friendship.' },
+                                 { label: 'My reaction depends on the reason why.', value: 'My reaction depends on the reason why.' },
+                                 { label: 'I’m generally understanding, but I can only be blown off so many times before I will start to question the friendship.',  value: 'I’m generally understanding, but I can only be blown off so many times before I will start to question the friendship.' },
+                                 { label: 'Things happen – no big deal.', value: 'Things happen – no big deal.' },
                             ]}
-                            defaultIndex={0}
+                           
                             containerStyle={styles.DropDown}
                             labelStyle={styles.dropDownActive}
                             activeItemStyle={styles.dropDownActive}
@@ -570,32 +780,68 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             value={CancelValue}
                             defaultValue={CancelValue}
                         />
+                        ):null}
 
                     </View>
 
 
                     <View style={styles.sixdropDownStyle}>
                         <Text style={styles.labelText}>Are you in a realtionship?</Text>
+                        {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={StatusValue}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setStatusValue(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                        <Picker.Item label='Yes' value= 'Yes' />
+                                        <Picker.Item label = 'No' value = 'No'   />
+                                
+
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+
+                            {ios ?(
                         <DropDownPicker
                             items={[
-                                { label: 'Yes', value: 'Yes' },
-                                { label: 'No', value: 'No' },
+                                { label:'Yes', value: 'Yes'},
+                                { label:'No',  value: 'No'}
                             ]}
-                            defaultIndex={0}
                             containerStyle={styles.DropDown}
                             labelStyle={styles.dropDownActive}
                             activeItemStyle={styles.dropDownActive}
-                            dropDownStyle={{ backgroundColor: '#fafafa', zIndex: 200 }}
-                            onChangeItem={items => setStatusValue(items.value)}
+                            dropDownStyle={{backgroundColor: '#fafafa', zIndex: 200 }}
+                            onChangeItem={items => setStatusValue(items)}
                             value={StatusValue}
                             defaultValue={StatusValue}
                         />
+                        ):null}
 
                     </View>
 
 
                     <View style={styles.sevendropDownStyle}>
                         <Text style={styles.labelText}>Do you have kids?</Text>
+                        {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={KidsValue}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setKidsValue(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                        <Picker.Item label='Yes' value= 'Yes' />
+                                        <Picker.Item label = 'No' value = 'No'   />
+                                
+
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+                            {ios?(
                         <DropDownPicker
                             items={[
                                 { label: 'Yes', value: 'Yes' },
@@ -610,6 +856,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             value={KidsValue}
                             defaultValue={KidsValue}
                         />
+                        ):null}
 
                     </View>
 
@@ -617,6 +864,29 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
 
                     <View style={styles.eightdropDownStyle}>
                         <Text style={styles.labelText}>Do you have pets?</Text>
+                        {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={PetValue}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setPetValue(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                        <Picker.Item label = 'Dog' value = 'Dog'  />
+                                        <Picker.Item label = 'Cat' value = 'Cat'   />
+                                        <Picker.Item label = 'Rabbit' value = 'Rabbit'   />
+                                        <Picker.Item label = 'Birds' value = 'Birds'   />
+                                        <Picker.Item label = 'Fish' value = 'Fish'   />
+                                        <Picker.Item label = 'Reptile' value = 'Reptile'   />
+                                        <Picker.Item label = 'Other' value = 'Other'   />
+
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+
+
+                            {ios?(
                         <DropDownPicker
                             items={[
                                 { label: 'Dog', value: 'Dog' },
@@ -636,6 +906,7 @@ const SecondRoute = ({ navigation: { navigate }, route }) => {
                             value={PetValue}
                             defaultValue={PetValue}
                         />
+                        ):null}
                     </View>
 
 
@@ -718,7 +989,8 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
     const [Moviesvalue, setMovies] = useState("");
     const [TVvalue, setTV] = useState("");
     const [Musicvalue, setMusic] = useState("");
-
+    const [android, setAndroid] = useState(false)
+    const [ios, setIos] = useState(false)
 
     let [fontsLoaded] = useFonts({
         Cairo_700Bold,
@@ -727,7 +999,10 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
 
 
     useEffect(() => {
-       
+        Platform.select({
+            ios: () => setIos(true),
+            android: () => setAndroid(true)
+        })();
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
             if (UserDetail != null) {
@@ -781,6 +1056,26 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
 
                     <View style={styles.seconddropDownStyle}>
                         <Text style={styles.labelText}>Do you smoke?</Text>
+                        {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={smokeValue}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setsmokeValue(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                        <Picker.Item label= 'Never' value= 'Never' />
+                                        <Picker.Item label= 'Socially' value= 'Socially'   />
+                                        <Picker.Item label= 'Yes' value='Yes'/>
+                                        <Picker.Item label= 'Rarely' value='Rarely'/>
+
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+
+
+                      {ios ? (
                         <DropDownPicker
                             items={[
                                 { label: 'Never', value: 'Never' },
@@ -797,6 +1092,8 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
                             value={smokeValue}
                             defaultValue={smokeValue}
                         />
+                        ):null}
+                    
                     </View>
 
 
@@ -804,6 +1101,26 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
 
                     <View style={styles.thirddropDownStyle}>
                         <Text style={styles.labelText}>How about drinking alcohol?</Text>
+                        {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={alcoholValue}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setalcoholValue(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                        <Picker.Item label= 'Never' value= 'Never' />
+                                        <Picker.Item label= 'Socially' value= 'Socially'   />
+                                        <Picker.Item label ='Couple Times a Week' value = 'Couple Times a Week'/>
+                                        <Picker.Item label = 'Every Day' value =  'Every Day'/>
+                                        <Picker.Item label= 'Rarely' value='Rarely'/>
+
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+
+                        {ios ? (
                         <DropDownPicker
                             items={[
                                 { label: 'Never', value: 'Never' },
@@ -821,6 +1138,7 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
                             value={alcoholValue}
                             defaultValue={alcoholValue}
                         />
+                        ):null}
                     </View>
 
 
@@ -932,7 +1250,7 @@ const ThirdRoute = ({ navigation: { navigate }, route }) => {
     )
                         }
 }
-function FourthRoute({ navigation , route }){
+function FourthRoute( {navigation: { navigate },route}){
     const [anyThingvalue, setanyThing] = useState("");
     const routesSection = route.params
 
@@ -942,7 +1260,7 @@ function FourthRoute({ navigation , route }){
         Montserrat_200ExtraLight
       });
     useEffect(() => {
-      
+     
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
             const userId = UserDetail.data.user.uid
@@ -960,8 +1278,8 @@ function FourthRoute({ navigation , route }){
 
     }, [])
 
-    const GoPressed = (navigate) => {
-        navigate("UserDetail");
+    const GoPressed = (props) => {
+ console.log(props)
     }
     //User Details Update
     const UserDetails = (props) => {
@@ -1129,7 +1447,7 @@ function FourthRoute({ navigation , route }){
                             buttonStyle={{ marginHorizontal: 10, backgroundColor: "green", borderRadius: 10 }}
                             title="Continue"
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
-                            onPress={UserDetails}
+                            onPress={GoPressed}
 
                         />
 
@@ -1138,7 +1456,7 @@ function FourthRoute({ navigation , route }){
                             buttonStyle={{ backgroundColor: "#F64225", borderRadius: 10 }}
                             title="Previous"
                             titleStyle={{ fontFamily: 'Cairo_700Bold', fontSize: 20 }}
-                            onPress={() => navigation.navigate('Third')}
+                            //onPress={() => props.propName.navigation.navigate('EditDetailRoute')}
                         />
                     </View>
 
@@ -1176,7 +1494,7 @@ const Editprofile = (props) => {
                     <Tab.Screen name="First"  options={{ tabBarLabel: '' }} component={FirstRoute}/>
                     <Tab.Screen name="Second" component={SecondRoute} options={{ tabBarLabel: '' }} />
                     <Tab.Screen name="Third" component={ThirdRoute} options={{ tabBarLabel: '' }}  />
-                    <Tab.Screen name="Fourth" options={{ tabBarLabel: '' }}   component={FourthRoute}/>
+                    <Tab.Screen name="Fourth" options={{ tabBarLabel: '' }}  component={FourthRoute}  />
                 </Tab.Navigator>
 
 
@@ -1346,7 +1664,8 @@ const styles = StyleSheet.create({
         paddingTop: 3
     },
 
-
+    androidDropDown: { borderWidth: 1, marginHorizontal: 10, borderRadius: 5 },
+    androidPickerDropdown: { height: 40, width: "100%", borderWidth: 1, marginHorizontal: 10 }
 
 });
 

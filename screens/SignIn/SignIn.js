@@ -99,6 +99,7 @@ const SignIn = props => {
             }).catch(function (error) {    
                 //setspinner(false)
                 if (error.response.status) {
+                    console.log(error.response)
                     setspinner(false)
                     setVisible(true)
                 }
@@ -166,7 +167,7 @@ const SignIn = props => {
                             labelStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
                             placeholderStyle={{ fontFamily: 'Montserrat_200ExtraLight' }}
                             placeholder='Password'
-                            secureTextEntry={true}
+                            //secureTextEntry={true}
                         />
                     </View>
                     
@@ -182,8 +183,10 @@ const SignIn = props => {
             </View>
 
             <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+                <>
                 <Text style={styles.errorText}>Wrong username or password</Text>
                 <Button title="Ok" containerStyle={styles.buttoncontainerStyle} buttonStyle={styles.successButton} titleStyle={styles.tittleText} onPress={toggleOverlay} />
+               </>
             </Overlay>
 
             

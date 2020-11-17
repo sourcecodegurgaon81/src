@@ -100,14 +100,17 @@ const UserDetails = props => {
 
     useEffect(() => {
 
-        const uid = navigation.getParam('uid')
+        var uid = navigation.getParam('uid')
+
+
         setUserId(uid)
         setspinner(true)
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
-            Http.get('user/' + uid, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Cookie': UserDetail.data.sessid + "=" + UserDetail.data.session_name, 'X-CSRF-Token': UserDetail.data.token } })
+            Http.get('user/' + userId, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Cookie': UserDetail.data.sessid + "=" + UserDetail.data.session_name, 'X-CSRF-Token': UserDetail.data.token } })
                 .then((response) => {
-
+                     const Username = response.data.name
+                    var PictureUrl = response.data.picture.url
                     setuserName(response.data.name)
                     setuserPicture(response.data.picture.url)
 
@@ -271,27 +274,27 @@ const UserDetails = props => {
                     setspinner(false)
 
                     setfavInfo([{
-                        name: name,
-                        picture: Picture,
+                        name: Username,
+                        picture: PictureUrl,
                         activities: response.data.field_activities_interests.und,
-                        uid: uid
+                        uid: userId
                     }])
 
 
                     setblocked([
                         {
-                            name: name,
-                            picture: Picture,
+                            name: Username,
+                            picture: PictureUrl,
                             activities: response.data.field_activities_interests.und,
-                            uid: uid
+                            uid: userId
                         },
                     ])
                     setReport([
                         {
-                            name: name,
-                            picture: Picture,
+                            name: Username,
+                            picture: PictureUrl,
                             activities: response.data.field_activities_interests.und,
-                            uid: uid
+                            uid: userId
                         },
                     ])
 
@@ -340,9 +343,18 @@ const UserDetails = props => {
     function getFavorite() {
         AsyncStorage.getItem('Token', (err, result) => {
             const UserDetail = JSON.parse(result)
+            console.log(UserDetail.data.user.uid)
             Http.get('user/' + UserDetail.data.user.uid, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Cookie': UserDetail.data.sessid + "=" + UserDetail.data.session_name, 'X-CSRF-Token': UserDetail.data.token } })
                 .then((response) => {
+                    console.log(response.data.field_favorite_users.length)
+                    if(response.data.field_favorite_users.length != 0){
                     var scope = [JSON.parse(response.data.field_favorite_users["und"][0]["value"])]
+                    }
+                    else
+                    {
+                        var scope = []
+
+                    }
                     if (response.data.field_favorite_users.und) {
                         console.log("value exists");
                         scope.push(favInfo)
@@ -352,6 +364,8 @@ const UserDetails = props => {
                     }
                     //Make scope unique
             
+
+                    console.log(scope)
                     setuniqueScope(scope)
                     setFavVisible(false)
                     addFavorite();
@@ -376,7 +390,9 @@ const UserDetails = props => {
             }, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Cookie': UserDetail.data.sessid + "=" + UserDetail.data.session_name, 'X-CSRF-Token': UserDetail.data.token } })
                 .then((response) => {
                     //getLoggedInUser();
-                })
+                }).catch(function (error) {    
+                   console.log(error.response)
+                });
 
         });
     }

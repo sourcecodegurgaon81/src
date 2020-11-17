@@ -65,16 +65,15 @@ const Favorate = (props) => {
 
             <FlatList
                 data={search}
-                keyExtractor={item => item.uid}
+                keyExtractor={item => item[0].uid}
                 renderItem={({ item }) => {
-                    const actvitity = JSON.stringify(item.activities)
                     //    var active = arrayActvity.join(', ')
+                        console.log(item[0])
+                    for (let i = 0; i <= item[0].activities.length; i++) {
 
-                    for (let i = 0; i <= item.activities.length; i++) {
-
-                        if (item.activities[i] != undefined) {
+                        if (item[0].activities[i] != undefined) {
                      
-                          setactive(item.activities[i].value)
+                          setactive(item[0].activities[i].value)
                         }
                     }
                     return (
@@ -88,10 +87,10 @@ const Favorate = (props) => {
                                             <View style={styles.Image}>
                                                 <Image
                                                     style={styles.tinyLogo}
-                                                    source={{ uri: item.picture }} style={{ width: 100, height: 100 }} />
+                                                    source={{ uri: item[0].picture }} style={{ width: 100, height: 100 }} />
                                             </View>
                                             <View style={styles.textContainer}>
-                                                <Text style={{ fontFamily: 'Montserrat_200ExtraLight', color: 'black' }}>{item.name}</Text>
+                                                <Text style={{ fontFamily: 'Montserrat_200ExtraLight', color: 'black' }}>{item[0].name}</Text>
                                                 <Text style={{ fontFamily: 'Montserrat_200ExtraLight', color: 'black', fontSize: 15 }}><Text style={{ fontFamily: 'Cairo_700Bold' }} >Activity :</Text><Text>{active}</Text></Text>   
                                         </View>
                                     </View>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, StyleSheet, View, Dimensions, Picker, SafeAreaView, ScrollView, Image, TextInput,TouchableOpacity } from "react-native";
+import { Text, StyleSheet, View, Dimensions,  SafeAreaView, ScrollView, Image, TextInput,TouchableOpacity } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Button } from 'react-native-elements';
@@ -17,7 +17,8 @@ import { AsyncStorage } from 'react-native';
 import MultiSelect from 'react-native-multiple-select';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-
+import CustomMultiPicker from "react-native-multiple-select-list";
+import { Picker } from 'react-native'
 import { AppLoading } from 'expo';
 import { useFonts, Cairo_700Bold} from '@expo-google-fonts/cairo';
 import { Montserrat_200ExtraLight} from '@expo-google-fonts/montserrat';
@@ -38,6 +39,9 @@ const navigation = useNavigation();
   const [activityValue, setactivityValue] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
 
+  const [android, setAndroid] = useState(false)
+  const [ios, setIos] = useState(false)
+
   // Result Show Hide Variables
   const [output, setoutput] = useState(false)
   const [search, setSearchField] = useState(true)
@@ -49,35 +53,40 @@ const navigation = useNavigation();
   Montserrat_200ExtraLight
 });
  
+useEffect(() => {
 
+  Platform.select({
+      ios: () => setIos(true),
+      android: () => setAndroid(true)
+  })();
+}, [])
 // Dummy Data for the MutiSelect
-const items = [
-  // name key is must. It is to show the text in front
-  {id: '0', name: 'No Prefrence'},
-  {id: 'yoga', name: 'yoga'},
-  {id: 'playdates (parents and children)', name: 'playdates (parents and children)'},
-  {id: 'happy hour/cocktails/beers', name: 'happy hour/cocktails/beers'},
-  {id: 'sightseeing', name: 'sightseeing'},
-  {id: 'artsy stuff (making or looking at)', name: 'artsy stuff (making or looking at)'},
-  {id: 'cooking', name: 'cooking'},
-  {id: 'dancing', name: 'dancing'},
-  {id: 'people watching', name: 'people watching'},
-  {id: 'traveling/vacations', name: 'traveling/vacations'},
-  {id: 'history buff', name: 'history buff'},
-  {id: 'board games', name: 'board games'},
-  {id: 'sports (playing)', name: 'sports (playing)'},
-  {id: "mom's/dad's night out w/o kids", name: "mom's/dad's night out w/o kids"},
-  {id: 'outdoor activities', name: 'outdoor activities'},
-  {id: 'dining out', name: 'dining out'},
-  {id: 'concerts/shows', name: 'concerts/shows'},
-  {id: 'sports (watching)', name: 'sports (watching)'},
-  {id: 'shopping', name: 'shopping'},
-  {id: 'video games', name: 'video games'},
-  {id: 'photography', name: 'photography'},
-  {id: 'animal lover/pet owner', name: 'animal lover/pet owner'},
-  {id: 'crime/mystery reader', name: 'crime/mystery reader'},
-  {id: 'chess', name: 'chess'},
-];
+const userList = {
+  'yoga': 'yoga',
+  'playdates (parents and children)': 'playdates (parents and children)',
+  'happy hour/cocktails/beers': 'happy hour/cocktails/beers',
+  'sightseeing': 'sightseeing',
+  'artsy stuff (making or looking at)': 'artsy stuff (making or looking at)',
+  'cooking': 'cooking',
+  'dancing': 'dancing',
+  'people watching': 'people watching',
+  'traveling/vacations': 'traveling/vacations',
+  'history buff': 'history buff',
+  'board games': 'board games',
+  'sports (playing)': 'sports (playing)',
+  "mom's/dad's night out w/o kids": "mom's/dad's night out w/o kids",
+  'outdoor activities': 'outdoor activities',
+  'dining out': 'dining out',
+  'concerts/shows': 'concerts/shows',
+  'sports (watching)': 'sports (watching)',
+  'shopping': 'shopping',
+  'video games': 'video games',
+  'photography': 'photography',
+  'animal lover/pet owner': 'animal lover/pet owner',
+  'crime/mystery reader': 'crime/mystery reader',
+  'chess': 'chess',
+
+}
 
   const searchResult = async () => {
 
@@ -137,6 +146,30 @@ const items = [
               </View>
               <View style={styles.dropDownStyle}>
                 <Text style={styles.labelText}>Country </Text>
+
+                {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={CountryValue}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setCountry(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+                                        <Picker.Item label= 'Australia' value= 'au' />
+                                        <Picker.Item label='Canada' value= 'ca' />
+                                        <Picker.Item label = 'India' value ='in'/>
+                                        <Picker.Item label = 'Singapore' value= 'sg'/>
+                                        <Picker.Item label = 'New Zealand' value = 'nz'/>
+                                        <Picker.Item label = 'United Kingdom' value = 'uk'/>
+                                        <Picker.Item label = 'United States' value = 'us'/>
+
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+
+
+                   {ios?(
                 <DropDownPicker
                   items={[
                     { label: 'Australia', value: 'au' },
@@ -155,7 +188,7 @@ const items = [
                   defaultValue={CountryValue}
                   defaultIndex={0}
                 />
-
+                ):null}
 
                 <View>
                   
@@ -165,6 +198,28 @@ const items = [
         <View style={styles.dropDownStyle}>
 
                   <Text style={styles.labelText}>Looking For</Text>
+
+
+                  {android ? (
+                                <View style={styles.androidDropDown}>
+                                    <Picker
+                                        selectedValue={meetValue}
+                                        style={styles.androidPickerDropdown}
+                                        onValueChange={(itemValue, itemIndex) => setmeetValue(itemValue)}
+                                        containerStyle={styles.DropDown}
+                                    >
+
+                                        <Picker.Item label = 'No Prefrence'  value = '0'  />
+                                        <Picker.Item label='a few goods friends' value='1' />
+                                        <Picker.Item label='a lot of accquaintances' value='2' />
+                                        <Picker.Item label='no preference' value='3' />
+
+                                    </Picker>
+                                </View>
+                            ) : null}
+
+
+                            {ios?(
                 <DropDownPicker
                   items={[
                     { label: 'No Prefrence', value: '0' },
@@ -181,11 +236,33 @@ const items = [
                   defaultValue={meetValue}
                   defaultIndex={1}
                 />
+                ):null}
 </View>
 
            
            <View style={styles.seconddropDownStyle}>
                 <Text style={styles.labelText}>Gender</Text>  
+
+
+                {android ? (
+                                    <View style={styles.androidDropDown}>
+                                        <Picker
+                                            selectedValue={genderValue}
+                                            style={styles.androidPickerDropdown}
+                                            onValueChange={(itemValue, itemIndex) => setgenderValue(itemValue)}
+                                            containerStyle={styles.DropDown}
+                                        >
+                                                       <Picker.Item label='male' value='Male' />
+                                        <Picker.Item label='female' value='Female' />
+                                        <Picker.Item label='gender diverse' value='Gender Diverse' />
+
+                                        </Picker>
+                                    </View>
+                                ) : null}
+
+
+
+                                {ios?(
                 <DropDownPicker
                   items={[
                     { label: 'No Prefrence', value: '0' },
@@ -202,6 +279,7 @@ const items = [
                   defaultValue={genderValue}
                   defaultIndex={0}
                 />
+                ):null}
 </View>
 
 
@@ -209,33 +287,29 @@ const items = [
 
 <View >
                 <Text style={styles.labelText}>Activities</Text>  
-                <View style={styles.iAmContainer}>
-
-         <MultiSelect
-          hideTags
-          items={items}
-          uniqueKey="id"
-          onSelectedItemsChange={onSelectedItemsChange}
-          selectedItems={selectedItems}
-          selectText="   No Prefrence"
-          searchInputPlaceholderText="Search Items..."
-          tagRemoveIconColor="#CCC"
-          tagBorderColor="#CCC"
-          tagTextColor="#CCC"
-          selectedItemTextColor="#CCC"
-          selectedItemIconColor="#CCC"
-          itemTextColor="#000"
-          displayKey="name"
-          fontFamily= 'Montserrat_200ExtraLight'
-          itemFontFamily	= 'Montserrat_200ExtraLight'
-          selectedItemFontFamily= 'Montserrat_200ExtraLight'
-          selectedItemIconColor= "black"
-          selectedItemTextColor= "black"
-          submitButtonColor="#CCC"
-          submitButtonText="Submit"
-         
-          styleDropdownMenuSubsection={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}        />
-</View>
+                <View style={{ marginHorizontal: 10, borderWidth: 1, borderRadius: 5 }}>
+                                <CustomMultiPicker
+                                    options={userList}
+                                    search={false}
+                                    multiple={true}
+                                    placeholder={"Pick Activities"}
+                                    placeholderTextColor={'#757575'}
+                                    returnValue={"label"}
+                                    callback={(res) => setSelectedItems(res)}
+                                    rowBackgroundColor={"#eee"}
+                                    rowHeight={45}
+                                    rowRadius={5}
+                                    searchIconName="ios-checkmark"
+                                    searchIconColor="red"
+                                    searchIconSize={30}
+                                    iconColor={"black"}
+                                    iconSize={30}
+                                    selectedIconName={"ios-checkmark-circle-outline"}
+                                    unselectedIconName={"ios-add-circle-outline"}
+                                    scrollViewHeight={150}
+                                />
+                            </View>
+                
 </View>
 
 
@@ -498,7 +572,8 @@ const styles = StyleSheet.create({
     borderRadius:5,
     paddingTop:3
 },
-  
+androidDropDown: { borderWidth: 1, marginHorizontal: 10, borderRadius: 5 },
+androidPickerDropdown: { height: 40, width: "100%", borderWidth: 1, marginHorizontal: 10 }
   
   
   })

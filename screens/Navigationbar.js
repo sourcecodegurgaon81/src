@@ -152,7 +152,7 @@ return (
 
 
     return(
-      <View style={{borderBottomWidth:1}}>
+      <View style={{borderBottomWidth:1,backgroundColor:"white"}}>
         <Header
         containerStyle={{backgroundColor:"white", height:100,borderBottomWidth:1,zIndex:2}}
         placement="left"
@@ -179,7 +179,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     flex: 1,
     alignItems: "center",
-    zIndex: 1
+    zIndex: 1,
+    backgroundColor:"white"
   },
   overlaystyling: {
     backgroundColor: "white",
